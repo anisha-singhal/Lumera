@@ -1,0 +1,11 @@
+# Lumera Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://lumera.com/sitemap.xml
+
+# Disallow admin
+Disallow: /admin
+Disallow: /api
+

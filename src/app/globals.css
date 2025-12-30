@@ -1,0 +1,629 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+ * LUMERA STYLES - Mobile-First Responsive Design
+ * All custom styles are scoped to .lumera-site to prevent bleeding into admin panel
+ */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* Lumera Brand Colors - Using Burgundy 815 (#800020) */
+    --lumera-ivory: #F6F1EB;
+    --lumera-burgundy: #800020; /* Burgundy 815 - Primary brand color */
+    --lumera-burgundy-dark: #5c0017; /* Darker shade for hover */
+    --lumera-gold: #C9A24D;
+    --lumera-beige: #E7DED4;
+    --lumera-charcoal: #1C1C1C;
+    --lumera-warm-grey: #6E6E6E;
+
+    /* Semantic Colors */
+    --background: var(--lumera-ivory);
+    --foreground: var(--lumera-charcoal);
+    --border: rgba(28, 28, 28, 0.1);
+  }
+}
+
+/* ========================================
+   LUMERA SITE STYLES - Mobile-First
+   ======================================== */
+
+.lumera-site {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-size: 16px; /* Base 16px for readability */
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.lumera-site * {
+  box-sizing: border-box;
+}
+
+/* Elegant Selection */
+.lumera-site ::selection {
+  background-color: rgba(128, 0, 32, 0.15); /* Burgundy 815 */
+  color: var(--lumera-gold);
+}
+
+/* Custom Scrollbar */
+.lumera-site ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.lumera-site ::-webkit-scrollbar-track {
+  background: var(--lumera-ivory);
+}
+
+.lumera-site ::-webkit-scrollbar-thumb {
+  background: rgba(128, 0, 32, 0.3); /* Burgundy 815 */
+  border-radius: 4px;
+}
+
+.lumera-site ::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 0, 32, 0.5); /* Burgundy 815 */
+}
+
+/* ========================================
+   TYPOGRAPHY - Mobile-First with Burgundy 900
+   ======================================== */
+
+.lumera-site h1,
+.lumera-site h2,
+.lumera-site h3,
+.lumera-site h4,
+.lumera-site h5,
+.lumera-site h6 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--lumera-burgundy); /* Burgundy 900 for bold identity */
+}
+
+/* Mobile-first typography - starts small, scales up */
+.lumera-site h1 {
+  font-size: 1.875rem; /* 30px on mobile */
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.lumera-site h2 {
+  font-size: 1.5rem; /* 24px on mobile */
+  letter-spacing: -0.01em;
+}
+
+.lumera-site h3 {
+  font-size: 1.25rem; /* 20px on mobile */
+}
+
+/* Scale up on larger screens */
+@media (min-width: 768px) {
+  .lumera-site h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .lumera-site h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .lumera-site h3 {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+  }
+}
+
+.lumera-site p {
+  font-size: 1rem; /* 16px base for readability */
+  line-height: 1.8;
+  color: var(--lumera-warm-grey);
+}
+
+.lumera-site a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.lumera-site a:hover {
+  color: var(--lumera-gold);
+}
+
+/* ========================================
+   MOBILE-FIRST TOUCH TARGETS & ACCESSIBILITY
+   ======================================== */
+
+/* All interactive elements must be at least 48px on mobile */
+.lumera-site button,
+.lumera-site [role="button"],
+.lumera-site input[type="submit"],
+.lumera-site input[type="button"] {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+/* Prevent iOS zoom on input focus */
+.lumera-site input,
+.lumera-site select,
+.lumera-site textarea {
+  font-size: 16px !important;
+}
+
+/* Focus visibility for accessibility */
+.lumera-site :focus-visible {
+  outline: 2px solid var(--lumera-burgundy);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   COMPONENT STYLES - Mobile-First
+   ======================================== */
+
+@layer components {
+  /* Primary Button - Burgundy 900 with Gold text */
+  .lumera-site .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-4
+           font-sans font-medium text-sm tracking-wider uppercase
+           transition-all duration-300;
+    min-height: 48px; /* Thumb-friendly */
+    background-color: var(--lumera-burgundy);
+    color: var(--lumera-gold);
+  }
+
+  .lumera-site .btn-primary:hover {
+    background-color: var(--lumera-burgundy-dark);
+    box-shadow: 0 4px 20px rgba(128, 0, 32, 0.2); /* Burgundy 815 */
+  }
+
+  /* Secondary Button */
+  .lumera-site .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-4
+           bg-transparent border
+           font-sans font-medium text-sm tracking-wider uppercase
+           transition-all duration-300;
+    min-height: 48px;
+    border-color: var(--lumera-charcoal);
+    color: var(--lumera-charcoal);
+  }
+
+  .lumera-site .btn-secondary:hover {
+    background-color: var(--lumera-charcoal);
+    color: var(--lumera-ivory);
+  }
+
+  /* Ghost Button */
+  .lumera-site .btn-ghost {
+    @apply inline-flex items-center justify-center px-6 py-3
+           bg-transparent
+           font-sans font-medium text-sm tracking-wide uppercase
+           transition-all duration-300
+           relative;
+    min-height: 48px;
+    color: var(--lumera-charcoal);
+  }
+
+  .lumera-site .btn-ghost::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-px transition-all duration-300;
+    background-color: var(--lumera-charcoal);
+  }
+
+  .lumera-site .btn-ghost:hover::after {
+    @apply w-full;
+  }
+
+  /* Section Container - Mobile-first padding */
+  .section-container {
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding-left: 1.5rem; /* 24px on mobile */
+    padding-right: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .section-container {
+      padding-left: 2rem; /* 32px on tablet */
+      padding-right: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .section-container {
+      padding-left: 3rem; /* 48px on desktop */
+      padding-right: 3rem;
+    }
+  }
+
+  /* Safe area padding for mobile notches */
+  @supports (padding: env(safe-area-inset-left)) {
+    .section-container {
+      padding-left: max(1.5rem, env(safe-area-inset-left));
+      padding-right: max(1.5rem, env(safe-area-inset-right));
+    }
+  }
+
+  /* Section Spacing - Mobile-first vertical rhythm */
+  .section-spacing {
+    padding-top: 4rem;  /* py-16 on mobile for "unhurried" feel */
+    padding-bottom: 4rem;
+  }
+
+  @media (min-width: 768px) {
+    .section-spacing {
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .section-spacing {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+  }
+
+  /* Luxury Card */
+  .lumera-site .card-luxury {
+    @apply bg-white/60 backdrop-blur-sm border shadow-sm
+           transition-all duration-300;
+    border-color: var(--border);
+  }
+
+  .lumera-site .card-luxury:hover {
+    box-shadow: 0 8px 40px rgba(128, 0, 32, 0.12); /* Burgundy 815 */
+  }
+
+  /* Luxury Divider */
+  .divider-luxury {
+    @apply flex items-center justify-center gap-4;
+  }
+
+  .divider-luxury::before,
+  .divider-luxury::after {
+    content: '';
+    @apply h-px w-16;
+    background: linear-gradient(to right, transparent, rgba(128, 0, 32, 0.3), transparent); /* Burgundy 815 */
+  }
+
+  @media (min-width: 640px) {
+    .divider-luxury::before,
+    .divider-luxury::after {
+      @apply w-32;
+    }
+  }
+
+  /* Gold Divider */
+  .gold-divider {
+    height: 0.5px;
+    background: linear-gradient(90deg, transparent, var(--lumera-gold), transparent);
+  }
+
+  /* Text gradient */
+  .text-gradient-gold {
+    background: linear-gradient(to right, var(--lumera-gold), rgba(201, 162, 77, 0.8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Decorative Line */
+  .line-accent {
+    @apply w-16 h-0.5;
+    background: linear-gradient(to right, var(--lumera-burgundy), var(--lumera-gold));
+  }
+
+  /* Input Styles - Mobile optimized */
+  .lumera-site .input-luxury {
+    @apply w-full px-4 py-3
+           bg-transparent border
+           font-sans text-base
+           transition-all duration-300;
+    min-height: 48px;
+    border-color: rgba(28, 28, 28, 0.2);
+    color: var(--lumera-charcoal);
+  }
+
+  .lumera-site .input-luxury::placeholder {
+    color: rgba(28, 28, 28, 0.4);
+  }
+
+  .lumera-site .input-luxury:focus {
+    border-color: var(--lumera-charcoal);
+    outline: none;
+  }
+
+  /* Hover Lift Effect */
+  .hover-lift {
+    @apply transition-transform duration-300;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Image Container */
+  .img-container {
+    @apply relative overflow-hidden;
+  }
+
+  .img-container img {
+    @apply w-full h-full object-cover transition-transform duration-700;
+  }
+
+  .img-container:hover img {
+    transform: scale(1.05);
+  }
+
+  /* Animated Underline */
+  .underline-animation {
+    @apply relative;
+  }
+
+  .underline-animation::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-px transition-all duration-300;
+    background-color: var(--lumera-charcoal);
+  }
+
+  .underline-animation:hover::after {
+    @apply w-full;
+  }
+
+  /* Glass Effect */
+  .glass-effect {
+    @apply bg-white/40 backdrop-blur-md border border-white/20;
+  }
+
+  /* Stagger Animation Delays */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+  .stagger-6 { animation-delay: 0.6s; }
+}
+
+@layer utilities {
+  /* Hide scrollbar but allow scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Luxury Letter Spacing */
+  .tracking-luxury {
+    letter-spacing: 0.15em;
+  }
+
+  .tracking-wide-luxury {
+    letter-spacing: 0.25em;
+  }
+
+  /* Text Balance */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Aspect Ratios */
+  .aspect-product {
+    aspect-ratio: 3/4;
+  }
+
+  .aspect-hero {
+    aspect-ratio: 16/9;
+  }
+
+  /* Mobile aspect ratio - square for product cards */
+  .aspect-product-mobile {
+    aspect-ratio: 1/1;
+  }
+
+  @media (min-width: 768px) {
+    .aspect-product-mobile {
+      aspect-ratio: 3/4;
+    }
+  }
+
+  /* Safe Area Padding */
+  .safe-area-inset {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Min touch target utility */
+  .min-touch {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201, 162, 77, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* Flame Animation for Logo */
+@keyframes flame {
+  0%, 100% {
+    transform: scaleY(1) rotate(0deg);
+  }
+  25% {
+    transform: scaleY(1.02) rotate(1deg);
+  }
+  50% {
+    transform: scaleY(0.98) rotate(-1deg);
+  }
+  75% {
+    transform: scaleY(1.01) rotate(0.5deg);
+  }
+}
+
+.animate-flame {
+  animation: flame 3s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* Parallax Effect Helper */
+.parallax {
+  will-change: transform;
+}
+
+/* ========================================
+   RESPONSIVE GRIDS - Single column on mobile
+   ======================================== */
+
+/* Force single column by default, multi-column on md+ */
+.grid-products {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .grid-products {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-products {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-products {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ========================================
+   SMOOTH SCROLLING & REDUCED MOTION
+   ======================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  .lumera-site {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lumera-site *,
+  .lumera-site *::before,
+  .lumera-site *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================
+   VIEWPORT HEIGHT FIX FOR MOBILE
+   ======================================== */
+
+@supports (height: 100dvh) {
+  .lumera-site .h-screen {
+    height: 100dvh;
+  }
+
+  .lumera-site .min-h-screen {
+    min-height: 100dvh;
+  }
+}
+
+/* ========================================
+   SELECT DROPDOWN STYLING - Lumera Theme
+   ======================================== */
+
+/* Style the select dropdown options */
+.lumera-site select,
+select {
+  background-color: var(--lumera-ivory);
+  color: var(--lumera-charcoal);
+}
+
+.lumera-site select option,
+select option {
+  background-color: #F6F1EB; /* Soft Ivory */
+  color: #1C1C1C; /* Charcoal */
+  padding: 12px 16px;
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-size: 14px;
+}
+
+.lumera-site select option:hover,
+select option:hover,
+.lumera-site select option:focus,
+select option:focus,
+.lumera-site select option:checked,
+select option:checked {
+  background-color: #800020; /* Burgundy */
+  color: #F6F1EB; /* Ivory text on burgundy */
+}
+
+/* Firefox specific styling */
+@-moz-document url-prefix() {
+  .lumera-site select option,
+  select option {
+    background-color: #F6F1EB;
+    color: #1C1C1C;
+  }
+
+  .lumera-site select option:checked,
+  select option:checked {
+    background: linear-gradient(#800020, #800020);
+    color: #F6F1EB;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  .lumera-site {
+    background: white;
+    color: black;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+
+
