@@ -81,7 +81,7 @@ export default function CheckoutPage() {
       const defaultAddress = user.addresses?.find((addr) => addr.isDefault)
       if (defaultAddress) {
         setShippingAddress({
-          fullName: defaultAddress.fullName || user.name || '',
+          fullName: defaultAddress.name || user.name || '',
           phone: defaultAddress.phone || user.phone || '',
           email: user.email || '',
           addressLine1: defaultAddress.addressLine1 || '',
@@ -357,7 +357,7 @@ export default function CheckoutPage() {
                           key={addr.id}
                           onClick={() =>
                             setShippingAddress({
-                              fullName: addr.fullName || user.name || '',
+                              fullName: addr.name || user.name || '',
                               phone: addr.phone || user.phone || '',
                               email: user.email || '',
                               addressLine1: addr.addressLine1 || '',
@@ -369,7 +369,7 @@ export default function CheckoutPage() {
                           }
                           className="w-full text-left p-3 border border-burgundy-700/10 hover:border-burgundy-700/30 transition-colors text-sm font-sans text-burgundy-700/80"
                         >
-                          <span className="font-medium">{addr.label}</span>
+                          <span className="font-medium">{addr.name}</span>
                           {addr.isDefault && (
                             <span className="ml-2 text-xs bg-burgundy-700/10 px-2 py-0.5">
                               Default

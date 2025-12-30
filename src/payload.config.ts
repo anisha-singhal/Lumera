@@ -21,8 +21,12 @@ export default buildConfig({
     user: Users.slug,
     meta: {
       titleSuffix: ' | Lumera Shop Manager',
-      favicon: '/favicon.ico',
-      ogImage: '/og-image.jpg',
+      icons: [{
+        url: '/favicon.ico',
+      }],
+      openGraph: {
+        images: [{ url: '/og-image.jpg' }],
+      },
     },
     components: {
       // Custom logo in the nav
