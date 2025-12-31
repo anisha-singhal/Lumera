@@ -472,31 +472,33 @@ export default function CollectionsPage() {
         <section className="section-spacing">
           <div className="section-container">
             {/* Filter Bar */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 pb-6 border-b border-burgundy-700/10">
-              {/* Collection Tabs */}
-              <div className="flex flex-wrap gap-2">
-                {collections.map((collection) => (
-                  <button
-                    key={collection.slug}
-                    onClick={() => setActiveCollection(collection.slug)}
-                    className={`px-4 py-2 text-sm font-sans tracking-wider uppercase transition-all duration-300 ${
-                      activeCollection === collection.slug
-                        ? 'bg-burgundy-700 border border-burgundy-700'
-                        : 'bg-transparent text-burgundy-700 border border-burgundy-700/20 hover:border-burgundy-700'
-                    }`}
-                    style={activeCollection === collection.slug ? { color: '#FFFFFF' } : undefined}
-                  >
-                    {collection.name}
-                  </button>
-                ))}
+            <div className="flex flex-col gap-4 mb-8 md:mb-10 pb-6 border-b border-burgundy-700/10">
+              {/* Collection Tabs - Scrollable on mobile */}
+              <div className="-mx-6 px-6 overflow-x-auto scrollbar-hide md:mx-0 md:px-0">
+                <div className="flex gap-2 min-w-max md:flex-wrap">
+                  {collections.map((collection) => (
+                    <button
+                      key={collection.slug}
+                      onClick={() => setActiveCollection(collection.slug)}
+                      className={`px-4 py-3 min-h-[48px] text-sm font-sans tracking-wider uppercase transition-all duration-300 whitespace-nowrap ${
+                        activeCollection === collection.slug
+                          ? 'bg-burgundy-700 border border-burgundy-700'
+                          : 'bg-transparent text-burgundy-700 border border-burgundy-700/20 hover:border-burgundy-700'
+                      }`}
+                      style={activeCollection === collection.slug ? { color: '#FFFFFF' } : undefined}
+                    >
+                      {collection.name}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Sort & Filter Options */}
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3 md:gap-4 md:justify-end">
                 {/* Filter Toggle */}
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center gap-2 px-4 py-2 border transition-all duration-300 ${
+                  className={`flex items-center gap-2 px-4 py-3 min-h-[48px] border transition-all duration-300 ${
                     showFilters || hasActiveFilters
                       ? 'bg-burgundy-700 border-burgundy-700'
                       : 'bg-transparent text-burgundy-700 border-burgundy-700/20 hover:border-burgundy-700'
@@ -514,7 +516,7 @@ export default function CollectionsPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="appearance-none bg-ivory-100 border border-burgundy-700/20 px-4 py-2 pr-10 text-sm font-sans text-burgundy-700 focus:outline-none focus:border-burgundy-700 cursor-pointer"
+                    className="appearance-none bg-ivory-100 border border-burgundy-700/20 px-4 py-3 pr-10 min-h-[48px] text-sm font-sans text-burgundy-700 focus:outline-none focus:border-burgundy-700 cursor-pointer"
                     style={{ backgroundColor: '#F6F1EB' }}
                   >
                     {sortOptions.map((option) => (
@@ -535,7 +537,7 @@ export default function CollectionsPage() {
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-burgundy-700/60 pointer-events-none" />
                 </div>
 
-                <span className="text-sm text-burgundy-700/60">
+                <span className="text-sm text-burgundy-700/60 ml-auto md:ml-0">
                   {sortedProducts.length} products
                 </span>
               </div>

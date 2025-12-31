@@ -78,17 +78,17 @@ export default function Header() {
     <>
       {/* Announcement Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-burgundy-815">
-        <div className="flex items-center justify-center h-10 px-4">
+        <div className="flex items-center justify-between h-14 sm:h-10 px-1 sm:px-4">
           <button
             onClick={goToPrevAnnouncement}
-            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors"
+            className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-colors flex-shrink-0"
             style={{ color: '#C9A24D' }}
             aria-label="Previous announcement"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
 
-          <div className="flex-1 overflow-hidden mx-2">
+          <div className="flex-1 flex items-center justify-center px-1 sm:px-2">
             <AnimatePresence mode="wait">
               <motion.p
                 key={announcementIndex}
@@ -96,7 +96,7 @@ export default function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="text-center text-[11px] sm:text-sm font-sans tracking-wider"
+                className="text-center text-[10px] sm:text-xs md:text-sm font-sans tracking-normal sm:tracking-wider leading-normal"
                 style={{ color: '#C9A24D' }}
               >
                 {announcements[announcementIndex]}
@@ -106,7 +106,7 @@ export default function Header() {
 
           <button
             onClick={goToNextAnnouncement}
-            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors"
+            className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-colors flex-shrink-0"
             style={{ color: '#C9A24D' }}
             aria-label="Next announcement"
           >
@@ -115,9 +115,9 @@ export default function Header() {
         </div>
       </div>
 
-      <header className="fixed top-10 left-0 right-0 z-50 bg-lumera-ivory shadow-luxury">
-        <div className="px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="flex items-center justify-between h-16 md:h-20">
+      <header className="fixed top-14 sm:top-10 left-0 right-0 z-50 bg-lumera-ivory shadow-luxury">
+        <div className="px-2 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+          <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center flex-shrink-0 z-10">
               <Image
@@ -125,7 +125,7 @@ export default function Header() {
                 alt="Lumera Flame"
                 width={32}
                 height={40}
-                className="h-8 sm:h-10 w-auto object-contain -mr-2.5"
+                className="h-7 sm:h-8 md:h-10 w-auto object-contain -mr-2"
                 priority
               />
               <Image
@@ -133,7 +133,7 @@ export default function Header() {
                 alt="Lumera"
                 width={110}
                 height={32}
-                className="h-6 sm:h-8 w-auto object-contain"
+                className="h-5 sm:h-6 md:h-8 w-auto object-contain"
                 priority
               />
             </Link>
@@ -153,11 +153,11 @@ export default function Header() {
             </nav>
 
             {/* Actions - Touch-friendly sizes */}
-            <div className="flex items-center gap-1 md:gap-3">
+            <div className="flex items-center gap-0 sm:gap-1 md:gap-3">
               {/* Search */}
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-lumera-charcoal/70 hover:text-lumera-burgundy transition-colors"
+                className="p-2 min-w-[40px] sm:min-w-[44px] min-h-[40px] sm:min-h-[44px] flex items-center justify-center text-lumera-charcoal/70 hover:text-lumera-burgundy transition-colors"
                 aria-label="Search"
               >
                 <Search className="w-5 h-5" />
@@ -200,12 +200,12 @@ export default function Header() {
               {/* Cart */}
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="relative p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-lumera-charcoal/70 hover:text-lumera-burgundy transition-colors"
+                className="relative p-2 min-w-[40px] sm:min-w-[44px] min-h-[40px] sm:min-h-[44px] flex items-center justify-center text-lumera-charcoal/70 hover:text-lumera-burgundy transition-colors"
                 aria-label="Shopping cart"
               >
                 <ShoppingBag className="w-5 h-5" />
                 {cartCount > 0 && (
-                  <span className="absolute top-1 right-1 w-5 h-5 bg-lumera-burgundy text-lumera-ivory text-xs rounded-full flex items-center justify-center">
+                  <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-4 h-4 sm:w-5 sm:h-5 bg-lumera-burgundy text-lumera-ivory text-[10px] sm:text-xs rounded-full flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
@@ -214,13 +214,13 @@ export default function Header() {
               {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-lumera-charcoal/70 hover:text-lumera-burgundy transition-colors"
+                className="lg:hidden p-2 min-w-[40px] sm:min-w-[44px] min-h-[40px] sm:min-h-[44px] flex items-center justify-center text-lumera-charcoal/70 hover:text-lumera-burgundy transition-colors"
                 aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
               >
                 {isMobileMenuOpen ? (
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6" />
                 ) : (
-                  <Menu className="w-6 h-6" />
+                  <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
                 )}
               </button>
             </div>

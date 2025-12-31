@@ -568,13 +568,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                   </div>
                 </div>
 
-                {/* Thumbnails */}
-                <div className="flex gap-3">
+                {/* Thumbnails - Larger on mobile for touch targets */}
+                <div className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide -mx-6 px-6 md:mx-0 md:px-0">
                   {product.images.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`relative w-20 h-20 overflow-hidden border-2 transition-all ${
+                      className={`relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden border-2 transition-all ${
                         selectedImage === index
                           ? 'border-burgundy-700'
                           : 'border-transparent hover:border-burgundy-700/30'
@@ -625,12 +625,16 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 </div>
 
                 {/* Fragrance Family */}
-                <div className="flex items-center gap-4 mb-6 text-sm font-sans">
-                  <span className="text-burgundy-700/60">Fragrance Family:</span>
-                  <span className="text-burgundy-700">{product.fragrance.family}</span>
-                  <span className="text-burgundy-700/30">|</span>
-                  <span className="text-burgundy-700/60">Intensity:</span>
-                  <span className="text-burgundy-700">{product.fragrance.intensity}</span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-6 text-sm font-sans">
+                  <div className="flex items-center gap-2">
+                    <span className="text-burgundy-700/60">Fragrance Family:</span>
+                    <span className="text-burgundy-700">{product.fragrance.family}</span>
+                  </div>
+                  <span className="hidden sm:inline text-burgundy-700/30">|</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-burgundy-700/60">Intensity:</span>
+                    <span className="text-burgundy-700">{product.fragrance.intensity}</span>
+                  </div>
                 </div>
 
                 {/* Fragrance Notes */}
@@ -656,21 +660,21 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
                 {/* Quantity & Add to Cart */}
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                  {/* Quantity */}
+                  {/* Quantity - Touch-friendly buttons */}
                   <div className="flex items-center border border-burgundy-700/20">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="p-3 hover:bg-burgundy-700/5 transition-colors"
+                      className="p-4 min-w-[48px] min-h-[48px] hover:bg-burgundy-700/5 transition-colors flex items-center justify-center"
                       aria-label="Decrease quantity"
                     >
                       <Minus className="w-4 h-4 text-burgundy-700" />
                     </button>
-                    <span className="w-12 text-center font-sans text-burgundy-700">
+                    <span className="w-14 text-center font-sans text-burgundy-700">
                       {quantity}
                     </span>
                     <button
                       onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
-                      className="p-3 hover:bg-burgundy-700/5 transition-colors"
+                      className="p-4 min-w-[48px] min-h-[48px] hover:bg-burgundy-700/5 transition-colors flex items-center justify-center"
                       aria-label="Increase quantity"
                     >
                       <Plus className="w-4 h-4 text-burgundy-700" />

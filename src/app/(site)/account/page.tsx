@@ -222,9 +222,36 @@ export default function AccountPage() {
 
         <section className="section-spacing">
           <div className="section-container">
+            {/* Mobile Horizontal Tabs */}
+            <div className="lg:hidden mb-6 -mx-6 px-6 overflow-x-auto scrollbar-hide">
+              <nav className="flex gap-2 min-w-max pb-2">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-2 px-4 py-3 min-h-[48px] whitespace-nowrap transition-all ${
+                      activeTab === tab.id
+                        ? 'bg-burgundy-700 text-cream-100'
+                        : 'bg-cream-200/50 text-burgundy-700 border border-burgundy-700/10'
+                    }`}
+                  >
+                    <tab.icon className="w-4 h-4" />
+                    <span className="font-sans text-sm">{tab.label}</span>
+                  </button>
+                ))}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-4 py-3 min-h-[48px] whitespace-nowrap bg-cream-200/50 text-burgundy-700/70 border border-burgundy-700/10 transition-all"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="font-sans text-sm">Logout</span>
+                </button>
+              </nav>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              {/* Sidebar */}
-              <div className="lg:col-span-1">
+              {/* Desktop Sidebar - Hidden on mobile */}
+              <div className="hidden lg:block lg:col-span-1">
                 <nav className="space-y-1">
                   {tabs.map((tab) => (
                     <button

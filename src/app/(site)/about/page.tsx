@@ -237,7 +237,7 @@ export default function OurStoryPage() {
               
               <div className="space-y-6 md:space-y-8">
                 <p className="font-sans text-base md:text-lg text-[#1C1C1C]/70 leading-[1.9] tracking-wide">
-                  Each Lumera candle is poured in small batches of twelve. Never more. 
+                  Each Lumera candle is poured in small batches of fifty. Never more. 
                   This isn't efficiency — it's intimacy. Our artisans know each vessel 
                   by touch, each fragrance by heart.
                 </p>

@@ -738,9 +738,9 @@ export default function CheckoutPage() {
 
           {/* Order Summary Sidebar - Luxury Redesign */}
           <div className="lg:col-span-1">
-            <div className="bg-white p-8 shadow-luxury sticky top-24">
+            <div className="bg-white p-5 md:p-8 shadow-luxury sticky top-24">
               {/* Header with elegant typography */}
-              <h2 className="font-serif text-2xl tracking-wide text-burgundy-700 mb-8 text-center">
+              <h2 className="font-serif text-xl md:text-2xl tracking-wide text-burgundy-700 mb-6 md:mb-8 text-center">
                 Order Summary
               </h2>
 
@@ -782,9 +782,9 @@ export default function CheckoutPage() {
               </div>
 
               {/* Coupon Code - Refined styling */}
-              <div className="mb-8">
+              <div className="mb-6 md:mb-8">
                 {!couponApplied ? (
-                  <div className="flex gap-3">
+                  <div className="flex gap-2 md:gap-3">
                     <div className="relative flex-1">
                       <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#C9A24D' }} />
                       <input
@@ -792,7 +792,7 @@ export default function CheckoutPage() {
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                         placeholder="Enter coupon code"
-                        className="w-full pl-10 pr-4 py-2.5 bg-ivory-100 text-sm font-sans text-burgundy-700 placeholder:text-burgundy-700/40 focus:outline-none transition-all"
+                        className="w-full pl-10 pr-4 py-3 min-h-[48px] bg-ivory-100 text-sm font-sans text-burgundy-700 placeholder:text-burgundy-700/40 focus:outline-none transition-all"
                         style={{
                           border: '0.5px solid rgba(201, 162, 77, 0.4)',
                           backgroundColor: '#F6F1EB'
@@ -802,7 +802,7 @@ export default function CheckoutPage() {
                     <button
                       onClick={applyCoupon}
                       disabled={!couponCode}
-                      className="px-5 py-2.5 text-sm font-sans font-medium tracking-wider uppercase transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="px-4 md:px-5 py-3 min-h-[48px] text-sm font-sans font-medium tracking-wider uppercase transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
                       style={{
                         backgroundColor: '#800020',
                         color: '#F6F1EB'

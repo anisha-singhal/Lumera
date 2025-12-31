@@ -379,15 +379,15 @@ export default function CustomCandleBuilder() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F6F1EB] pt-32">
+    <div className="min-h-screen bg-[#F6F1EB] pt-28 md:pt-32">
       {/* Main Builder Layout - Two Column */}
       <div className="flex flex-col lg:flex-row min-h-screen">
         {/* Left Panel - Summary Sidebar */}
-        <div className="lg:w-[35%] bg-[#F6F1EB] p-6 md:p-8 lg:p-10 lg:border-r border-[#1C1C1C]/10">
+        <div className="lg:w-[35%] bg-[#F6F1EB] p-4 md:p-8 lg:p-10 lg:border-r border-[#1C1C1C]/10">
           <div className="lg:sticky lg:top-36">
-            {/* Candle Preview */}
-            <div className="flex justify-center items-center mb-6">
-              <div className="relative w-56 h-68 md:w-72 md:h-80">
+            {/* Candle Preview - Smaller on mobile */}
+            <div className="flex justify-center items-center mb-4 md:mb-6">
+              <div className="relative w-40 h-48 md:w-72 md:h-80">
                 <Image
                   src={vesselOptions.find((v) => v.id === config.vessel)?.imageSrc || '/images/custom/vessels/frosted-glass.png'}
                   alt="Candle Preview"
@@ -399,15 +399,14 @@ export default function CustomCandleBuilder() {
             </div>
 
             {/* Title Above Card */}
-            <h3 
-              className="text-center font-serif text-xl text-[#800020] mb-6"
-              style={{ whiteSpace: 'nowrap' }}
+            <h3
+              className="text-center font-serif text-lg md:text-xl text-[#800020] mb-4 md:mb-6"
             >
               Order Summary
             </h3>
 
             {/* Summary Card */}
-            <div className="bg-white rounded-xl p-5 shadow-sm border border-[#1C1C1C]/5 mb-6">
+            <div className="bg-white rounded-xl p-4 md:p-5 shadow-sm border border-[#1C1C1C]/5 mb-4 md:mb-6">
               <div className="space-y-3">
                 {/* Jar */}
                 <div className="flex items-center justify-between">
@@ -465,25 +464,25 @@ export default function CustomCandleBuilder() {
                 {/* Quantity */}
                 <div className="flex items-center justify-between pt-3 mt-3 border-t border-[#1C1C1C]/10">
                   <span className="text-[#1C1C1C]/60 text-sm">Quantity</span>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 md:gap-3">
                     <button
                       type="button"
                       onClick={decrementQty}
                       disabled={quantity <= 1}
-                      className="w-7 h-7 rounded-full border border-[#1C1C1C]/20 flex items-center justify-center text-[#1C1C1C]/60 hover:border-[#800020] hover:text-[#800020] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="w-10 h-10 md:w-8 md:h-8 rounded-full border border-[#1C1C1C]/20 flex items-center justify-center text-[#1C1C1C]/60 hover:border-[#800020] hover:text-[#800020] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                     >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 md:w-3 md:h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
                       </svg>
                     </button>
-                    <span className="text-[#800020] text-sm font-medium w-6 text-center">{quantity}</span>
+                    <span className="text-[#800020] text-sm font-medium w-8 text-center">{quantity}</span>
                     <button
                       type="button"
                       onClick={incrementQty}
                       disabled={quantity >= 10}
-                      className="w-7 h-7 rounded-full border border-[#1C1C1C]/20 flex items-center justify-center text-[#1C1C1C]/60 hover:border-[#800020] hover:text-[#800020] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="w-10 h-10 md:w-8 md:h-8 rounded-full border border-[#1C1C1C]/20 flex items-center justify-center text-[#1C1C1C]/60 hover:border-[#800020] hover:text-[#800020] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                     >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 md:w-3 md:h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                       </svg>
                     </button>
@@ -511,23 +510,23 @@ export default function CustomCandleBuilder() {
 
         {/* Right Panel - Steps */}
         <div className="flex-1 bg-[#F6F1EB] flex flex-col min-h-[calc(100vh-7rem)]">
-          {/* Step Header with Lines */}
-          <div className="bg-[#F6F1EB] px-6 md:px-10 py-5 border-b border-[#C9A24D]/20">
-            <div className="flex items-center justify-center md:justify-end">
-              {/* Step Indicators with Labels */}
-              <div className="flex items-center">
+          {/* Step Header - Scrollable on mobile */}
+          <div className="bg-[#F6F1EB] border-b border-[#C9A24D]/20">
+            {/* Mobile: Horizontal scrollable steps */}
+            <div className="overflow-x-auto scrollbar-hide">
+              <div className="flex items-center justify-start md:justify-center px-4 md:px-10 py-4 min-w-max">
                 {steps.map((s, index) => (
                   <div key={s.id} className="flex items-center">
                     <button
                       type="button"
                       onClick={() => goToStep(s.id)}
-                      className="flex items-center gap-2 group"
+                      className="flex items-center gap-1.5 md:gap-2 group px-2 py-2 min-h-[44px]"
                       aria-label={`Go to ${s.label}`}
                     >
                       {/* Circle indicator */}
                       <span
                         className={clsx(
-                          'w-3 h-3 rounded-full transition-all duration-300 border-2',
+                          'w-3 h-3 rounded-full transition-all duration-300 border-2 flex-shrink-0',
                           s.id === step
                             ? 'bg-[#C9A24D] border-[#C9A24D]'
                             : s.id < step
@@ -535,10 +534,10 @@ export default function CustomCandleBuilder() {
                             : 'bg-transparent border-[#C9A24D]/30'
                         )}
                       />
-                      {/* Step name - hidden on mobile */}
+                      {/* Step name - always visible */}
                       <span
                         className={clsx(
-                          'text-sm font-sans transition-all duration-300 hidden md:inline',
+                          'text-xs md:text-sm font-sans transition-all duration-300 whitespace-nowrap',
                           s.id === step
                             ? 'text-[#C9A24D] font-medium'
                             : s.id < step
@@ -549,12 +548,12 @@ export default function CustomCandleBuilder() {
                         {s.label}
                       </span>
                     </button>
-                    
+
                     {/* Connecting line */}
                     {index < steps.length - 1 && (
-                      <div 
+                      <div
                         className={clsx(
-                          'hidden md:block w-8 lg:w-12 h-[2px] mx-3 transition-all duration-300',
+                          'w-4 md:w-8 lg:w-12 h-[2px] mx-1 md:mx-3 transition-all duration-300 flex-shrink-0',
                           s.id < step
                             ? 'bg-[#C9A24D]/50'
                             : 'bg-[#C9A24D]/20'
@@ -564,11 +563,6 @@ export default function CustomCandleBuilder() {
                   </div>
                 ))}
               </div>
-              
-              {/* Mobile: Show current step */}
-              <span className="md:hidden font-sans text-sm text-[#C9A24D] ml-3">
-                {steps[step - 1].label}
-              </span>
             </div>
           </div>
 
@@ -609,20 +603,23 @@ export default function CustomCandleBuilder() {
           </div>
 
           {/* Fixed Navigation Bar */}
-          <div className="sticky bottom-0 bg-[#F6F1EB] border-t border-[#C9A24D]/20 px-6 md:px-10 py-4">
-            <div className="flex justify-between items-center">
+          <div className="sticky bottom-0 bg-[#F6F1EB] border-t border-[#C9A24D]/20 px-4 sm:px-6 md:px-10 py-3 sm:py-4">
+            <div className="flex justify-between items-center gap-2 sm:gap-4">
               {step === 1 ? (
                 <span />
               ) : (
                 <button
                   type="button"
                   onClick={goBack}
-                  className="px-6 py-3 text-xs md:text-sm font-sans tracking-[0.1em] uppercase text-[#1C1C1C]/60 border border-[#1C1C1C]/20 rounded-full hover:border-[#1C1C1C]/40 transition-all"
+                  className="px-3 sm:px-6 py-3 min-h-[44px] text-[10px] sm:text-xs md:text-sm font-sans tracking-[0.05em] sm:tracking-[0.1em] uppercase text-[#1C1C1C]/60 border border-[#1C1C1C]/20 rounded-full hover:border-[#1C1C1C]/40 transition-all"
                 >
-                  {step === 2 && 'BACK • JAR'}
-                  {step === 3 && 'BACK • FRAGRANCE'}
-                  {step === 4 && 'BACK • WAX'}
-                  {step === 5 && 'BACK • LABEL'}
+                  <span className="hidden sm:inline">
+                    {step === 2 && 'BACK • JAR'}
+                    {step === 3 && 'BACK • FRAGRANCE'}
+                    {step === 4 && 'BACK • WAX'}
+                    {step === 5 && 'BACK • LABEL'}
+                  </span>
+                  <span className="sm:hidden">BACK</span>
                 </button>
               )}
               {step < 5 ? (
@@ -635,7 +632,7 @@ export default function CustomCandleBuilder() {
                     (step === 3 && (!config.waxType || !config.wickType))
                   }
                   className={clsx(
-                    'px-6 py-3 text-xs md:text-sm font-sans tracking-[0.1em] uppercase transition-all rounded-full',
+                    'px-3 sm:px-6 py-3 min-h-[44px] text-[10px] sm:text-xs md:text-sm font-sans tracking-[0.05em] sm:tracking-[0.1em] uppercase transition-all rounded-full',
                     ((step === 1 && config.vessel) ||
                      (step === 2 && config.primaryScent) ||
                      (step === 3 && config.waxType && config.wickType) ||
@@ -644,10 +641,13 @@ export default function CustomCandleBuilder() {
                       : 'bg-[#1C1C1C]/20 text-[#1C1C1C]/40 cursor-not-allowed'
                   )}
                 >
-                  {step === 1 && 'NEXT • FRAGRANCE'}
-                  {step === 2 && 'NEXT • WAX'}
-                  {step === 3 && 'NEXT • LABEL'}
-                  {step === 4 && 'NEXT • FINISHING'}
+                  <span className="hidden sm:inline">
+                    {step === 1 && 'NEXT • FRAGRANCE'}
+                    {step === 2 && 'NEXT • WAX'}
+                    {step === 3 && 'NEXT • LABEL'}
+                    {step === 4 && 'NEXT • FINISHING'}
+                  </span>
+                  <span className="sm:hidden">NEXT</span>
                 </button>
               ) : (
                 <button
@@ -655,7 +655,7 @@ export default function CustomCandleBuilder() {
                   onClick={handleAddToCart}
                   disabled={!canSubmit || isAddingToCart}
                   className={clsx(
-                    'px-6 py-3 text-xs md:text-sm font-sans tracking-[0.1em] uppercase transition-all rounded-full',
+                    'px-4 sm:px-6 py-3 min-h-[44px] text-[10px] sm:text-xs md:text-sm font-sans tracking-[0.05em] sm:tracking-[0.1em] uppercase transition-all rounded-full',
                     canSubmit && !isAddingToCart
                       ? 'bg-[#800020] text-[#C9A24D] hover:bg-[#5c0017]'
                       : 'bg-[#1C1C1C]/20 text-[#1C1C1C]/40 cursor-not-allowed'
@@ -676,25 +676,25 @@ export default function CustomCandleBuilder() {
 
 function HeroSection({ onStart }: { onStart: () => void }) {
   return (
-    <div className="min-h-screen bg-[#F6F1EB]">
-      <section className="min-h-[90vh] flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-[#F6F1EB] pt-24 sm:pt-26 md:pt-28">
+      <section className="min-h-[calc(100vh-6rem)] flex flex-col lg:flex-row">
         {/* Left: Typography */}
-        <div className="flex-1 flex items-center justify-center p-8 md:p-12 lg:p-16">
-          <div className="max-w-lg">
+        <div className="flex-1 flex items-center justify-center px-6 py-8 sm:p-8 md:p-12 lg:p-16">
+          <div className="max-w-lg w-full">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <p className="text-xs font-sans tracking-[0.3em] uppercase text-[#C9A24D] mb-4">
+              <p className="text-[10px] sm:text-xs font-sans tracking-[0.2em] sm:tracking-[0.3em] uppercase text-[#C9A24D] mb-3 sm:mb-4">
                 Lumera Custom
               </p>
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#800020] leading-[1.1] mb-6">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#800020] leading-[1.15] sm:leading-[1.1] mb-4 sm:mb-6">
                 Crafted by you.
                 <br />
                 <span className="text-[#C9A24D]">Poured by Lumera.</span>
               </h1>
-              <p className="text-base md:text-lg text-[#1C1C1C]/70 leading-relaxed mb-8 max-w-md">
+              <p className="text-sm sm:text-base md:text-lg text-[#1C1C1C]/70 leading-relaxed mb-6 sm:mb-8 max-w-md">
                 Design a candle that speaks your story. Choose every detail — from the jar that holds it
                 to the fragrance that fills your space.
               </p>
@@ -703,29 +703,32 @@ function HeroSection({ onStart }: { onStart: () => void }) {
                 onClick={onStart}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-[#800020] text-[#C9A24D] font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300 hover:bg-[#5c0017]"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-4 min-h-[56px] bg-[#800020] text-[#C9A24D] font-sans text-xs sm:text-sm tracking-[0.15em] sm:tracking-[0.2em] uppercase transition-all duration-300 hover:bg-[#5c0017]"
               >
                 <span>✨</span>
-                Start Designing Your Candle
+                <span className="text-center leading-tight">Start Designing<br className="sm:hidden" /><span className="hidden sm:inline"> </span>Your Candle</span>
                 <span>→</span>
               </motion.button>
             </motion.div>
           </div>
         </div>
 
-        {/* Right: Visual */}
-        <div className="flex-1 relative bg-gradient-to-br from-[#E7DED4] to-[#D4CEC6] overflow-hidden">
-          <div className="relative w-full h-full flex items-center justify-center p-8">
-            <div className="relative w-64 h-80 md:w-80 md:h-96">
-              <Image
-                src="/images/custom/vessels/frosted-glass.png"
-                alt="Luxury candle jar"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          </div>
+        {/* Right: Visual - Video */}
+        <div className="flex-1 relative bg-gradient-to-br from-[#E7DED4] to-[#D4CEC6] overflow-hidden min-h-[300px] sm:min-h-[400px] lg:min-h-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/videos/candle-hero.mp4" type="video/mp4" />
+            <source src="/videos/candle-hero.webm" type="video/webm" />
+            {/* Fallback for browsers that don't support video */}
+            Your browser does not support the video tag.
+          </video>
+          {/* Optional overlay for better text contrast if needed */}
+          <div className="absolute inset-0 bg-black/10" />
         </div>
       </section>
     </div>
@@ -743,13 +746,13 @@ interface StepProps {
 
 function StepVessel({ config, updateConfig, onNext, onBack }: StepProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <header>
-        <h2 className="font-serif text-3xl md:text-4xl text-[#800020] mb-3">
+        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#800020] mb-2 sm:mb-3">
           Choose Your Foundation
         </h2>
-        <p className="text-sm md:text-base text-[#1C1C1C]/70 max-w-lg leading-relaxed">
+        <p className="text-xs sm:text-sm md:text-base text-[#1C1C1C]/70 max-w-lg leading-relaxed">
           The jar is more than a container — it's the first thing you see, touch and keep.
         </p>
       </header>
