@@ -12,7 +12,8 @@ const WhatsAppButton: React.FC = () => {
       target="_blank"
       rel="noreferrer"
       aria-label="Contact us on WhatsApp"
-      className="fixed z-50 right-5 bottom-5 flex items-center justify-center w-14 h-14 rounded-full shadow-lg bg-champagne text-charcoal hover:opacity-95"
+      className="fixed z-50 right-5 bottom-5 flex items-center justify-center w-14 h-14 rounded-full shadow-lg hover:opacity-95"
+      style={{ backgroundColor: '#800020', border: '1px solid rgba(201, 162, 77, 0.4)' }}
     >
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
         <path d="M20.5 3.5L3.5 21.5" stroke="white" strokeWidth="0" />

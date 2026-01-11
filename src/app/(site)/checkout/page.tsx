@@ -14,10 +14,10 @@ import {
   MapPin,
   Check,
   Loader2,
-  ChevronDown,
   Tag,
 } from 'lucide-react'
 import { useCart, useAuth, useOrders } from '@/context'
+import CustomSelect from '@/components/ui/CustomSelect'
 
 interface ShippingAddress {
   fullName: string
@@ -31,12 +31,7 @@ interface ShippingAddress {
 }
 
 const indianStates = [
-  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
-  'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
-  'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
-  'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-  'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Puducherry', 'Chandigarh',
+  'Delhi'
 ]
 
 export default function CheckoutPage() {
@@ -538,30 +533,18 @@ export default function CheckoutPage() {
                     <label className="block text-sm font-sans text-burgundy-700/70 mb-2">
                       State *
                     </label>
-                    <div className="relative">
-                      <select
-                        value={shippingAddress.state}
-                        onChange={(e) =>
-                          setShippingAddress({
-                            ...shippingAddress,
-                            state: e.target.value,
-                          })
-                        }
-                        className={`w-full px-4 py-3 bg-cream-100 border ${
-                          errors.state
-                            ? 'border-red-500'
-                            : 'border-burgundy-700/10'
-                        } text-burgundy-700 font-sans focus:outline-none focus:border-burgundy-700/30 appearance-none cursor-pointer`}
-                      >
-                        <option value="">Select state</option>
-                        {indianStates.map((state) => (
-                          <option key={state} value={state}>
-                            {state}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-burgundy-700/50 pointer-events-none" />
-                    </div>
+                    <CustomSelect
+                      options={indianStates.map((state) => ({ label: state, value: state }))}
+                      value={shippingAddress.state}
+                      onChange={(value) =>
+                        setShippingAddress({
+                          ...shippingAddress,
+                          state: value,
+                        })
+                      }
+                      placeholder="Select state"
+                      error={!!errors.state}
+                    />
                     {errors.state && (
                       <p className="mt-1 text-sm text-red-500">{errors.state}</p>
                     )}
@@ -673,13 +656,13 @@ export default function CheckoutPage() {
                         </p>
                       </div>
                     </div>
-                    <span className="text-xs font-sans text-green-600 bg-green-100 px-2 py-1">
+                    <span className="text-xs font-sans px-2 py-1" style={{ backgroundColor: 'rgba(201, 162, 77, 0.2)', color: '#800020' }}>
                       Recommended
                     </span>
                   </label>
 
                   {/* Cash on Delivery */}
-                  <label
+                  {/* <label
                     className={`flex items-center gap-4 p-4 border cursor-pointer transition-colors ${
                       paymentMethod === 'cod'
                         ? 'border-burgundy-700 bg-burgundy-700/5'
@@ -693,21 +676,21 @@ export default function CheckoutPage() {
                       checked={paymentMethod === 'cod'}
                       onChange={() => setPaymentMethod('cod')}
                       className="w-4 h-4 text-burgundy-700"
-                    />
-                    <div className="flex items-center gap-3 flex-1">
+                    /> */}
+                    {/* <div className="flex items-center gap-3 flex-1">
                       <div className="w-10 h-10 bg-burgundy-700/10 rounded-lg flex items-center justify-center">
                         <Truck className="w-5 h-5 text-burgundy-700" />
                       </div>
-                      <div>
-                        <p className="font-sans font-medium text-burgundy-700">
+                      <div> */}
+                        {/* <p className="font-sans font-medium text-burgundy-700">
                           Cash on Delivery
-                        </p>
-                        <p className="text-sm font-sans text-burgundy-700/60">
+                        </p> */}
+                        {/* <p className="text-sm font-sans text-burgundy-700/60">
                           Pay when your order arrives
-                        </p>
-                      </div>
+                        </p> */}
+                      {/* </div>
                     </div>
-                  </label>
+                  </label> */}
                 </div>
 
                 <div className="flex gap-4 mt-8">

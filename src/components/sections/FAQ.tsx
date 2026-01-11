@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 
@@ -150,8 +151,8 @@ export default function FAQ() {
           <p className="text-burgundy-700/60 font-sans mb-4">
             Still have questions?
           </p>
-          <a
-            href="mailto:lumeracandlesinfo@gmail.com"
+          <Link
+            href="/contact"
             className="btn-ghost inline-flex items-center gap-2"
           >
             Contact Us
@@ -168,7 +169,7 @@ export default function FAQ() {
                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
               />
             </svg>
-          </a>
+          </Link>
         </motion.div>
       </div>
     </section>

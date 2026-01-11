@@ -15,7 +15,6 @@ import {
   RotateCcw,
   Shield,
   Clock,
-  ChevronDown,
   Share2,
   Check
 } from 'lucide-react'
@@ -520,7 +519,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 Collections
               </Link>
               <span className="text-burgundy-700/30">/</span>
-              <Link href={`/collections/${product.collectionSlug}`} className="text-burgundy-700/50 hover:text-burgundy-700">
+              <Link href={`/collections?collection=${product.collectionSlug}`} className="text-burgundy-700/50 hover:text-burgundy-700">
                 {product.collection}
               </Link>
               <span className="text-burgundy-700/30">/</span>
@@ -598,7 +597,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 transition={{ duration: 0.8 }}
               >
                 <Link
-                  href={`/collections/${product.collectionSlug}`}
+                  href={`/collections?collection=${product.collectionSlug}`}
                   className="text-sm font-sans tracking-wider uppercase text-burgundy-700/50 hover:text-burgundy-700 transition-colors"
                 >
                   {product.collection} Collection

@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Header, Footer } from '@/components/layout'
 import ProductCard, { ProductCardProps } from '@/components/ui/ProductCard'
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react'
+import CustomSelect from '@/components/ui/CustomSelect'
 import { placeholderImages } from '@/lib/placeholders'
 
 // Extended product type with filter attributes
@@ -341,6 +343,9 @@ function FilterSection({
 }
 
 export default function CollectionsPage() {
+  const searchParams = useSearchParams()
+  const collectionParam = searchParams.get('collection')
+
   const [activeCollection, setActiveCollection] = useState('all')
   const [sortBy, setSortBy] = useState('featured')
   const [showFilters, setShowFilters] = useState(false)
@@ -351,6 +356,13 @@ export default function CollectionsPage() {
     fragranceFamily: [] as string[],
     price: [] as string[],
   })
+
+  // Set active collection from URL parameter
+  useEffect(() => {
+    if (collectionParam && ['signature', 'moments', 'ritual'].includes(collectionParam)) {
+      setActiveCollection(collectionParam)
+    }
+  }, [collectionParam])
 
   const handleFilterChange = (category: string, value: string) => {
     setSelectedFilters((prev) => {
@@ -512,30 +524,12 @@ export default function CollectionsPage() {
                   </span>
                 </button>
 
-                <div className="relative">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="appearance-none bg-ivory-100 border border-burgundy-700/20 px-4 py-3 pr-10 min-h-[48px] text-sm font-sans text-burgundy-700 focus:outline-none focus:border-burgundy-700 cursor-pointer"
-                    style={{ backgroundColor: '#F6F1EB' }}
-                  >
-                    {sortOptions.map((option) => (
-                      <option
-                        key={option.value}
-                        value={option.value}
-                        className="bg-ivory-100 text-charcoal-900 py-2 font-sans"
-                        style={{
-                          backgroundColor: '#F6F1EB',
-                          color: '#1C1C1C',
-                          padding: '8px 16px'
-                        }}
-                      >
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-burgundy-700/60 pointer-events-none" />
-                </div>
+                <CustomSelect
+                  options={sortOptions}
+                  value={sortBy}
+                  onChange={setSortBy}
+                  className="min-w-[180px]"
+                />
 
                 <span className="text-sm text-burgundy-700/60 ml-auto md:ml-0">
                   {sortedProducts.length} products

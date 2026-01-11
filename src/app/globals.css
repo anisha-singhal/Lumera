@@ -569,7 +569,15 @@
    SELECT DROPDOWN STYLING - Lumera Theme
    ======================================== */
 
-/* Style the select dropdown options */
+/* Accent color for form elements */
+.lumera-site select,
+.lumera-site input,
+select,
+input {
+  accent-color: #800020; /* Burgundy */
+}
+
+/* Style the select dropdown */
 .lumera-site select,
 select {
   background-color: var(--lumera-ivory);
@@ -585,14 +593,12 @@ select option {
   font-size: 14px;
 }
 
-.lumera-site select option:hover,
-select option:hover,
-.lumera-site select option:focus,
-select option:focus,
+/* Selected/checked option styling */
 .lumera-site select option:checked,
 select option:checked {
-  background-color: #800020; /* Burgundy */
-  color: #F6F1EB; /* Ivory text on burgundy */
+  background: linear-gradient(0deg, #800020 0%, #800020 100%);
+  background-color: #800020 !important; /* Burgundy */
+  color: #F6F1EB !important; /* Ivory text */
 }
 
 /* Firefox specific styling */

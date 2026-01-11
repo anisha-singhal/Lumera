@@ -91,7 +91,7 @@ export default function CollectionsSection() {
               transition={{ duration: 0.8, delay: index * 0.2 }}
               className="group"
             >
-              <Link href={`/collections/${collection.slug}`} className="block">
+              <Link href={`/collections?collection=${collection.slug}`} className="block">
                 <div className="relative overflow-hidden bg-white border border-burgundy-700/10 hover:border-burgundy-700/20 transition-all duration-500 hover:shadow-luxury-lg">
                   {/* Image Container */}
                   <div className="relative h-80 overflow-hidden">

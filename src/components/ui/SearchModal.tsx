@@ -229,7 +229,7 @@ export default function SearchModal() {
                         {['Signature', 'Moments', 'Ritual'].map((collection) => (
                           <Link
                             key={collection}
-                            href={`/collections/${collection.toLowerCase()}`}
+                            href={`/collections?collection=${collection.toLowerCase()}`}
                             onClick={handleClose}
                             className="flex items-center justify-between p-4 bg-ivory-200/30 border border-burgundy-700/10 hover:border-burgundy-700/30 transition-colors group"
                           >

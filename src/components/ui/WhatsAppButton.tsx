@@ -27,7 +27,8 @@ export default function WhatsAppButton({
       rel="noopener noreferrer"
       className="fixed z-50 flex items-center justify-center rounded-full shadow-lg transition-all duration-300 hover:shadow-xl"
       style={{
-        backgroundColor: '#25D366',
+        backgroundColor: '#800020', /* Burgundy - matches site theme */
+        border: '1px solid rgba(201, 162, 77, 0.4)', /* Gold accent border */
         width: '48px',
         height: '48px',
         minWidth: '48px',

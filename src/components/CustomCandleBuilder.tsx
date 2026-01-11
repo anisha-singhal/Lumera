@@ -705,7 +705,6 @@ function HeroSection({ onStart }: { onStart: () => void }) {
                 whileTap={{ scale: 0.98 }}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-4 min-h-[56px] bg-[#800020] text-[#C9A24D] font-sans text-xs sm:text-sm tracking-[0.15em] sm:tracking-[0.2em] uppercase transition-all duration-300 hover:bg-[#5c0017]"
               >
-                <span>✨</span>
                 <span className="text-center leading-tight">Start Designing<br className="sm:hidden" /><span className="hidden sm:inline"> </span>Your Candle</span>
                 <span>→</span>
               </motion.button>

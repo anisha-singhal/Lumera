@@ -16,7 +16,7 @@ const InstagramIcon = () => (
 
 const announcements = [
   'FREE SHIPPING ON ORDERS ABOVE ₹999',
-  'CURATED GIFTING FOR CELEBRATIONS & CORPORATE ORDERS',
+  'CURATED GIFTING FOR\nCELEBRATIONS & CORPORATE ORDERS',
   'HAND-POURED | CLEAN BURN | PREMIUM WAX',
 ]
 
@@ -78,17 +78,17 @@ export default function Header() {
     <>
       {/* Announcement Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-burgundy-815">
-        <div className="flex items-center justify-between h-14 sm:h-10 px-1 sm:px-4">
+        <div className="flex items-center justify-between h-12 sm:h-10 px-2 sm:px-4">
           <button
             onClick={goToPrevAnnouncement}
-            className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-colors flex-shrink-0"
+            className="w-8 h-8 flex items-center justify-center transition-colors flex-shrink-0"
             style={{ color: '#C9A24D' }}
             aria-label="Previous announcement"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
 
-          <div className="flex-1 flex items-center justify-center px-1 sm:px-2">
+          <div className="flex-1 flex items-center justify-center px-1">
             <AnimatePresence mode="wait">
               <motion.p
                 key={announcementIndex}
@@ -96,7 +96,7 @@ export default function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="text-center text-[10px] sm:text-xs md:text-sm font-sans tracking-normal sm:tracking-wider leading-normal"
+                className="text-center text-[9px] sm:text-xs md:text-sm font-sans tracking-wide sm:tracking-wider leading-4 sm:leading-normal whitespace-pre-line"
                 style={{ color: '#C9A24D' }}
               >
                 {announcements[announcementIndex]}
@@ -106,7 +106,7 @@ export default function Header() {
 
           <button
             onClick={goToNextAnnouncement}
-            className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-colors flex-shrink-0"
+            className="w-8 h-8 flex items-center justify-center transition-colors flex-shrink-0"
             style={{ color: '#C9A24D' }}
             aria-label="Next announcement"
           >
@@ -115,7 +115,7 @@ export default function Header() {
         </div>
       </div>
 
-      <header className="fixed top-14 sm:top-10 left-0 right-0 z-50 bg-lumera-ivory shadow-luxury">
+      <header className="fixed top-12 sm:top-10 left-0 right-0 z-50 bg-lumera-ivory shadow-luxury">
         <div className="px-2 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
           <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
             {/* Logo */}
