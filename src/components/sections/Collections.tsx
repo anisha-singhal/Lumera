@@ -166,8 +166,13 @@ export default function CollectionsSection() {
                       sizes="(max-width: 1024px) 85vw, 33vw"
                     />
 
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-burgundy-700/80 via-burgundy-700/20 to-transparent" />
+                    {/* Gradient Overlay - Deep burgundy matching hero section */}
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background: 'linear-gradient(to top, rgba(128, 0, 32, 0.85), rgba(128, 0, 32, 0.3), transparent)'
+                      }}
+                    />
 
                     {/* Collection Name Overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-6">
