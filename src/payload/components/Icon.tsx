@@ -4,7 +4,7 @@ import React from 'react'
 
 export const Icon: React.FC = () => {
   return (
-    <div className="lumera-icon">
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <svg
         width="24"
         height="24"
@@ -20,7 +20,7 @@ export const Icon: React.FC = () => {
         />
         <path
           d="M12 6C12 6 10 10 10 14C10 16.5 11 19 12 19C13 19 14 16.5 14 14C14 10 12 6 12 6Z"
-          fill="#6e1629" /* Updated to Burgundy 815 */
+          fill="#6e1629"
         />
       </svg>
     </div>
@@ -28,4 +28,3 @@ export const Icon: React.FC = () => {
 }
 
 export default Icon
-

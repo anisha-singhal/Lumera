@@ -64,11 +64,11 @@ export const Products: CollectionConfig = {
     },
     {
       name: 'description',
-      type: 'richText',
+      type: 'textarea',
       required: true,
       label: 'Full Description',
       admin: {
-        description: 'Detailed product description with rich formatting',
+        description: 'Detailed product description',
       },
     },
     {

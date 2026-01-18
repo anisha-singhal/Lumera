@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 
-const AdminStyles: React.FC = () => {
+export const AdminStyles: React.FC = () => {
   useEffect(() => {
     const id = 'lumera-admin-styles'
     if (document.getElementById(id)) return

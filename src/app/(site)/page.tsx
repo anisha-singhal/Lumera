@@ -2,7 +2,6 @@ import { Header, Footer } from '@/components/layout'
 import {
   Hero,
   LumeraRitual,
-  Rituals,
   Collections,
   FeaturedProducts,
   OurStory,
@@ -22,9 +21,6 @@ export default function HomePage() {
 
         {/* The Lumera Ritual - 5-Step Process */}
         <LumeraRitual />
-
-        {/* The Rituals by Time - Lifestyle/UX Section */}
-        <Rituals />
 
         {/* Product Collections - Serene, Essence, Signature */}
         <Collections />

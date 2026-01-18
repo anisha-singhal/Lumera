@@ -31,13 +31,13 @@ export default buildConfig({
     components: {
       // Custom logo in the nav
       graphics: {
-        Logo: '/payload/components/Logo#Logo',
-        Icon: '/payload/components/Icon#Icon',
+        Logo: '@/payload/components/Logo#Logo',
+        Icon: '@/payload/components/Icon#Icon',
       },
       // Add welcome banner after dashboard and inject admin styles
       afterDashboard: [
-        '/payload/components/DashboardBanner#DashboardBanner',
-        '/payload/components/AdminStyles#AdminStyles',
+        '@/payload/components/DashboardBanner#DashboardBanner',
+        '@/payload/components/AdminStyles#AdminStyles',
       ],
     },
     // Organize navigation into logical groups

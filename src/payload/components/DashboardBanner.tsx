@@ -3,13 +3,91 @@
 import React from 'react'
 import Link from 'next/link'
 
+const styles = {
+  banner: {
+    padding: '24px',
+    marginBottom: '24px',
+  } as React.CSSProperties,
+  welcomeCard: {
+    background: 'linear-gradient(135deg, #fdfcfb 0%, #f9f6ee 100%)',
+    border: '1px solid rgba(128, 0, 32, 0.1)',
+    borderRadius: '12px',
+    padding: '32px',
+    boxShadow: '0 4px 20px rgba(128, 0, 32, 0.06)',
+  } as React.CSSProperties,
+  welcomeHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
+    marginBottom: '32px',
+    paddingBottom: '24px',
+    borderBottom: '1px solid rgba(128, 0, 32, 0.1)',
+  } as React.CSSProperties,
+  flameIcon: {
+    width: '56px',
+    height: '56px',
+    background: 'linear-gradient(135deg, #800020 0%, #5c0017 100%)',
+    borderRadius: '12px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  } as React.CSSProperties,
+  welcomeTitle: {
+    fontFamily: 'Georgia, serif',
+    fontSize: '24px',
+    fontWeight: 500,
+    color: '#800020',
+    margin: '0 0 4px 0',
+  } as React.CSSProperties,
+  welcomeSubtitle: {
+    fontSize: '14px',
+    color: '#666',
+    margin: 0,
+  } as React.CSSProperties,
+  quickActions: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gap: '16px',
+  } as React.CSSProperties,
+  actionCard: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '20px',
+    borderRadius: '10px',
+    textDecoration: 'none',
+    transition: 'all 0.2s ease',
+    fontWeight: 500,
+    fontSize: '14px',
+  } as React.CSSProperties,
+  actionPrimary: {
+    background: 'linear-gradient(135deg, #800020 0%, #5c0017 100%)',
+    color: '#fff',
+  } as React.CSSProperties,
+  actionSecondary: {
+    background: '#fff',
+    border: '1px solid rgba(128, 0, 32, 0.2)',
+    color: '#800020',
+  } as React.CSSProperties,
+  actionTertiary: {
+    background: '#fff',
+    border: '1px solid rgba(212, 175, 55, 0.3)',
+    color: '#8B6914',
+  } as React.CSSProperties,
+  actionQuaternary: {
+    background: '#fff',
+    border: '1px solid rgba(128, 0, 32, 0.15)',
+    color: '#555',
+  } as React.CSSProperties,
+}
+
 export const DashboardBanner: React.FC = () => {
   return (
-    <div className="lumera-dashboard-banner">
+    <div style={styles.banner}>
       {/* Welcome Card */}
-      <div className="welcome-card">
-        <div className="welcome-header">
-          <div className="flame-icon">
+      <div style={styles.welcomeCard}>
+        <div style={styles.welcomeHeader}>
+          <div style={styles.flameIcon}>
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
               <path
                 d="M12 2C12 2 8 8 8 14C8 18 10 22 12 22C14 22 16 18 16 14C16 8 12 2 12 2Z"
@@ -18,26 +96,26 @@ export const DashboardBanner: React.FC = () => {
               />
               <path
                 d="M12 6C12 6 10 10 10 14C10 16.5 11 19 12 19C13 19 14 16.5 14 14C14 10 12 6 12 6Z"
-                fill="#800020"
+                fill="#fff"
               />
             </svg>
           </div>
-          <div className="welcome-text">
-            <h2>Welcome to Lumera Shop Manager</h2>
-            <p>Manage your luxury candle business with ease</p>
+          <div>
+            <h2 style={styles.welcomeTitle}>Welcome to Lumera Shop Manager</h2>
+            <p style={styles.welcomeSubtitle}>Manage your luxury candle business with ease</p>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="quick-actions">
-          <Link href="/admin/collections/products/create" className="action-card action-primary">
+        <div style={styles.quickActions}>
+          <Link href="/admin/collections/products/create" style={{ ...styles.actionCard, ...styles.actionPrimary }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 5v14M5 12h14" />
             </svg>
             <span>Add New Product</span>
           </Link>
-          
-          <Link href="/admin/collections/orders" className="action-card action-secondary">
+
+          <Link href="/admin/collections/orders" style={{ ...styles.actionCard, ...styles.actionSecondary }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
               <rect x="9" y="3" width="6" height="4" rx="1" />
@@ -45,8 +123,8 @@ export const DashboardBanner: React.FC = () => {
             </svg>
             <span>View Orders</span>
           </Link>
-          
-          <Link href="/admin/collections/collections" className="action-card action-tertiary">
+
+          <Link href="/admin/collections/collections" style={{ ...styles.actionCard, ...styles.actionTertiary }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="3" width="7" height="7" rx="1" />
               <rect x="14" y="3" width="7" height="7" rx="1" />
@@ -55,8 +133,8 @@ export const DashboardBanner: React.FC = () => {
             </svg>
             <span>Manage Collections</span>
           </Link>
-          
-          <Link href="/admin/collections/subscribers" className="action-card action-quaternary">
+
+          <Link href="/admin/collections/subscribers" style={{ ...styles.actionCard, ...styles.actionQuaternary }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
               <circle cx="9" cy="7" r="4" />
@@ -66,137 +144,8 @@ export const DashboardBanner: React.FC = () => {
           </Link>
         </div>
       </div>
-
-      <style jsx>{`
-        .lumera-dashboard-banner {
-          padding: 24px;
-          margin-bottom: 24px;
-        }
-
-        .welcome-card {
-          background: linear-gradient(135deg, #fdfcfb 0%, #f9f6ee 100%);
-          border: 1px solid rgba(128, 0, 32, 0.1);
-          border-radius: 12px;
-          padding: 32px;
-          box-shadow: 0 4px 20px rgba(128, 0, 32, 0.06);
-        }
-
-        .welcome-header {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          margin-bottom: 32px;
-          padding-bottom: 24px;
-          border-bottom: 1px solid rgba(128, 0, 32, 0.1);
-        }
-
-        .flame-icon {
-          width: 56px;
-          height: 56px;
-          background: linear-gradient(135deg, #800020 0%, #5c0017 100%);
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .flame-icon svg path:first-child {
-          fill: #D4AF37;
-        }
-        .flame-icon svg path:last-child {
-          fill: #fff;
-        }
-
-        .welcome-text h2 {
-          font-family: Georgia, serif;
-          font-size: 24px;
-          font-weight: 500;
-          color: #800020;
-          margin: 0 0 4px 0;
-        }
-
-        .welcome-text p {
-          font-size: 14px;
-          color: #666;
-          margin: 0;
-        }
-
-        .quick-actions {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 16px;
-        }
-
-        .action-card {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 20px;
-          border-radius: 10px;
-          text-decoration: none;
-          transition: all 0.2s ease;
-          font-weight: 500;
-          font-size: 14px;
-        }
-
-        .action-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-        }
-
-        .action-card svg {
-          flex-shrink: 0;
-        }
-
-        .action-primary {
-          background: linear-gradient(135deg, #800020 0%, #5c0017 100%);
-          color: #fff;
-        }
-
-        .action-secondary {
-          background: #fff;
-          border: 1px solid rgba(128, 0, 32, 0.2);
-          color: #800020;
-        }
-
-        .action-tertiary {
-          background: #fff;
-          border: 1px solid rgba(212, 175, 55, 0.3);
-          color: #8B6914;
-        }
-
-        .action-quaternary {
-          background: #fff;
-          border: 1px solid rgba(128, 0, 32, 0.15);
-          color: #555;
-        }
-
-        @media (max-width: 768px) {
-          .lumera-dashboard-banner {
-            padding: 16px;
-          }
-
-          .welcome-card {
-            padding: 20px;
-          }
-
-          .welcome-header {
-            flex-direction: column;
-            text-align: center;
-          }
-
-          .welcome-text h2 {
-            font-size: 20px;
-          }
-
-          .quick-actions {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
     </div>
   )
 }
 
 export default DashboardBanner
-

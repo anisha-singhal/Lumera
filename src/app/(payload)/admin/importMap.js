@@ -21,10 +21,10 @@ import { StrikethroughFeatureClient as StrikethroughFeatureClient_e70f5e05f09f93
 import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
-import { Icon as Icon_25a5cf3faf5e08eebe54818d469bcd19 } from '../../../../payload/components/Icon'
-import { Logo as Logo_c7b97bbbec2f12a09b3a4e5bba180831 } from '../../../../payload/components/Logo'
-import { DashboardBanner as DashboardBanner_f46f9f30eda18895d5548367bdea6891 } from '../../../../payload/components/DashboardBanner'
-import { AdminStyles as AdminStyles_d2e9dd3decb9ad98a30b241aa0ec226d } from '../../../../payload/components/AdminStyles'
+import { Icon as Icon_ee083e57cfeceb6433911927d214e2fa } from '@/payload/components/Icon'
+import { Logo as Logo_91bbc66a9b3ed1dae52e0caef1a54af7 } from '@/payload/components/Logo'
+import { DashboardBanner as DashboardBanner_2a1ff1bc23f75553f00256ccc3b609cd } from '@/payload/components/DashboardBanner'
+import { AdminStyles as AdminStyles_34971dab883e3ba45520aa883f4a093e } from '@/payload/components/AdminStyles'
 import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
@@ -51,9 +51,9 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#UnderlineFeatureClient": UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
-  "/payload/components/Icon#Icon": Icon_25a5cf3faf5e08eebe54818d469bcd19,
-  "/payload/components/Logo#Logo": Logo_c7b97bbbec2f12a09b3a4e5bba180831,
-  "/payload/components/DashboardBanner#DashboardBanner": DashboardBanner_f46f9f30eda18895d5548367bdea6891,
-  "/payload/components/AdminStyles#AdminStyles": AdminStyles_d2e9dd3decb9ad98a30b241aa0ec226d,
+  "@/payload/components/Icon#Icon": Icon_ee083e57cfeceb6433911927d214e2fa,
+  "@/payload/components/Logo#Logo": Logo_91bbc66a9b3ed1dae52e0caef1a54af7,
+  "@/payload/components/DashboardBanner#DashboardBanner": DashboardBanner_2a1ff1bc23f75553f00256ccc3b609cd,
+  "@/payload/components/AdminStyles#AdminStyles": AdminStyles_34971dab883e3ba45520aa883f4a093e,
   "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
 }

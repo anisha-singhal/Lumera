@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import Script from 'next/script'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft,
@@ -18,6 +19,13 @@ import {
 } from 'lucide-react'
 import { useCart, useAuth, useOrders } from '@/context'
 import CustomSelect from '@/components/ui/CustomSelect'
+
+// Razorpay types
+declare global {
+  interface Window {
+    Razorpay: any
+  }
+}
 
 interface ShippingAddress {
   fullName: string
@@ -45,7 +53,7 @@ export default function CheckoutPage() {
   const [couponCode, setCouponCode] = useState('')
   const [couponApplied, setCouponApplied] = useState(false)
   const [couponDiscount, setCouponDiscount] = useState(0)
-  const [paymentMethod, setPaymentMethod] = useState<'phonepe' | 'cod'>('phonepe')
+  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'cod'>('razorpay')
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [orderId, setOrderId] = useState('')
 
@@ -172,33 +180,125 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async () => {
     setIsProcessing(true)
 
-    // Simulate order processing
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      // Step 1: Create order on backend
+      const createOrderResponse = await fetch('/api/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: totalAmount,
+          customerEmail: shippingAddress.email,
+          customerPhone: shippingAddress.phone,
+          customerName: shippingAddress.fullName,
+        }),
+      })
 
-    // Generate order ID
-    const newOrderId = 'LUM' + Date.now().toString(36).toUpperCase()
-    setOrderId(newOrderId)
+      const orderData = await createOrderResponse.json()
 
-    // Save order to local history
-    addOrder({
-      id: newOrderId,
-      items,
-      total: totalAmount,
-      paymentMethod,
-      shippingAddress,
-    })
+      if (!orderData.success) {
+        throw new Error(orderData.error || 'Failed to create order')
+      }
 
-    if (paymentMethod === 'phonepe') {
-      // Simulate PhonePe payment redirect
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Step 2: Open Razorpay checkout modal
+      const options = {
+        key: orderData.key,
+        amount: orderData.order.amount,
+        currency: orderData.order.currency,
+        name: 'Lumera',
+        description: 'Luxury Candles Purchase',
+        order_id: orderData.order.id,
+        handler: async function (response: {
+          razorpay_payment_id: string
+          razorpay_order_id: string
+          razorpay_signature: string
+        }) {
+          // Step 3: Verify payment on backend
+          try {
+            const verifyResponse = await fetch('/api/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderData: {
+                  email: shippingAddress.email,
+                  phone: shippingAddress.phone,
+                  firstName: shippingAddress.fullName.split(' ')[0],
+                  lastName: shippingAddress.fullName.split(' ').slice(1).join(' '),
+                  shippingAddress: {
+                    addressLine1: shippingAddress.addressLine1,
+                    addressLine2: shippingAddress.addressLine2,
+                    city: shippingAddress.city,
+                    state: shippingAddress.state,
+                    pincode: shippingAddress.pincode,
+                  },
+                  items: items.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.price,
+                  })),
+                  subtotal,
+                  shippingCost,
+                  couponCode: couponApplied ? couponCode : '',
+                  couponDiscount,
+                  total: totalAmount,
+                  orderNote,
+                },
+              }),
+            })
+
+            const verifyData = await verifyResponse.json()
+
+            if (verifyData.success) {
+              // Save to local order history
+              addOrder({
+                id: verifyData.orderId,
+                items,
+                total: totalAmount,
+                paymentMethod: 'razorpay',
+                shippingAddress,
+              })
+
+              setOrderId(verifyData.orderId)
+              clearCart()
+              setOrderPlaced(true)
+              setStep('confirmation')
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            } else {
+              alert('Payment verification failed. Please contact support.')
+            }
+          } catch (error) {
+            console.error('Verification error:', error)
+            alert('Payment verification failed. Please contact support.')
+          }
+        },
+        prefill: {
+          name: shippingAddress.fullName,
+          email: shippingAddress.email,
+          contact: shippingAddress.phone,
+        },
+        notes: {
+          address: `${shippingAddress.addressLine1}, ${shippingAddress.city}, ${shippingAddress.state} - ${shippingAddress.pincode}`,
+        },
+        theme: {
+          color: '#800020', // Lumera burgundy color
+        },
+        modal: {
+          ondismiss: function () {
+            setIsProcessing(false)
+          },
+        },
+      }
+
+      const razorpay = new window.Razorpay(options)
+      razorpay.open()
+    } catch (error: any) {
+      console.error('Order creation error:', error)
+      alert(error.message || 'Failed to initiate payment. Please try again.')
+      setIsProcessing(false)
     }
-
-    // Clear cart and show confirmation
-    clearCart()
-    setOrderPlaced(true)
-    setStep('confirmation')
-    setIsProcessing(false)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   // Order confirmation view
@@ -277,6 +377,13 @@ export default function CheckoutPage() {
   }
 
   return (
+    <>
+      {/* Load Razorpay Checkout Script */}
+      <Script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="lazyOnload"
+      />
+
     <div className="min-h-screen bg-cream-100 pt-24 pb-16">
       <div className="section-container">
         {/* Header */}
@@ -627,10 +734,10 @@ export default function CheckoutPage() {
 
                 {/* Payment Options */}
                 <div className="space-y-4">
-                  {/* PhonePe */}
+                  {/* Razorpay */}
                   <label
                     className={`flex items-center gap-4 p-4 border cursor-pointer transition-colors ${
-                      paymentMethod === 'phonepe'
+                      paymentMethod === 'razorpay'
                         ? 'border-burgundy-700 bg-burgundy-700/5'
                         : 'border-burgundy-700/10 hover:border-burgundy-700/30'
                     }`}
@@ -638,21 +745,21 @@ export default function CheckoutPage() {
                     <input
                       type="radio"
                       name="payment"
-                      value="phonepe"
-                      checked={paymentMethod === 'phonepe'}
-                      onChange={() => setPaymentMethod('phonepe')}
+                      value="razorpay"
+                      checked={paymentMethod === 'razorpay'}
+                      onChange={() => setPaymentMethod('razorpay')}
                       className="w-4 h-4 text-burgundy-700"
                     />
                     <div className="flex items-center gap-3 flex-1">
-                      <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-                        <Smartphone className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 bg-[#072654] rounded-lg flex items-center justify-center">
+                        <CreditCard className="w-5 h-5 text-white" />
                       </div>
                       <div>
                         <p className="font-sans font-medium text-burgundy-700">
-                          PhonePe / UPI
+                          Pay Online
                         </p>
                         <p className="text-sm font-sans text-burgundy-700/60">
-                          Pay using UPI, Cards, or Net Banking
+                          UPI, Cards, Net Banking, Wallets
                         </p>
                       </div>
                     </div>
@@ -894,5 +1001,6 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

@@ -4,225 +4,40 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Header, Footer } from '@/components/layout'
-import ProductCard, { ProductCardProps } from '@/components/ui/ProductCard'
+import Image from 'next/image'
+import Link from 'next/link'
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react'
 import CustomSelect from '@/components/ui/CustomSelect'
-import { placeholderImages } from '@/lib/placeholders'
 
-// Extended product type with filter attributes
-interface ExtendedProduct extends ProductCardProps {
-  mood?: string[]
-  occasion?: string[]
-  fragranceFamily?: string
+interface Product {
+  id: string
+  name: string
+  slug: string
+  tagline?: string
+  pricing: {
+    price: number
+    compareAtPrice?: number
+  }
+  images: Array<{
+    image: {
+      url: string
+      alt?: string
+    }
+    isPrimary?: boolean
+  }>
+  collection?: {
+    name: string
+    slug: string
+  }
+  bestSeller?: boolean
+  newArrival?: boolean
+  fragrance?: {
+    fragranceFamily?: string
+  }
+  inventory?: {
+    quantity: number
+  }
 }
-
-// Sample products data - in production this would come from Payload CMS
-const allProducts: ExtendedProduct[] = [
-  {
-    id: '1',
-    name: 'Vanilla Dreams',
-    slug: 'vanilla-dreams',
-    tagline: 'A warm embrace of comfort',
-    price: 1299,
-    compareAtPrice: 1599,
-    image: placeholderImages.products.vanillaDreams,
-    hoverImage: placeholderImages.products.vanillaDreamsAlt,
-    collection: 'Signature',
-    fragrance: {
-      topNotes: ['Vanilla Bean', 'Caramel'],
-      heartNotes: ['Sandalwood', 'Coconut'],
-      baseNotes: ['Musk', 'Amber'],
-    },
-    specifications: {
-      burnTime: { minimum: 45, maximum: 55 },
-      weight: { value: 200, unit: 'g' },
-    },
-    isBestSeller: true,
-    inStock: true,
-    mood: ['calm', 'romantic'],
-    occasion: ['self-rituals', 'home-ambience'],
-    fragranceFamily: 'woody',
-  },
-  {
-    id: '2',
-    name: 'Rose Garden',
-    slug: 'rose-garden',
-    tagline: 'Petals of pure elegance',
-    price: 1499,
-    image: placeholderImages.products.roseGarden,
-    collection: 'Moments',
-    fragrance: {
-      topNotes: ['Bulgarian Rose', 'Peony'],
-      heartNotes: ['Jasmine', 'Lily'],
-      baseNotes: ['White Musk', 'Cedar'],
-    },
-    specifications: {
-      burnTime: { minimum: 50, maximum: 60 },
-      weight: { value: 250, unit: 'g' },
-    },
-    isNew: true,
-    inStock: true,
-    mood: ['romantic', 'uplifting'],
-    occasion: ['gifting', 'self-rituals'],
-    fragranceFamily: 'floral',
-  },
-  {
-    id: '3',
-    name: 'Midnight Oud',
-    slug: 'midnight-oud',
-    tagline: 'Mystery in every flame',
-    price: 2499,
-    image: placeholderImages.products.midnightOud,
-    collection: 'Signature',
-    fragrance: {
-      topNotes: ['Bergamot', 'Saffron'],
-      heartNotes: ['Oud', 'Rose'],
-      baseNotes: ['Sandalwood', 'Amber'],
-    },
-    specifications: {
-      burnTime: { minimum: 55, maximum: 65 },
-      weight: { value: 300, unit: 'g' },
-    },
-    inStock: true,
-    mood: ['grounding', 'romantic'],
-    occasion: ['festive', 'gifting'],
-    fragranceFamily: 'woody',
-  },
-  {
-    id: '4',
-    name: 'Citrus Burst',
-    slug: 'citrus-burst',
-    tagline: 'Morning sunshine captured',
-    price: 999,
-    image: placeholderImages.products.citrusBurst,
-    collection: 'Ritual',
-    fragrance: {
-      topNotes: ['Lemon', 'Orange', 'Grapefruit'],
-      heartNotes: ['Green Tea', 'Mint'],
-      baseNotes: ['White Cedar', 'Musk'],
-    },
-    specifications: {
-      burnTime: { minimum: 35, maximum: 45 },
-      weight: { value: 150, unit: 'g' },
-    },
-    inStock: true,
-    mood: ['uplifting', 'celebratory'],
-    occasion: ['home-ambience', 'self-rituals'],
-    fragranceFamily: 'fruity',
-  },
-  {
-    id: '5',
-    name: 'Lavender Fields',
-    slug: 'lavender-fields',
-    tagline: 'Peace in purple blooms',
-    price: 1199,
-    image: placeholderImages.products.lavenderFields,
-    collection: 'Ritual',
-    fragrance: {
-      topNotes: ['French Lavender', 'Eucalyptus'],
-      heartNotes: ['Chamomile', 'Violet'],
-      baseNotes: ['Vanilla', 'Tonka Bean'],
-    },
-    specifications: {
-      burnTime: { minimum: 40, maximum: 50 },
-      weight: { value: 180, unit: 'g' },
-    },
-    inStock: true,
-    mood: ['calm', 'grounding'],
-    occasion: ['self-rituals', 'home-ambience'],
-    fragranceFamily: 'floral',
-  },
-  {
-    id: '6',
-    name: 'Ocean Breeze',
-    slug: 'ocean-breeze',
-    tagline: 'Waves of tranquility',
-    price: 1099,
-    image: placeholderImages.products.oceanBreeze,
-    collection: 'Ritual',
-    fragrance: {
-      topNotes: ['Sea Salt', 'Bergamot'],
-      heartNotes: ['Jasmine', 'Lily of the Valley'],
-      baseNotes: ['Driftwood', 'White Musk'],
-    },
-    specifications: {
-      burnTime: { minimum: 40, maximum: 50 },
-      weight: { value: 180, unit: 'g' },
-    },
-    inStock: true,
-    mood: ['calm', 'uplifting'],
-    occasion: ['home-ambience', 'self-rituals'],
-    fragranceFamily: 'fresh',
-  },
-  {
-    id: '7',
-    name: 'Warm Amber',
-    slug: 'warm-amber',
-    tagline: 'Golden warmth within',
-    price: 1399,
-    image: placeholderImages.products.warmAmber,
-    collection: 'Moments',
-    fragrance: {
-      topNotes: ['Orange Zest', 'Cinnamon'],
-      heartNotes: ['Amber', 'Honey'],
-      baseNotes: ['Vanilla', 'Sandalwood'],
-    },
-    specifications: {
-      burnTime: { minimum: 45, maximum: 55 },
-      weight: { value: 200, unit: 'g' },
-    },
-    isBestSeller: true,
-    inStock: true,
-    mood: ['romantic', 'grounding'],
-    occasion: ['festive', 'home-ambience'],
-    fragranceFamily: 'woody',
-  },
-  {
-    id: '8',
-    name: 'Forest Pine',
-    slug: 'forest-pine',
-    tagline: 'Nature\'s embrace',
-    price: 1299,
-    image: placeholderImages.products.forestPine,
-    collection: 'Moments',
-    fragrance: {
-      topNotes: ['Pine Needle', 'Eucalyptus'],
-      heartNotes: ['Cedarwood', 'Fir Balsam'],
-      baseNotes: ['Moss', 'Vetiver'],
-    },
-    specifications: {
-      burnTime: { minimum: 45, maximum: 55 },
-      weight: { value: 200, unit: 'g' },
-    },
-    inStock: true,
-    mood: ['grounding', 'calm'],
-    occasion: ['home-ambience', 'self-rituals'],
-    fragranceFamily: 'fresh',
-  },
-  {
-    id: '9',
-    name: 'Royal Jasmine',
-    slug: 'royal-jasmine',
-    tagline: 'Elegance personified',
-    price: 2999,
-    image: placeholderImages.products.royalJasmine,
-    collection: 'Signature',
-    fragrance: {
-      topNotes: ['Indian Jasmine', 'Neroli'],
-      heartNotes: ['Tuberose', 'Ylang Ylang'],
-      baseNotes: ['Sandalwood', 'White Musk'],
-    },
-    specifications: {
-      burnTime: { minimum: 60, maximum: 70 },
-      weight: { value: 350, unit: 'g' },
-    },
-    isNew: true,
-    inStock: true,
-    mood: ['romantic', 'celebratory'],
-    occasion: ['gifting', 'festive'],
-    fragranceFamily: 'floral',
-  },
-]
 
 const collections = [
   { name: 'All', slug: 'all' },
@@ -239,25 +54,6 @@ const sortOptions = [
 ]
 
 const filterOptions = {
-  mood: {
-    label: 'By Mood',
-    options: [
-      { label: 'Calm', value: 'calm' },
-      { label: 'Romantic', value: 'romantic' },
-      { label: 'Grounding', value: 'grounding' },
-      { label: 'Uplifting', value: 'uplifting' },
-      { label: 'Celebratory', value: 'celebratory' },
-    ],
-  },
-  occasion: {
-    label: 'By Occasion',
-    options: [
-      { label: 'Gifting', value: 'gifting' },
-      { label: 'Self Rituals', value: 'self-rituals' },
-      { label: 'Home Ambience', value: 'home-ambience' },
-      { label: 'Festive', value: 'festive' },
-    ],
-  },
   fragranceFamily: {
     label: 'By Fragrance Family',
     options: [
@@ -265,6 +61,9 @@ const filterOptions = {
       { label: 'Fruity', value: 'fruity' },
       { label: 'Woody', value: 'woody' },
       { label: 'Fresh', value: 'fresh' },
+      { label: 'Oriental', value: 'oriental' },
+      { label: 'Citrus', value: 'citrus' },
+      { label: 'Gourmand', value: 'gourmand' },
     ],
   },
   price: {
@@ -342,20 +141,111 @@ function FilterSection({
   )
 }
 
+// Product Card component
+function ProductCard({ product }: { product: Product }) {
+  const primaryImage = product.images?.find(img => img.isPrimary) || product.images?.[0]
+  const imageUrl = primaryImage?.image?.url || '/placeholder-candle.jpg'
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+    >
+      <Link href={`/products/${product.slug}`} className="group block">
+        <div className="relative aspect-square overflow-hidden rounded-lg bg-cream-200 mb-4">
+          <Image
+            src={imageUrl}
+            alt={product.name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+
+          {/* Badges */}
+          <div className="absolute top-3 left-3 flex flex-col gap-2">
+            {product.bestSeller && (
+              <span className="px-2 py-1 text-[10px] tracking-wider uppercase bg-[#800020] text-[#C9A24D]">
+                Best Seller
+              </span>
+            )}
+            {product.newArrival && (
+              <span className="px-2 py-1 text-[10px] tracking-wider uppercase bg-[#C9A24D] text-[#800020]">
+                New
+              </span>
+            )}
+            {product.pricing.compareAtPrice && product.pricing.compareAtPrice > product.pricing.price && (
+              <span className="px-2 py-1 text-[10px] tracking-wider uppercase bg-green-600 text-white">
+                Sale
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Product Info */}
+        <div className="text-center">
+          {product.collection && (
+            <p className="text-[10px] tracking-widest uppercase text-[#C9A24D] mb-1">
+              {product.collection.name}
+            </p>
+          )}
+          <h3 className="font-serif text-lg text-[#800020] mb-1 group-hover:text-[#C9A24D] transition-colors">
+            {product.name}
+          </h3>
+          {product.tagline && (
+            <p className="text-sm text-[#800020]/60 mb-2 italic">
+              {product.tagline}
+            </p>
+          )}
+          <div className="flex items-center justify-center gap-2">
+            <span className="font-medium text-[#800020]">
+              ₹{product.pricing.price.toLocaleString('en-IN')}
+            </span>
+            {product.pricing.compareAtPrice && product.pricing.compareAtPrice > product.pricing.price && (
+              <span className="text-sm text-gray-400 line-through">
+                ₹{product.pricing.compareAtPrice.toLocaleString('en-IN')}
+              </span>
+            )}
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  )
+}
+
 function CollectionsContent() {
   const searchParams = useSearchParams()
   const collectionParam = searchParams.get('collection')
 
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
   const [activeCollection, setActiveCollection] = useState('all')
   const [sortBy, setSortBy] = useState('featured')
   const [showFilters, setShowFilters] = useState(false)
-  const [openSections, setOpenSections] = useState<string[]>(['mood', 'occasion', 'fragranceFamily', 'price'])
+  const [openSections, setOpenSections] = useState<string[]>(['fragranceFamily', 'price'])
   const [selectedFilters, setSelectedFilters] = useState({
-    mood: [] as string[],
-    occasion: [] as string[],
     fragranceFamily: [] as string[],
     price: [] as string[],
   })
+
+  // Fetch products from API
+  useEffect(() => {
+    async function fetchProducts() {
+      setLoading(true)
+      try {
+        const response = await fetch('/api/products?limit=100')
+        if (response.ok) {
+          const data = await response.json()
+          setProducts(data.docs || [])
+        }
+      } catch (error) {
+        console.error('Failed to fetch products:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProducts()
+  }, [])
 
   // Set active collection from URL parameter
   useEffect(() => {
@@ -391,8 +281,6 @@ function CollectionsContent() {
 
   const clearFilters = () => {
     setSelectedFilters({
-      mood: [],
-      occasion: [],
       fragranceFamily: [],
       price: [],
     })
@@ -402,29 +290,15 @@ function CollectionsContent() {
   const activeFilterCount = Object.values(selectedFilters).flat().length
 
   // Filter products
-  const filteredProducts = allProducts.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     // Collection filter
-    if (activeCollection !== 'all' && product.collection?.toLowerCase() !== activeCollection) {
+    if (activeCollection !== 'all' && product.collection?.slug?.toLowerCase() !== activeCollection) {
       return false
-    }
-
-    // Mood filter
-    if (selectedFilters.mood.length > 0) {
-      if (!product.mood || !selectedFilters.mood.some((m) => product.mood?.includes(m))) {
-        return false
-      }
-    }
-
-    // Occasion filter
-    if (selectedFilters.occasion.length > 0) {
-      if (!product.occasion || !selectedFilters.occasion.some((o) => product.occasion?.includes(o))) {
-        return false
-      }
     }
 
     // Fragrance Family filter
     if (selectedFilters.fragranceFamily.length > 0) {
-      if (!product.fragranceFamily || !selectedFilters.fragranceFamily.includes(product.fragranceFamily)) {
+      if (!product.fragrance?.fragranceFamily || !selectedFilters.fragranceFamily.includes(product.fragrance.fragranceFamily)) {
         return false
       }
     }
@@ -432,9 +306,9 @@ function CollectionsContent() {
     // Price filter
     if (selectedFilters.price.length > 0) {
       const matchesPrice = selectedFilters.price.some((range) => {
-        if (range === '499-999') return product.price >= 499 && product.price <= 999
-        if (range === '999-1499') return product.price >= 999 && product.price <= 1499
-        if (range === '1499+') return product.price >= 1499
+        if (range === '499-999') return product.pricing.price >= 499 && product.pricing.price <= 999
+        if (range === '999-1499') return product.pricing.price >= 999 && product.pricing.price <= 1499
+        if (range === '1499+') return product.pricing.price >= 1499
         return false
       })
       if (!matchesPrice) return false
@@ -446,13 +320,13 @@ function CollectionsContent() {
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
       case 'price-asc':
-        return a.price - b.price
+        return a.pricing.price - b.pricing.price
       case 'price-desc':
-        return b.price - a.price
+        return b.pricing.price - a.pricing.price
       case 'newest':
-        return a.isNew ? -1 : 1
+        return a.newArrival ? -1 : 1
       default:
-        return a.isBestSeller ? -1 : 1
+        return a.bestSeller ? -1 : 1
     }
   })
 
@@ -560,27 +434,7 @@ function CollectionsContent() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                      {/* Mood Filter */}
-                      <FilterSection
-                        title={filterOptions.mood.label}
-                        options={filterOptions.mood.options}
-                        selected={selectedFilters.mood}
-                        onChange={(value) => handleFilterChange('mood', value)}
-                        isOpen={openSections.includes('mood')}
-                        onToggle={() => toggleSection('mood')}
-                      />
-
-                      {/* Occasion Filter */}
-                      <FilterSection
-                        title={filterOptions.occasion.label}
-                        options={filterOptions.occasion.options}
-                        selected={selectedFilters.occasion}
-                        onChange={(value) => handleFilterChange('occasion', value)}
-                        isOpen={openSections.includes('occasion')}
-                        onToggle={() => toggleSection('occasion')}
-                      />
-
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Fragrance Family Filter */}
                       <FilterSection
                         title={filterOptions.fragranceFamily.label}
@@ -628,28 +482,47 @@ function CollectionsContent() {
               </div>
             )}
 
+            {/* Loading State */}
+            {loading && (
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-8">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-gray-200 aspect-square rounded-lg mb-4" />
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto mb-2" />
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto" />
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Products Grid */}
-            <motion.div
-              layout
-              className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-8"
-            >
-              {sortedProducts.map((product) => (
-                <ProductCard key={product.id} {...product} />
-              ))}
-            </motion.div>
+            {!loading && sortedProducts.length > 0 && (
+              <motion.div
+                layout
+                className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-8"
+              >
+                {sortedProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </motion.div>
+            )}
 
             {/* Empty State */}
-            {sortedProducts.length === 0 && (
+            {!loading && sortedProducts.length === 0 && (
               <div className="text-center py-20">
                 <p className="text-burgundy-700/60 font-sans mb-4">
-                  No products found matching your filters.
+                  {products.length === 0
+                    ? 'No products available yet. Check back soon!'
+                    : 'No products found matching your filters.'}
                 </p>
-                <button
-                  onClick={clearFilters}
-                  className="text-sm font-sans text-burgundy-700 underline hover:no-underline transition-all"
-                >
-                  Clear all filters
-                </button>
+                {hasActiveFilters && (
+                  <button
+                    onClick={clearFilters}
+                    className="text-sm font-sans text-burgundy-700 underline hover:no-underline transition-all"
+                  >
+                    Clear all filters
+                  </button>
+                )}
               </div>
             )}
           </div>
