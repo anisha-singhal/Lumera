@@ -55,6 +55,16 @@ export const Products: CollectionConfig = {
       },
     },
     {
+      name: 'promoTag',
+      type: 'text',
+      label: 'Promo Tag',
+      admin: {
+        description: 'Highlight offers (e.g., "Buy 1 Get 1 Free", "Flash Sale")',
+        placeholder: 'e.g., Free Shipping',
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'tagline',
       type: 'text',
       label: 'Tagline',

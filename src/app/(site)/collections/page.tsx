@@ -37,6 +37,7 @@ interface Product {
   inventory?: {
     quantity: number
   }
+  promoTag?: string
 }
 
 const collections = [
@@ -164,6 +165,11 @@ function ProductCard({ product }: { product: Product }) {
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
+            {product.promoTag && (
+              <span className="px-2 py-1 text-[10px] tracking-wider uppercase bg-[#1e3a5f] text-white font-bold animate-pulse">
+                {product.promoTag}
+              </span>
+            )}
             {product.bestSeller && (
               <span className="px-2 py-1 text-[10px] tracking-wider uppercase bg-[#800020] text-[#C9A24D]">
                 Best Seller

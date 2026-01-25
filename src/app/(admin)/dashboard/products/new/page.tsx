@@ -26,6 +26,7 @@ interface ProductForm {
   topNotes: string
   heartNotes: string
   baseNotes: string
+  promoTag: string
 }
 
 const initialForm: ProductForm = {
@@ -48,6 +49,7 @@ const initialForm: ProductForm = {
   topNotes: '',
   heartNotes: '',
   baseNotes: '',
+  promoTag: '',
 }
 
 export default function NewProductPage() {
@@ -183,6 +185,7 @@ export default function NewProductPage() {
         name: form.name,
         slug: form.slug,
         tagline: form.tagline,
+        promoTag: form.promoTag,
         description: form.description,
         pricing: {
           price: parseFloat(form.price) || 0,
@@ -308,6 +311,23 @@ export default function NewProductPage() {
                 placeholder="e.g., A calming embrace"
                 className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
               />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Promo Tag
+              </label>
+              <input
+                type="text"
+                name="promoTag"
+                value={form.promoTag}
+                onChange={handleChange}
+                placeholder="e.g., Buy 1 Get 1 Free"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+              />
+              <p className="mt-1 text-[10px] text-gray-400">
+                Optional: This will be highlighted on collection pages.
+              </p>
             </div>
 
             <div className="md:col-span-2">
