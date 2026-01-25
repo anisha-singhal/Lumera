@@ -11,7 +11,9 @@ import {
   Media,
   Users,
   Subscribers,
+  Coupons,
 } from './payload/collections'
+import { Settings } from './payload/globals/Settings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -54,6 +56,10 @@ export default buildConfig({
     Users,
     // Marketing
     Subscribers,
+    Coupons,
+  ],
+  globals: [
+    Settings,
   ],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || 'lumera-secret-key-change-in-production',

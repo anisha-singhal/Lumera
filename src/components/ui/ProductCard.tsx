@@ -36,6 +36,7 @@ export interface ProductCardProps {
   isNew?: boolean
   isBestSeller?: boolean
   inStock?: boolean
+  promoTag?: string
 }
 
 export default function ProductCard({
@@ -53,6 +54,7 @@ export default function ProductCard({
   isNew = false,
   isBestSeller = false,
   inStock = true,
+  promoTag,
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const { addToCart } = useCart()
@@ -144,6 +146,18 @@ export default function ProductCard({
 
         {/* Badges - Gold accent for "New Arrival" */}
         <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+          {promoTag && (
+            <span 
+              className="px-3 py-1 text-[10px] md:text-xs font-sans font-bold tracking-widest uppercase shadow-md animate-pulse"
+              style={{ 
+                backgroundColor: '#1e3a5f', /* Lumera Deep Blue */
+                color: '#FFFFFF',
+                border: '1px solid #1e3a5f'
+              }}
+            >
+              {promoTag}
+            </span>
+          )}
           {isNew && (
             <span 
               className="px-3 py-1 text-xs font-sans tracking-wider uppercase"

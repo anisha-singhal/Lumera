@@ -53,6 +53,7 @@ const productsData: Record<string, {
   isBestSeller?: boolean
   inStock: boolean
   stockQuantity: number
+  promoTag?: string
 }> = {
   'vanilla-dreams': {
     id: '1',
@@ -549,6 +550,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                   />
                   {/* Badges */}
                   <div className="absolute top-4 left-4 flex flex-col gap-2">
+                    {product.promoTag && (
+                      <span className="px-3 py-1 bg-[#1e3a5f] text-white text-xs font-sans font-bold tracking-wider uppercase animate-pulse">
+                        {product.promoTag}
+                      </span>
+                    )}
                     {product.isNew && (
                       <span className="px-3 py-1 bg-burgundy-700 text-cream-100 text-xs font-sans tracking-wider uppercase">
                         New

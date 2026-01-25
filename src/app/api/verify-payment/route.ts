@@ -158,6 +158,32 @@ export async function POST(request: NextRequest) {
         },
       })
       console.log('Order saved to database:', orderNumber)
+      
+      // Increment coupon usage count if used
+      if (orderData?.couponCode) {
+        try {
+          const coupons = await payload.find({
+            collection: 'coupons',
+            where: {
+              code: { equals: orderData.couponCode.toUpperCase() },
+            },
+          })
+
+          if (coupons.docs.length > 0) {
+            const coupon = coupons.docs[0] as any
+            await payload.update({
+              collection: 'coupons',
+              id: coupon.id,
+              data: {
+                usageCount: (coupon.usageCount || 0) + 1,
+              },
+            })
+            console.log('Coupon usage count incremented:', orderData.couponCode)
+          }
+        } catch (couponError) {
+          console.error('Failed to increment coupon usage (non-fatal):', couponError)
+        }
+      }
 
       // Send order confirmation email
       try {

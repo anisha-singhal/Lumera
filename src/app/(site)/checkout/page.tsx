@@ -104,6 +104,29 @@ export default function CheckoutPage() {
     }
   }, [items, router, orderPlaced])
 
+  const [storeSettings, setStoreSettings] = useState({
+    shippingCost: 99,
+    freeShippingThreshold: 999,
+  })
+
+  useEffect(() => {
+    async function fetchStoreSettings() {
+      try {
+        const response = await fetch('/api/settings')
+        if (response.ok) {
+          const data = await response.json()
+          setStoreSettings({
+            shippingCost: data.shippingCost || 99,
+            freeShippingThreshold: data.freeShippingThreshold || 999,
+          })
+        }
+      } catch (error) {
+        console.error('Failed to fetch store settings:', error)
+      }
+    }
+    fetchStoreSettings()
+  }, [])
+
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -112,8 +135,7 @@ export default function CheckoutPage() {
     }).format(amount)
   }
 
-  const shippingThreshold = 999
-  const shippingCost = subtotal >= shippingThreshold ? 0 : 99
+  const shippingCost = subtotal >= storeSettings.freeShippingThreshold ? 0 : storeSettings.shippingCost
   const totalAmount = subtotal + shippingCost + orderNoteFee - couponDiscount
 
   const validateShipping = (): boolean => {
@@ -164,16 +186,34 @@ export default function CheckoutPage() {
     }
   }
 
-  const applyCoupon = () => {
-    // Demo coupon logic
-    if (couponCode.toUpperCase() === 'LUMERA10') {
-      setCouponDiscount(Math.round(subtotal * 0.1))
-      setCouponApplied(true)
-    } else if (couponCode.toUpperCase() === 'FIRST20') {
-      setCouponDiscount(Math.round(subtotal * 0.2))
-      setCouponApplied(true)
-    } else {
-      alert('Invalid coupon code')
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false)
+
+  const applyCoupon = async () => {
+    if (!couponCode) return
+    
+    setIsApplyingCoupon(true)
+    try {
+      const response = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: couponCode, subtotal }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.valid) {
+        setCouponDiscount(data.discountAmount)
+        setCouponApplied(true)
+      } else {
+        alert(data.error || 'Invalid coupon code')
+        setCouponDiscount(0)
+        setCouponApplied(false)
+      }
+    } catch (error) {
+      console.error('Failed to apply coupon:', error)
+      alert('Failed to validate coupon. Please try again.')
+    } finally {
+      setIsApplyingCoupon(false)
     }
   }
 

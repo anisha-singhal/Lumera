@@ -26,6 +26,7 @@ interface ProductForm {
   topNotes: string
   heartNotes: string
   baseNotes: string
+  promoTag: string
 }
 
 interface ExistingImage {
@@ -54,6 +55,7 @@ const initialForm: ProductForm = {
   topNotes: '',
   heartNotes: '',
   baseNotes: '',
+  promoTag: '',
 }
 
 export default function EditProductPage() {
@@ -105,6 +107,7 @@ export default function EditProductPage() {
           topNotes: product.fragrance?.topNotes?.map((n: any) => n.note).join(', ') || '',
           heartNotes: product.fragrance?.heartNotes?.map((n: any) => n.note).join(', ') || '',
           baseNotes: product.fragrance?.baseNotes?.map((n: any) => n.note).join(', ') || '',
+          promoTag: product.promoTag || '',
         })
 
         // Map existing images
@@ -227,6 +230,7 @@ export default function EditProductPage() {
         name: form.name,
         slug: form.slug,
         tagline: form.tagline,
+        promoTag: form.promoTag,
         description: form.description,
         pricing: {
           price: parseFloat(form.price) || 0,
@@ -408,7 +412,24 @@ export default function EditProductPage() {
 
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
+                Promo Tag
+              </label>
+              <input
+                type="text"
+                name="promoTag"
+                value={form.promoTag}
+                onChange={handleChange}
+                placeholder="e.g., Buy 1 Get 1 Free"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+              />
+              <p className="mt-1 text-[10px] text-gray-400">
+                Optional: This will be highlighted on collection pages.
+              </p>
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Full Description *
               </label>
               <textarea
                 name="description"
@@ -454,7 +475,7 @@ export default function EditProductPage() {
                         <button
                           type="button"
                           onClick={() => removeExistingImage(img.id)}
-                          className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                          className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 z-10"
                         >
                           <X className="w-3 h-3" />
                         </button>
