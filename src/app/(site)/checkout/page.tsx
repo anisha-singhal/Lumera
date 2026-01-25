@@ -221,6 +221,64 @@ export default function CheckoutPage() {
     setIsProcessing(true)
 
     try {
+      // Common Order Data Construction
+      const orderPayload = {
+        email: shippingAddress.email,
+        phone: shippingAddress.phone,
+        firstName: shippingAddress.fullName.split(' ')[0],
+        lastName: shippingAddress.fullName.split(' ').slice(1).join(' '),
+        shippingAddress: {
+          addressLine1: shippingAddress.addressLine1,
+          addressLine2: shippingAddress.addressLine2,
+          city: shippingAddress.city,
+          state: shippingAddress.state,
+          pincode: shippingAddress.pincode,
+        },
+        items: items.map(item => ({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        subtotal,
+        shippingCost,
+        couponCode: couponApplied ? couponCode : '',
+        couponDiscount,
+        total: totalAmount,
+        orderNote,
+      }
+
+      // --- COD FLOW ---
+      if (paymentMethod === 'cod') {
+        const response = await fetch('/api/place-cod-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderData: orderPayload }),
+        })
+
+        const data = await response.json()
+
+        if (data.success) {
+          addOrder({
+            id: data.orderId,
+            items,
+            total: totalAmount,
+            paymentMethod: 'cod',
+            shippingAddress,
+          })
+          setOrderId(data.orderId)
+          clearCart()
+          setOrderPlaced(true)
+          setStep('confirmation')
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        } else {
+          throw new Error(data.error || 'Failed to place COD order')
+        }
+        return // Stop here for COD
+      }
+
+      // --- RAZORPAY FLOW ---
+
       // Step 1: Create order on backend
       const createOrderResponse = await fetch('/api/create-order', {
         method: 'POST',
@@ -261,31 +319,7 @@ export default function CheckoutPage() {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                orderData: {
-                  email: shippingAddress.email,
-                  phone: shippingAddress.phone,
-                  firstName: shippingAddress.fullName.split(' ')[0],
-                  lastName: shippingAddress.fullName.split(' ').slice(1).join(' '),
-                  shippingAddress: {
-                    addressLine1: shippingAddress.addressLine1,
-                    addressLine2: shippingAddress.addressLine2,
-                    city: shippingAddress.city,
-                    state: shippingAddress.state,
-                    pincode: shippingAddress.pincode,
-                  },
-                  items: items.map(item => ({
-                    id: item.id,
-                    name: item.name,
-                    quantity: item.quantity,
-                    price: item.price,
-                  })),
-                  subtotal,
-                  shippingCost,
-                  couponCode: couponApplied ? couponCode : '',
-                  couponDiscount,
-                  total: totalAmount,
-                  orderNote,
-                },
+                orderData: orderPayload, // Use the pre-constructed payload
               }),
             })
 
@@ -809,7 +843,7 @@ export default function CheckoutPage() {
                   </label>
 
                   {/* Cash on Delivery */}
-                  {/* <label
+                  <label
                     className={`flex items-center gap-4 p-4 border cursor-pointer transition-colors ${
                       paymentMethod === 'cod'
                         ? 'border-burgundy-700 bg-burgundy-700/5'
@@ -823,21 +857,21 @@ export default function CheckoutPage() {
                       checked={paymentMethod === 'cod'}
                       onChange={() => setPaymentMethod('cod')}
                       className="w-4 h-4 text-burgundy-700"
-                    /> */}
-                    {/* <div className="flex items-center gap-3 flex-1">
+                    />
+                    <div className="flex items-center gap-3 flex-1">
                       <div className="w-10 h-10 bg-burgundy-700/10 rounded-lg flex items-center justify-center">
                         <Truck className="w-5 h-5 text-burgundy-700" />
                       </div>
-                      <div> */}
-                        {/* <p className="font-sans font-medium text-burgundy-700">
+                      <div>
+                        <p className="font-sans font-medium text-burgundy-700">
                           Cash on Delivery
-                        </p> */}
-                        {/* <p className="text-sm font-sans text-burgundy-700/60">
+                        </p>
+                        <p className="text-sm font-sans text-burgundy-700/60">
                           Pay when your order arrives
-                        </p> */}
-                      {/* </div>
+                        </p>
+                      </div>
                     </div>
-                  </label> */}
+                  </label>
                 </div>
 
                 <div className="flex gap-4 mt-8">
