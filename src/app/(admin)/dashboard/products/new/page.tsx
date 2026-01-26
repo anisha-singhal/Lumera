@@ -13,7 +13,7 @@ interface ProductForm {
   description: string
   price: string
   compareAtPrice: string
-  collection: string
+  productCollection: string
   status: 'draft' | 'active' | 'archived'
   featured: boolean
   bestSeller: boolean
@@ -36,7 +36,7 @@ const initialForm: ProductForm = {
   description: '',
   price: '',
   compareAtPrice: '',
-  collection: '',
+  productCollection: '',
   status: 'draft',
   featured: false,
   bestSeller: false,
@@ -141,7 +141,7 @@ export default function NewProductPage() {
       return
     }
 
-    if (!form.collection) {
+    if (!form.productCollection) {
       setError('Please select a collection')
       setLoading(false)
       return
@@ -191,7 +191,7 @@ export default function NewProductPage() {
           price: parseFloat(form.price) || 0,
           compareAtPrice: form.compareAtPrice ? parseFloat(form.compareAtPrice) : undefined,
         },
-        collection: form.collection,
+        productCollection: form.productCollection,
         status: form.status,
         featured: form.featured,
         bestSeller: form.bestSeller,
@@ -461,8 +461,8 @@ export default function NewProductPage() {
                 Collection *
               </label>
               <select
-                name="collection"
-                value={form.collection}
+                name="productCollection"
+                value={form.productCollection}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
