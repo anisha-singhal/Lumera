@@ -13,7 +13,7 @@ interface ProductForm {
   description: string
   price: string
   compareAtPrice: string
-  collection: string
+  productCollection: string
   status: 'draft' | 'active' | 'archived'
   featured: boolean
   bestSeller: boolean
@@ -42,7 +42,7 @@ const initialForm: ProductForm = {
   description: '',
   price: '',
   compareAtPrice: '',
-  collection: '',
+  productCollection: '',
   status: 'draft',
   featured: false,
   bestSeller: false,
@@ -94,7 +94,7 @@ export default function EditProductPage() {
           description: product.description || '',
           price: product.pricing?.price?.toString() || '',
           compareAtPrice: product.pricing?.compareAtPrice?.toString() || '',
-          collection: product.collection?.id || product.collection || '',
+          productCollection: product.productCollection?.id || product.productCollection || '',
           status: product.status || 'draft',
           featured: product.featured || false,
           bestSeller: product.bestSeller || false,
@@ -236,7 +236,7 @@ export default function EditProductPage() {
           price: parseFloat(form.price) || 0,
           compareAtPrice: form.compareAtPrice ? parseFloat(form.compareAtPrice) : undefined,
         },
-        collection: form.collection || undefined,
+        productCollection: form.productCollection || undefined,
         status: form.status,
         featured: form.featured,
         bestSeller: form.bestSeller,
@@ -599,8 +599,8 @@ export default function EditProductPage() {
                 Collection
               </label>
               <select
-                name="collection"
-                value={form.collection}
+                name="productCollection"
+                value={form.productCollection}
                 onChange={handleChange}
                 className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
               >
