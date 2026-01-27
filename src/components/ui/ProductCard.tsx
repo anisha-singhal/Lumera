@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -57,6 +57,18 @@ export default function ProductCard({
   promoTag,
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const [imgSrc, setImgSrc] = useState(image)
+  const [hoverImgSrc, setHoverImgSrc] = useState(hoverImage)
+
+  // Sync state with props if they change
+  useEffect(() => {
+    setImgSrc(image)
+  }, [image])
+
+  useEffect(() => {
+    setHoverImgSrc(hoverImage)
+  }, [hoverImage])
+
   const { addToCart } = useCart()
   const { isInWishlist, toggleWishlist } = useWishlist()
 
@@ -121,10 +133,11 @@ export default function ProductCard({
         {/* Main Image */}
         <Link href={`/products/${slug}`} className="block h-full">
           <Image
-            src={image}
+            src={imgSrc}
             alt={name}
             fill
             priority={false}
+            onError={() => setImgSrc('/favicon.svg')}
             className={`object-cover transition-all duration-700 ${
               isHovered && hoverImage ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
             }`}
@@ -133,9 +146,10 @@ export default function ProductCard({
           {/* Hover Image */}
           {hoverImage && (
             <Image
-              src={hoverImage}
+              src={hoverImgSrc || '/favicon.svg'}
               alt={`${name} - alternate view`}
               fill
+              onError={() => setHoverImgSrc('/favicon.svg')}
               className={`object-cover transition-all duration-700 absolute inset-0 ${
                 isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
               }`}
