@@ -38,7 +38,7 @@ yarn-error.log*
 next-env.d.ts
 
 # Payload
-media/
+# media/ (Uncommented to allow tracking images in public/media)
 payload-types.ts
 
 # IDE
