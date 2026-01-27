@@ -72,6 +72,25 @@ interface Product {
   promoTag?: string
 }
 
+function ImageWithFallback(props: any) {
+  const { src, fallbackSrc, ...rest } = props
+  const [imgSrc, setImgSrc] = useState(src)
+
+  useEffect(() => {
+    setImgSrc(src)
+  }, [src])
+
+  return (
+    <Image
+      {...rest}
+      src={imgSrc || (fallbackSrc || '/favicon.svg')}
+      onError={() => {
+        setImgSrc(fallbackSrc || '/favicon.svg')
+      }}
+    />
+  )
+}
+
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
   const [product, setProduct] = useState<Product | null>(null)
@@ -215,7 +234,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               >
                 {/* Main Image */}
                 <div className="relative aspect-square overflow-hidden bg-cream-200 mb-4">
-                  <Image
+                  <ImageWithFallback
                     src={displayImages[selectedImage] || '/placeholder-candle.jpg'}
                     alt={product.name}
                     fill
@@ -260,7 +279,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             : 'border-transparent hover:border-burgundy-700/30'
                         }`}
                         >
-                        <Image
+                        <ImageWithFallback
                             src={image}
                             alt={`${product.name} view ${index + 1}`}
                             fill

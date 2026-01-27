@@ -145,7 +145,7 @@ function FilterSection({
 // Product Card component
 function ProductCard({ product }: { product: Product }) {
   const primaryImage = product.images?.find(img => img.isPrimary) || product.images?.[0]
-  const imageUrl = primaryImage?.image?.url || '/placeholder-candle.jpg'
+  const [imgSrc, setImgSrc] = useState(primaryImage?.image?.url || '/placeholder-candle.jpg')
 
   return (
     <motion.div
@@ -157,9 +157,10 @@ function ProductCard({ product }: { product: Product }) {
       <Link href={`/products/${product.slug}`} className="group block">
         <div className="relative aspect-square overflow-hidden rounded-lg bg-cream-200 mb-4">
           <Image
-            src={imageUrl}
+            src={imgSrc}
             alt={product.name}
             fill
+            onError={() => setImgSrc('/favicon.svg')}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
 
