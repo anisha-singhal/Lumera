@@ -11,6 +11,7 @@ import {
   Media,
   Users,
   Subscribers,
+  Coupons,
 } from './payload/collections'
 
 const filename = fileURLToPath(import.meta.url)
@@ -48,6 +49,7 @@ export default buildConfig({
     Products,
     Collections,
     Orders,
+    Coupons,
     // Content
     Media,
     // Admin

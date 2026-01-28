@@ -129,6 +129,7 @@ export async function POST(request: NextRequest) {
             quantity: number
             price: number
           }) => ({
+            product: item.id,
             productName: item.name,
             quantity: item.quantity,
             unitPrice: item.price,

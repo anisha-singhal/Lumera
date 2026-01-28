@@ -49,6 +49,24 @@ export async function createRazorpayOrder(
     notes: request.notes || {},
   }
 
+  // MOCK: If using dummy keys, return a mock order
+  if (process.env.RAZORPAY_KEY_ID === 'rzp_test_dummy') {
+    console.log('⚠️ Using Mock Razorpay Order (Dummy Keys Detected)')
+    return {
+      id: 'order_' + Math.random().toString(36).substring(7),
+      entity: 'order',
+      amount: options.amount,
+      amount_paid: 0,
+      amount_due: options.amount,
+      currency: options.currency,
+      receipt: options.receipt,
+      status: 'created',
+      attempts: 0,
+      notes: options.notes,
+      created_at: Math.floor(Date.now() / 1000),
+    } as RazorpayOrder
+  }
+
   const order = await razorpayInstance.orders.create(options)
   return order as RazorpayOrder
 }
@@ -82,6 +100,19 @@ export function verifyPaymentSignature(
  * @returns Payment details
  */
 export async function fetchPaymentDetails(paymentId: string) {
+  // MOCK: If using dummy keys, return mock payment details
+  if (process.env.RAZORPAY_KEY_ID === 'rzp_test_dummy') {
+    console.log('⚠️ Using Mock Payment Details (Dummy Keys Detected)')
+    return {
+      id: paymentId,
+      entity: 'payment',
+      status: 'captured', // Always success for this test
+      method: 'card',
+      amount: 10000,
+      currency: 'INR',
+    } as any
+  }
+  
   const payment = await razorpayInstance.payments.fetch(paymentId)
   return payment
 }
