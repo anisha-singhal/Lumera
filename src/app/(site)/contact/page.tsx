@@ -8,8 +8,8 @@ const contactInfo = [
   {
     icon: <Mail className="w-5 h-5" />,
     title: 'Email Us',
-    value: 'lumeracandlesinfo@gmail.com',
-    href: 'mailto:lumeracandlesinfo@gmail.com',
+    value: 'Info@lumeracandles.in',
+    href: 'mailto:Info@lumeracandles.in',
     description: 'We\'ll respond within 24 hours',
   },
   {

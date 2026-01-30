@@ -177,7 +177,7 @@ export default function SettingsPage() {
                     type="email"
                     value={settings.email}
                     onChange={(e) => setSettings({ ...settings, email: e.target.value })}
-                    placeholder="support@lumeracandles.com"
+                    placeholder="Info@lumeracandles.in"
                     className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
                   />
                 </div>

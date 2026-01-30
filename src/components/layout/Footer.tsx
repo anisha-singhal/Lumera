@@ -32,11 +32,11 @@ const InstagramIcon = () => (
   </svg>
 )
 
-const FacebookIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-  </svg>
-)
+// const FacebookIcon = () => (
+//   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+//     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+//   </svg>
+// )
 
 const features = [
   { icon: <Tag className="w-5 h-5 md:w-6 md:h-6" />, title: 'Exclusive Offers' },
@@ -58,7 +58,7 @@ const socialLinks = [
   { icon: <WhatsAppIcon />, href: 'https://wa.me/919625205260', label: 'WhatsApp' },
   { icon: <LinkedInIcon />, href: 'https://linkedin.com/company/lumera', label: 'LinkedIn' },
   { icon: <InstagramIcon />, href: 'https://www.instagram.com/lumeracandles.in', label: 'Instagram' },
-  { icon: <FacebookIcon />, href: 'https://facebook.com/lumera.candles', label: 'Facebook' },
+  // { icon: <FacebookIcon />, href: 'https://facebook.com/lumera.candles', label: 'Facebook' },
 ]
 
 // Lumera Brand Colors
@@ -248,12 +248,12 @@ export default function Footer() {
               </h3>
               <div className="space-y-4 mb-6">
                 <a
-                  href="mailto:lumeracandlesinfo@gmail.com"
+                  href="mailto:Info@lumeracandles.in"
                   className="flex items-center gap-3 text-sm md:text-base font-sans transition-colors py-1 hover:opacity-80"
                   style={{ color: champagneGold }}
                 >
                   <Mail className="w-5 h-5 flex-shrink-0" strokeWidth={1.5} style={{ color: champagneGold }} />
-                  lumeracandlesinfo@gmail.com
+                  Info@lumeracandles.in
                 </a>
                 <a
                   href="tel:+919625205260"

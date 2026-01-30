@@ -16,37 +16,37 @@ const faqData: FAQItem[] = [
     id: 1,
     question: 'What defines a LUMERA candle?',
     answer:
-      'A redefined balance of fragrance, craftsmanship, and quiet luxury — created to elevate everyday moments. Each Lumera candle is hand-poured using premium natural waxes, lead-free cotton wicks, and carefully curated fragrance blends that fill your space with sophisticated scents.',
+      'Each Lumera candle is hand-poured with care, made with love and a simple intention to create something that feels special not just to us, but to the people who light it. Lumera is about the emotion of gifting and finding a quiet pause in a fast-moving world. Our candles are meant to bring peace, calm, and comfort into everyday moments. Made with cruelty-free fragrances and Grade-A soy wax, each candle burns gently and cleanly something you light not just for how it smells, but for how it makes you feel.'
   },
   {
     id: 2,
     question: 'What makes LUMERA candles different?',
     answer:
-      'Lumera candles stand apart through our commitment to quality at every step. We use a proprietary soy and coconut wax blend for a cleaner, longer burn. Our fragrances are crafted by expert perfumers using the finest essential and fragrance oils. Every candle is hand-poured in small batches to ensure consistency and quality. Plus, our elegant containers are designed to be reused, making luxury sustainable.',
+      'At Lumera, we focus on details that truly matter. Our candles are made using premium fragrances sourced from some of the best fragrance manufacturers around the world, with a collection of 95+ unique scents to suit different moods and moments.We use imported glass jars, refined packaging, and thoughtful presentation, making our candles perfect for gifting or personal rituals. Along with quality products, we believe in offering genuine customer service and creating candles that help you slow down, breathe, and find a small pause in a constantly moving world.'
   },
   {
     id: 3,
     question: 'Are LUMERA candles safe for indoor use?',
     answer:
-      'Absolutely. Lumera candles are designed with your safety and well-being in mind. Our natural wax blend produces minimal soot and doesn\'t release harmful toxins. We use lead-free, 100% cotton wicks. All our fragrances are phthalate-free and comply with IFRA (International Fragrance Association) standards. However, we always recommend burning candles in a well-ventilated area and never leaving them unattended.',
+      'Yes, they are. Lumera candles are made with care for both your space and your well-being. We use a clean-burning natural wax blend, lead-free cotton wicks, and cruelty-free, IFRA-compliant fragrances, so they’re gentle and safe for everyday indoor use.We always recommend burning your candle in a well-ventilated room and keeping it within sight. When used mindfully, a Lumera candle is meant to bring comfort, calm, and a sense of ease into your home.',
   },
   {
     id: 4,
     question: 'What wax do you use?',
     answer:
-      'We use a premium blend of natural soy wax and coconut wax. This combination offers the best of both worlds: soy wax provides an excellent fragrance throw and clean burn, while coconut wax adds a creamy texture and helps the candle burn more evenly. Our wax is 100% natural, renewable, biodegradable, and free from paraffin, ensuring a cleaner burning experience.',
+      'We use Grade-A natural soy wax because it burns cleanly and feels gentle in your space. It doesn’t release harsh fumes and helps the candle burn evenly and last longer.We chose soy wax intentionally ,so when you light a Lumera candle, it feels calm, comfortable, and easy to enjoy, without anything heavy or overpowering.',
   },
+  // {
+  //   id: 5,
+  //   question: 'Are the candles handmade?',
+  //   answer:
+  //     'Yes, every Lumera candle is handcrafted with love. From measuring and blending our signature wax to hand-pouring each vessel and carefully placing the wick — every step is done by our skilled artisans. This hands-on approach allows us to maintain the highest quality standards and ensures each candle is truly unique.',
+  // },
   {
     id: 5,
-    question: 'Are the candles handmade?',
-    answer:
-      'Yes, every Lumera candle is handcrafted with love. From measuring and blending our signature wax to hand-pouring each vessel and carefully placing the wick — every step is done by our skilled artisans. This hands-on approach allows us to maintain the highest quality standards and ensures each candle is truly unique.',
-  },
-  {
-    id: 6,
     question: 'Do you ship across India?',
     answer:
-      'Yes, we ship to all major cities and towns across India! We offer free standard shipping on orders above ₹999. Standard delivery typically takes 5-7 business days, while express delivery (available for select locations) takes 2-3 business days. All orders are carefully packaged to ensure your candles arrive in perfect condition.',
+      'Yes, we ship across India. Standard delivery usually takes 4–6 business days, depending on your location. If you’re based in Delhi and need your order sooner, you can contact our team for express delivery. We’ll check what’s possible and confirm timelines on a best-effort basis. Even with express handling, delivery may still take up to 4–6 days. Every Lumera order is carefully packed to ensure it reaches you safely and in perfect condition.',
   },
 ]
 
@@ -89,11 +89,10 @@ export default function FAQ() {
               className="mb-4"
             >
               <div
-                className={`border transition-all duration-300 ${
-                  openId === item.id
-                    ? 'border-burgundy-700/30 bg-white shadow-luxury'
-                    : 'border-burgundy-700/10 bg-transparent hover:border-burgundy-700/20'
-                }`}
+                className={`border transition-all duration-300 ${openId === item.id
+                  ? 'border-burgundy-700/30 bg-white shadow-luxury'
+                  : 'border-burgundy-700/10 bg-transparent hover:border-burgundy-700/20'
+                  }`}
               >
                 {/* Question Header */}
                 <button
