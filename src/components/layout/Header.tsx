@@ -337,10 +337,10 @@ export default function Header() {
                   Get in Touch
                 </p>
                 <a
-                  href="mailto:lumeracandlesinfo@gmail.com"
+                  href="mailto:Info@lumeracandles.in"
                   className="block text-base font-sans text-lumera-charcoal/70 hover:text-lumera-burgundy mb-3"
                 >
-                  lumeracandlesinfo@gmail.com
+                  Info@lumeracandles.in
                 </a>
                 <a
                   href="tel:+919625205260"

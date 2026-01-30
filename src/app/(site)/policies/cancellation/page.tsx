@@ -22,8 +22,8 @@ export default function CancellationPolicyPage() {
               <p>Orders can be cancelled within 12 hours of placing the order.</p>
               <p>
                 To request a cancellation, please contact our customer care at{' '}
-                <a href="mailto:lumeracandlesinfo@gmail.com" className="text-burgundy-700 underline">
-                  lumeracandlesinfo@gmail.com
+                <a href="mailto:Info@lumeracandles.in" className="text-burgundy-700 underline">
+                  Info@lumeracandles.in
                 </a>
                 .
               </p>

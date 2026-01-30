@@ -29,8 +29,8 @@ export default function ShippingPolicyPage() {
                 <h2 className="font-serif text-2xl text-burgundy-700 mb-4">Need help?</h2>
                 <p>
                   For shipping queries or concerns, please contact us at{' '}
-                  <a href="mailto:lumeracandlesinfo@gmail.com" className="text-burgundy-700 underline">
-                    lumeracandlesinfo@gmail.com
+                  <a href="mailto:Info@lumeracandles.in" className="text-burgundy-700 underline">
+                    Info@lumeracandles.in
                   </a>{' '}
                   or call{' '}
                   <a href="tel:+919625205260" className="text-burgundy-700 underline">

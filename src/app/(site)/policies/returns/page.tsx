@@ -15,7 +15,7 @@ export default function ReturnPolicyPage() {
         <section className="section-spacing">
           <div className="section-container max-w-3xl">
             <div className="text-center mb-12">
-              <h1 className="font-serif text-burgundy-700 mb-4">Return & Exchange Policy</h1>
+              <h1 className="font-serif text-burgundy-700 mb-4">Return & Exchange – Summary</h1>
               <div className="line-accent mx-auto" />
             </div>
 
@@ -38,16 +38,11 @@ export default function ReturnPolicyPage() {
                 <h2 className="font-serif text-2xl text-burgundy-700 mb-4">Transit Damage or Defective Products</h2>
                 <p className="leading-relaxed mb-4">
                   If your order arrives damaged during transit or has a manufacturing defect, please
-                  contact us within <strong className="text-burgundy-700">24 hours</strong> of delivery with:
+                  contact us <strong className="text-burgundy-700">within 24 hours of delivery</strong> with clear images or videos of the outer packaging, inner packaging, and the affected product.
                 </p>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Clear images or videos of the outer packaging</li>
-                  <li>Clear images or videos of the inner packaging</li>
-                  <li>Clear images or videos of the affected product</li>
-                </ul>
-                <p className="leading-relaxed mt-4">
-                  Upon successful verification, a replacement of the same product will be provided,
-                  subject to availability. <strong className="text-burgundy-700">Refunds are not applicable in such cases.</strong>
+                <p className="leading-relaxed">
+                  Upon successful verification, a <strong className="text-burgundy-700">replacement of the same product</strong> will be provided,
+                  subject to availability. Refunds are not applicable in such cases.
                 </p>
               </section>
 
@@ -60,24 +55,21 @@ export default function ReturnPolicyPage() {
                   Customers must contact us immediately and receive confirmation from our team.
                 </p>
                 <p className="leading-relaxed">
-                  Refunds are issued only in cases of:
+                  Refunds are issued only in cases of failed payments or if the product becomes unavailable after order confirmation.
                 </p>
-                <ul className="list-disc pl-6 space-y-2 mt-2">
-                  <li>Failed payments</li>
-                  <li>Product becomes unavailable after order confirmation</li>
-                </ul>
               </section>
+
 
               {/* Contact Section */}
               <section className="bg-burgundy-700/5 p-6 rounded-lg">
                 <h2 className="font-serif text-2xl text-burgundy-700 mb-4">Contact Us</h2>
                 <div className="space-y-3">
                   <a
-                    href="mailto:lumeracandlesinfo@gmail.com"
+                    href="mailto:Info@lumeracandles.in"
                     className="flex items-center gap-3 text-burgundy-700 hover:text-burgundy-600 transition-colors"
                   >
                     <Mail className="w-5 h-5 text-[#C9A24D]" />
-                    lumeracandlesinfo@gmail.com
+                    Info@lumeracandles.in
                   </a>
                   <a
                     href="tel:+919625205260"
