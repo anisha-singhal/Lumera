@@ -51,11 +51,12 @@ export const Media: CollectionConfig = {
     },
     {
       name: 'base64',
-      type: 'textarea',
+      type: 'text',
       label: 'Image Data',
       admin: {
         hidden: true,
       },
+      validate: () => true as const,
     },
     {
       name: 'category',
