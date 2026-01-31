@@ -1,29 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { MongoClient, ObjectId } from 'mongodb'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
+import { ObjectId } from 'mongodb'
 
-// MongoDB connection cache for serverless
-let cachedClient: MongoClient | null = null
-let cachedDb: any = null
-
-async function getDb() {
-  if (cachedDb) {
-    return cachedDb
-  }
-
-  const uri = process.env.MONGODB_URI
-  if (!uri) {
-    throw new Error('MONGODB_URI not configured')
-  }
-
-  // Extract database name from URI or use default
-  const dbName = uri.split('/').pop()?.split('?')[0] || 'lumera'
-
-  const client = new MongoClient(uri)
-  await client.connect()
-  cachedClient = client
-  cachedDb = client.db(dbName)
-  return cachedDb
-}
+export const dynamic = 'force-dynamic'
 
 export async function GET(
   _request: NextRequest,
@@ -32,8 +12,9 @@ export async function GET(
   try {
     const { id } = await params
 
-    // Use MongoDB directly
-    const db = await getDb()
+    // Get Payload instance and use its MongoDB connection
+    const payload = await getPayload({ config })
+    const db = (payload.db as any).connection.db
 
     let media
     try {

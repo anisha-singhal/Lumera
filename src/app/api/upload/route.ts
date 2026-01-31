@@ -1,32 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { MongoClient, ObjectId } from 'mongodb'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
+import { ObjectId } from 'mongodb'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
-
-// MongoDB connection cache for serverless
-let cachedClient: MongoClient | null = null
-let cachedDb: any = null
-
-async function getDb() {
-  if (cachedDb) {
-    return cachedDb
-  }
-
-  const uri = process.env.MONGODB_URI
-  if (!uri) {
-    throw new Error('MONGODB_URI not configured')
-  }
-
-  // Extract database name from URI or use default
-  const dbName = uri.split('/').pop()?.split('?')[0] || 'lumera'
-
-  const client = new MongoClient(uri)
-  await client.connect()
-  cachedClient = client
-  cachedDb = client.db(dbName)
-  return cachedDb
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -62,7 +40,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes)
     const base64 = buffer.toString('base64')
 
-    // Sanitize filename - remove special characters and spaces
+    // Sanitize filename
     const sanitizedFilename = file.name
       .replace(/[^a-zA-Z0-9._-]/g, '_')
       .replace(/_+/g, '_')
@@ -72,8 +50,11 @@ export async function POST(request: NextRequest) {
 
     console.log('Processing upload:', sanitizedFilename, 'type:', file.type, 'size:', file.size)
 
-    // Use MongoDB directly to bypass Payload validation
-    const db = await getDb()
+    // Get Payload instance and use its MongoDB connection
+    const payload = await getPayload({ config })
+
+    // Access MongoDB directly through Payload's db adapter
+    const db = (payload.db as any).connection.db
 
     const mediaDoc = {
       _id: new ObjectId(),
