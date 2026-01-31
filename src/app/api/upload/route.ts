@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
+
+export const dynamic = 'force-dynamic'
+export const maxDuration = 30
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,10 +26,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check file size (limit to 5MB for database storage)
-    if (file.size > 5 * 1024 * 1024) {
+    // Check file size (limit to 2MB for serverless database storage)
+    if (file.size > 2 * 1024 * 1024) {
       return NextResponse.json(
-        { error: 'File size must be less than 5MB' },
+        { error: 'File size must be less than 2MB' },
         { status: 400 }
       )
     }
@@ -36,10 +41,8 @@ export async function POST(request: NextRequest) {
 
     console.log('Processing upload:', file.name, 'type:', file.type, 'size:', file.size)
 
-    // Dynamically import Payload
-    const { getPayload } = await import('payload')
-    const config = await import('@/payload.config')
-    const payload = await getPayload({ config: config.default })
+    // Get Payload instance
+    const payload = await getPayload({ config })
 
     // Create the media document with base64 data stored in database
     const media = await payload.create({
@@ -63,8 +66,14 @@ export async function POST(request: NextRequest) {
     }, { status: 201 })
   } catch (error: any) {
     console.error('Error uploading file:', error)
+    // Return detailed error for debugging
+    const errorDetails = {
+      message: error.message || 'Failed to upload file',
+      name: error.name,
+      data: error.data,
+    }
     return NextResponse.json(
-      { error: error.message || 'Failed to upload file' },
+      { error: errorDetails.message, details: errorDetails },
       { status: 500 }
     )
   }
