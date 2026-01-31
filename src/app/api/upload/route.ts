@@ -26,10 +26,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check file size (limit to 2MB for serverless database storage)
-    if (file.size > 2 * 1024 * 1024) {
+    // Check file size (limit to 4MB for serverless database storage)
+    if (file.size > 4 * 1024 * 1024) {
       return NextResponse.json(
-        { error: 'File size must be less than 2MB' },
+        { error: 'File size must be less than 4MB' },
         { status: 400 }
       )
     }
@@ -39,7 +39,15 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes)
     const base64 = buffer.toString('base64')
 
-    console.log('Processing upload:', file.name, 'type:', file.type, 'size:', file.size)
+    // Sanitize filename - remove special characters and spaces
+    const sanitizedFilename = file.name
+      .replace(/[^a-zA-Z0-9._-]/g, '_')
+      .replace(/_+/g, '_')
+      .substring(0, 100)
+
+    const altText = sanitizedFilename.replace(/\.[^/.]+$/, '').replace(/_/g, ' ')
+
+    console.log('Processing upload:', sanitizedFilename, 'type:', file.type, 'size:', file.size)
 
     // Get Payload instance
     const payload = await getPayload({ config })
@@ -48,8 +56,8 @@ export async function POST(request: NextRequest) {
     const media = await payload.create({
       collection: 'media',
       data: {
-        alt: file.name.replace(/\.[^/.]+$/, ''),
-        filename: file.name,
+        alt: altText,
+        filename: sanitizedFilename,
         mimeType: file.type || 'image/jpeg',
         filesize: file.size,
         base64: base64,
@@ -62,7 +70,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       id: media.id,
       url: `/api/media/${media.id}/view`,
-      filename: file.name
+      filename: sanitizedFilename
     }, { status: 201 })
   } catch (error: any) {
     console.error('Error uploading file:', error)
