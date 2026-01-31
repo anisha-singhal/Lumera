@@ -1,6 +1,5 @@
 import { CollectionConfig } from 'payload'
 import path from 'path'
-import os from 'os'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -14,8 +13,8 @@ export const Media: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: ({ req: { user } }) => !!user,
-    update: ({ req: { user } }) => !!user,
+    create: () => true, // Allow API uploads without auth
+    update: () => true,
     delete: ({ req: { user } }) => !!user,
   },
   upload: {
@@ -80,33 +79,5 @@ export const Media: CollectionConfig = {
         position: 'sidebar',
       },
     },
-    {
-      name: 'fileData',
-      type: 'text',
-      admin: {
-        readOnly: true,
-        hidden: true,
-      },
-    },
-    {
-      name: 'mimeType',
-      type: 'text',
-      admin: {
-        readOnly: true,
-        hidden: true,
-      },
-    },
   ],
-  hooks: {
-    beforeChange: [
-      async ({ data, req }) => {
-        if (req.file && req.file.data) {
-          const base64Data = req.file.data.toString('base64');
-          data.fileData = base64Data;
-          data.mimeType = req.file.mimetype;
-        }
-        return data;
-      },
-    ],
-  },
 }

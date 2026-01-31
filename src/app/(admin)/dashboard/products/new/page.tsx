@@ -167,18 +167,24 @@ export default function NewProductPage() {
         const formData = new FormData()
         formData.append('file', image)
 
+        console.log('Uploading image:', image.name, 'type:', image.type)
+
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
         })
 
-        if (uploadResponse.ok) {
-          const uploadData = await uploadResponse.json()
+        const uploadData = await uploadResponse.json()
+        console.log('Upload response:', uploadData)
+
+        if (uploadResponse.ok && uploadData.id) {
           uploadedImageIds.push(uploadData.id)
         } else {
-          throw new Error('Failed to upload image')
+          throw new Error(uploadData.error || 'Failed to upload image')
         }
       }
+
+      console.log('All uploaded image IDs:', uploadedImageIds)
 
       // Then create the product
       const productData = {
@@ -222,6 +228,8 @@ export default function NewProductPage() {
         })),
       }
 
+      console.log('Product data being sent:', JSON.stringify(productData, null, 2))
+
       const response = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -232,11 +240,12 @@ export default function NewProductPage() {
         router.push('/dashboard/products')
       } else {
         const data = await response.json()
+        console.error('Product creation error:', data)
         setError(data.error || 'Failed to create product')
       }
-    } catch (err) {
-      setError('An error occurred while creating the product')
-      console.error(err)
+    } catch (err: any) {
+      console.error('Error:', err)
+      setError(err.message || 'An error occurred while creating the product')
     } finally {
       setLoading(false)
     }
