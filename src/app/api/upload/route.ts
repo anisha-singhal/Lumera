@@ -40,49 +40,63 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes)
     const base64 = buffer.toString('base64')
 
-    // Sanitize filename and make it unique with timestamp
-    const timestamp = Date.now()
+    // Generate unique ID first
+    const mediaId = new ObjectId()
+
+    // Sanitize filename and make it unique with ID
     const baseName = file.name
       .replace(/\.[^/.]+$/, '')
       .replace(/[^a-zA-Z0-9._-]/g, '_')
       .replace(/_+/g, '_')
-      .substring(0, 80)
+      .substring(0, 50)
     const extension = file.name.split('.').pop() || 'jpg'
-    const sanitizedFilename = `${baseName}_${timestamp}.${extension}`
+    const sanitizedFilename = `${baseName}_${mediaId.toString()}.${extension}`
 
     const altText = baseName.replace(/_/g, ' ')
 
     console.log('Processing upload:', sanitizedFilename, 'type:', file.type, 'size:', file.size)
 
     // Get Payload instance just to access MongoDB connection
+    console.log('Getting Payload instance...')
     const payload = await getPayload({ config })
 
     // Access MongoDB directly through Payload's db adapter
+    console.log('Accessing MongoDB...')
     const mongoose = (payload.db as any).connection
     const db = mongoose.db
 
-    // Generate new ObjectId for the media document
-    const mediaId = new ObjectId()
-
-    // Insert directly into media collection, bypassing Payload validation entirely
-    await db.collection('media').insertOne({
-      _id: mediaId,
-      alt: altText,
-      filename: sanitizedFilename,
-      mimeType: file.type || 'image/jpeg',
-      filesize: file.size,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
+    // Insert directly into media collection
+    console.log('Inserting into media collection...')
+    try {
+      await db.collection('media').insertOne({
+        _id: mediaId,
+        alt: altText,
+        filename: sanitizedFilename,
+        mimeType: file.type || 'image/jpeg',
+        filesize: file.size,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    } catch (insertErr: any) {
+      console.error('Error inserting into media:', insertErr.message)
+      throw new Error(`Media insert failed: ${insertErr.message}`)
+    }
 
     // Store base64 in separate collection
-    await db.collection('media_data').insertOne({
-      mediaId: mediaId.toString(),
-      base64: base64,
-      mimeType: file.type || 'image/jpeg',
-    })
+    console.log('Inserting into media_data collection...')
+    try {
+      await db.collection('media_data').insertOne({
+        _id: new ObjectId(),
+        mediaId: mediaId.toString(),
+        base64: base64,
+        mimeType: file.type || 'image/jpeg',
+      })
+    } catch (dataErr: any) {
+      console.error('Error inserting into media_data:', dataErr.message)
+      throw new Error(`Media data insert failed: ${dataErr.message}`)
+    }
 
-    console.log('Media created:', mediaId.toString())
+    console.log('Media created successfully:', mediaId.toString())
 
     return NextResponse.json({
       id: mediaId.toString(),
@@ -90,17 +104,11 @@ export async function POST(request: NextRequest) {
       filename: sanitizedFilename
     }, { status: 201 })
   } catch (error: any) {
-    console.error('Error uploading file:', error)
-    console.error('Error details:', JSON.stringify({
-      message: error.message,
-      name: error.name,
-      data: error.data,
-    }, null, 2))
+    console.error('Error uploading file:', error.message)
 
     return NextResponse.json(
       {
         error: error.message || 'Failed to upload file',
-        details: error.data?.errors || null
       },
       { status: 500 }
     )
