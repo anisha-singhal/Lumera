@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     // Get Payload instance
     const payload = await getPayload({ config })
 
-    // Use Payload's create method with overrideAccess
+    // First create media document WITHOUT base64 (to avoid validation issues)
     const media = await payload.create({
       collection: 'media',
       data: {
@@ -60,10 +60,21 @@ export async function POST(request: NextRequest) {
         filename: sanitizedFilename,
         mimeType: file.type || 'image/jpeg',
         filesize: file.size,
-        base64: base64,
       },
       overrideAccess: true,
     })
+
+    // Now store base64 separately using Payload's MongoDB connection
+    // Access the mongoose connection from Payload's db adapter
+    const mongoose = (payload.db as any).connection
+    const db = mongoose.db
+
+    // Store base64 in a separate collection
+    await db.collection('media_data').updateOne(
+      { mediaId: media.id },
+      { $set: { mediaId: media.id, base64: base64, mimeType: file.type || 'image/jpeg' } },
+      { upsert: true }
+    )
 
     console.log('Media created:', media.id)
 
@@ -74,12 +85,10 @@ export async function POST(request: NextRequest) {
     }, { status: 201 })
   } catch (error: any) {
     console.error('Error uploading file:', error)
-    // Log full error details
     console.error('Error details:', JSON.stringify({
       message: error.message,
       name: error.name,
       data: error.data,
-      stack: error.stack
     }, null, 2))
 
     return NextResponse.json(
