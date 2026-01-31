@@ -88,6 +88,41 @@ export const authOptions: NextAuthOptions = {
     signIn: '/',
   },
   callbacks: {
+    async signIn({ user, account }) {
+      // Handle Google OAuth sign-in - create or find user in Payload
+      if (account?.provider === 'google' && user.email) {
+        try {
+          const payload = await getPayload({ config })
+
+          // Check if user already exists
+          const existingUsers = await payload.find({
+            collection: 'users',
+            where: { email: { equals: user.email } },
+            limit: 1,
+          })
+
+          if (existingUsers.docs.length === 0) {
+            // Create new user for Google sign-in
+            const newUser = await payload.create({
+              collection: 'users',
+              data: {
+                email: user.email,
+                name: user.name || user.email.split('@')[0],
+                role: 'customer',
+                password: crypto.randomUUID(), // Random password for OAuth users
+              },
+            })
+            user.id = newUser.id.toString()
+          } else {
+            user.id = existingUsers.docs[0].id.toString()
+          }
+        } catch (error) {
+          console.error('Error handling Google sign-in:', error)
+          return false
+        }
+      }
+      return true
+    },
     async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id
