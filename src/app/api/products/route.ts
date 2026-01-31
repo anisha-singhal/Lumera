@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
 import type { Where } from 'payload'
+
+export const dynamic = 'force-dynamic'
+export const maxDuration = 30
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,10 +16,7 @@ export async function GET(request: NextRequest) {
     const page = searchParams.get('page') || '1'
     const slug = searchParams.get('slug')
 
-    // Dynamically import Payload to avoid initialization issues
-    const { getPayload } = await import('payload')
-    const config = await import('@/payload.config')
-    const payload = await getPayload({ config: config.default })
+    const payload = await getPayload({ config })
 
     // Build the query
     const where: Where = {}
@@ -62,27 +64,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     console.log('Received product data:', JSON.stringify(body, null, 2))
 
-    // Dynamically import Payload
-    const { getPayload } = await import('payload')
-    const config = await import('@/payload.config')
-    const payload = await getPayload({ config: config.default })
-
-    // Verify all image IDs exist in media collection
-    if (body.images && Array.isArray(body.images)) {
-      for (const img of body.images) {
-        const imageId = img.image
-        console.log('Verifying media ID:', imageId)
-        try {
-          const media = await payload.findByID({
-            collection: 'media',
-            id: imageId,
-          })
-          console.log('Media found:', media?.id, media?.filename)
-        } catch (err) {
-          console.error('Media not found for ID:', imageId)
-        }
-      }
-    }
+    const payload = await getPayload({ config })
 
     // Create the product - data is already formatted from the client
     const product = await payload.create({

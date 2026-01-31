@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
+
+export const dynamic = 'force-dynamic'
+export const maxDuration = 30
 
 export async function GET(
   _request: NextRequest,
@@ -6,11 +11,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-
-    // Dynamically import Payload
-    const { getPayload } = await import('payload')
-    const config = await import('@/payload.config')
-    const payload = await getPayload({ config: config.default })
+    const payload = await getPayload({ config })
 
     const product = await payload.findByID({
       collection: 'products',
@@ -42,11 +43,7 @@ export async function PATCH(
   try {
     const { id } = await params
     const body = await request.json()
-
-    // Dynamically import Payload
-    const { getPayload } = await import('payload')
-    const config = await import('@/payload.config')
-    const payload = await getPayload({ config: config.default })
+    const payload = await getPayload({ config })
 
     // Update the product - data is already formatted from the client
     const product = await payload.update({
@@ -72,11 +69,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-
-    // Dynamically import Payload
-    const { getPayload } = await import('payload')
-    const config = await import('@/payload.config')
-    const payload = await getPayload({ config: config.default })
+    const payload = await getPayload({ config })
 
     await payload.delete({
       collection: 'products',
