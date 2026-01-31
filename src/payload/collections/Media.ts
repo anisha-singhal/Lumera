@@ -24,6 +24,7 @@ export const Media: CollectionConfig = {
       admin: {
         description: 'Describe the image for accessibility and SEO',
       },
+      validate: () => true as const,
     },
     {
       name: 'filename',
@@ -32,6 +33,7 @@ export const Media: CollectionConfig = {
       admin: {
         readOnly: true,
       },
+      validate: () => true as const,
     },
     {
       name: 'mimeType',
@@ -40,6 +42,7 @@ export const Media: CollectionConfig = {
       admin: {
         readOnly: true,
       },
+      validate: () => true as const,
     },
     {
       name: 'filesize',
@@ -48,6 +51,7 @@ export const Media: CollectionConfig = {
       admin: {
         readOnly: true,
       },
+      validate: () => true as const,
     },
     {
       name: 'base64',
