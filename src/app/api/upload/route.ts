@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import { ObjectId } from 'mongodb'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
@@ -50,36 +49,44 @@ export async function POST(request: NextRequest) {
 
     console.log('Processing upload:', sanitizedFilename, 'type:', file.type, 'size:', file.size)
 
-    // Get Payload instance and use its MongoDB connection
+    // Get Payload instance
     const payload = await getPayload({ config })
 
-    // Access MongoDB directly through Payload's db adapter
-    const db = (payload.db as any).connection.db
+    // Use Payload's create method with overrideAccess
+    const media = await payload.create({
+      collection: 'media',
+      data: {
+        alt: altText,
+        filename: sanitizedFilename,
+        mimeType: file.type || 'image/jpeg',
+        filesize: file.size,
+        base64: base64,
+      },
+      overrideAccess: true,
+    })
 
-    const mediaDoc = {
-      _id: new ObjectId(),
-      alt: altText,
-      filename: sanitizedFilename,
-      mimeType: file.type || 'image/jpeg',
-      filesize: file.size,
-      base64: base64,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
-
-    await db.collection('media').insertOne(mediaDoc)
-
-    console.log('Media created:', mediaDoc._id.toString())
+    console.log('Media created:', media.id)
 
     return NextResponse.json({
-      id: mediaDoc._id.toString(),
-      url: `/api/media/${mediaDoc._id.toString()}/view`,
+      id: media.id,
+      url: `/api/media/${media.id}/view`,
       filename: sanitizedFilename
     }, { status: 201 })
   } catch (error: any) {
     console.error('Error uploading file:', error)
+    // Log full error details
+    console.error('Error details:', JSON.stringify({
+      message: error.message,
+      name: error.name,
+      data: error.data,
+      stack: error.stack
+    }, null, 2))
+
     return NextResponse.json(
-      { error: error.message || 'Failed to upload file' },
+      {
+        error: error.message || 'Failed to upload file',
+        details: error.data?.errors || null
+      },
       { status: 500 }
     )
   }

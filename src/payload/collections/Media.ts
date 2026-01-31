@@ -16,42 +16,35 @@ export const Media: CollectionConfig = {
     update: () => true,
     delete: ({ req: { user } }) => !!user,
   },
+  // Disable all validation hooks
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        // Return data as-is, bypassing default validation
+        return data
+      },
+    ],
+  },
   fields: [
     {
       name: 'alt',
       type: 'text',
       label: 'Alt Text',
-      admin: {
-        description: 'Describe the image for accessibility and SEO',
-      },
-      validate: () => true as const,
     },
     {
       name: 'filename',
       type: 'text',
       label: 'Filename',
-      admin: {
-        readOnly: true,
-      },
-      validate: () => true as const,
     },
     {
       name: 'mimeType',
       type: 'text',
       label: 'MIME Type',
-      admin: {
-        readOnly: true,
-      },
-      validate: () => true as const,
     },
     {
       name: 'filesize',
       type: 'number',
       label: 'File Size',
-      admin: {
-        readOnly: true,
-      },
-      validate: () => true as const,
     },
     {
       name: 'base64',
@@ -60,7 +53,6 @@ export const Media: CollectionConfig = {
       admin: {
         hidden: true,
       },
-      validate: () => true as const,
     },
     {
       name: 'category',
@@ -75,9 +67,6 @@ export const Media: CollectionConfig = {
         { label: 'Icon', value: 'icon' },
         { label: 'Other', value: 'other' },
       ],
-      admin: {
-        position: 'sidebar',
-      },
     },
   ],
 }

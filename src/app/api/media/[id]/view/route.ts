@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import { ObjectId } from 'mongodb'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,18 +10,12 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-
-    // Get Payload instance and use its MongoDB connection
     const payload = await getPayload({ config })
-    const db = (payload.db as any).connection.db
 
-    let media
-    try {
-      media = await db.collection('media').findOne({ _id: new ObjectId(id) })
-    } catch {
-      // If ObjectId is invalid, try string match
-      media = await db.collection('media').findOne({ _id: id as any })
-    }
+    const media = await payload.findByID({
+      collection: 'media',
+      id,
+    }) as any
 
     if (!media) {
       return NextResponse.json({ error: 'Media not found' }, { status: 404 })
