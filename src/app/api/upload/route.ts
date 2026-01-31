@@ -40,13 +40,17 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes)
     const base64 = buffer.toString('base64')
 
-    // Sanitize filename
-    const sanitizedFilename = file.name
+    // Sanitize filename and make it unique with timestamp
+    const timestamp = Date.now()
+    const baseName = file.name
+      .replace(/\.[^/.]+$/, '')
       .replace(/[^a-zA-Z0-9._-]/g, '_')
       .replace(/_+/g, '_')
-      .substring(0, 100)
+      .substring(0, 80)
+    const extension = file.name.split('.').pop() || 'jpg'
+    const sanitizedFilename = `${baseName}_${timestamp}.${extension}`
 
-    const altText = sanitizedFilename.replace(/\.[^/.]+$/, '').replace(/_/g, ' ')
+    const altText = baseName.replace(/_/g, ' ')
 
     console.log('Processing upload:', sanitizedFilename, 'type:', file.type, 'size:', file.size)
 
