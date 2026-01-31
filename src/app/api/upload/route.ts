@@ -6,10 +6,11 @@ export const maxDuration = 30
 
 // MongoDB connection cache for serverless
 let cachedClient: MongoClient | null = null
+let cachedDb: any = null
 
-async function getMongoClient() {
-  if (cachedClient) {
-    return cachedClient
+async function getDb() {
+  if (cachedDb) {
+    return cachedDb
   }
 
   const uri = process.env.MONGODB_URI
@@ -17,10 +18,14 @@ async function getMongoClient() {
     throw new Error('MONGODB_URI not configured')
   }
 
+  // Extract database name from URI or use default
+  const dbName = uri.split('/').pop()?.split('?')[0] || 'lumera'
+
   const client = new MongoClient(uri)
   await client.connect()
   cachedClient = client
-  return client
+  cachedDb = client.db(dbName)
+  return cachedDb
 }
 
 export async function POST(request: NextRequest) {
@@ -68,8 +73,7 @@ export async function POST(request: NextRequest) {
     console.log('Processing upload:', sanitizedFilename, 'type:', file.type, 'size:', file.size)
 
     // Use MongoDB directly to bypass Payload validation
-    const client = await getMongoClient()
-    const db = client.db()
+    const db = await getDb()
 
     const mediaDoc = {
       _id: new ObjectId(),
