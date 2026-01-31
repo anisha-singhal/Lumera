@@ -1,6 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
+import { MongoClient, ObjectId } from 'mongodb'
+
+// MongoDB connection cache for serverless
+let cachedClient: MongoClient | null = null
+
+async function getMongoClient() {
+  if (cachedClient) {
+    return cachedClient
+  }
+
+  const uri = process.env.MONGODB_URI
+  if (!uri) {
+    throw new Error('MONGODB_URI not configured')
+  }
+
+  const client = new MongoClient(uri)
+  await client.connect()
+  cachedClient = client
+  return client
+}
 
 export async function GET(
   request: NextRequest,
@@ -8,11 +26,18 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const payload = await getPayload({ config })
-    const media = (await payload.findByID({
-      collection: 'media',
-      id,
-    })) as any
+
+    // Use MongoDB directly
+    const client = await getMongoClient()
+    const db = client.db()
+
+    let media
+    try {
+      media = await db.collection('media').findOne({ _id: new ObjectId(id) })
+    } catch {
+      // If ObjectId is invalid, try string match
+      media = await db.collection('media').findOne({ _id: id as any })
+    }
 
     if (!media) {
       return NextResponse.json({ error: 'Media not found' }, { status: 404 })

@@ -1,9 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
+import { MongoClient, ObjectId } from 'mongodb'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
+
+// MongoDB connection cache for serverless
+let cachedClient: MongoClient | null = null
+
+async function getMongoClient() {
+  if (cachedClient) {
+    return cachedClient
+  }
+
+  const uri = process.env.MONGODB_URI
+  if (!uri) {
+    throw new Error('MONGODB_URI not configured')
+  }
+
+  const client = new MongoClient(uri)
+  await client.connect()
+  cachedClient = client
+  return client
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -49,39 +67,34 @@ export async function POST(request: NextRequest) {
 
     console.log('Processing upload:', sanitizedFilename, 'type:', file.type, 'size:', file.size)
 
-    // Get Payload instance
-    const payload = await getPayload({ config })
+    // Use MongoDB directly to bypass Payload validation
+    const client = await getMongoClient()
+    const db = client.db()
 
-    // Create the media document with base64 data stored in database
-    const media = await payload.create({
-      collection: 'media',
-      data: {
-        alt: altText,
-        filename: sanitizedFilename,
-        mimeType: file.type || 'image/jpeg',
-        filesize: file.size,
-        base64: base64,
-      } as any,
-      overrideAccess: true,
-    })
+    const mediaDoc = {
+      _id: new ObjectId(),
+      alt: altText,
+      filename: sanitizedFilename,
+      mimeType: file.type || 'image/jpeg',
+      filesize: file.size,
+      base64: base64,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
 
-    console.log('Media created:', media.id)
+    await db.collection('media').insertOne(mediaDoc)
+
+    console.log('Media created:', mediaDoc._id.toString())
 
     return NextResponse.json({
-      id: media.id,
-      url: `/api/media/${media.id}/view`,
+      id: mediaDoc._id.toString(),
+      url: `/api/media/${mediaDoc._id.toString()}/view`,
       filename: sanitizedFilename
     }, { status: 201 })
   } catch (error: any) {
     console.error('Error uploading file:', error)
-    // Return detailed error for debugging
-    const errorDetails = {
-      message: error.message || 'Failed to upload file',
-      name: error.name,
-      data: error.data,
-    }
     return NextResponse.json(
-      { error: errorDetails.message, details: errorDetails },
+      { error: error.message || 'Failed to upload file' },
       { status: 500 }
     )
   }
