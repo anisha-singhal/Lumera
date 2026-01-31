@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import { ObjectId } from 'mongodb'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
@@ -49,38 +50,39 @@ export async function POST(request: NextRequest) {
 
     console.log('Processing upload:', sanitizedFilename, 'type:', file.type, 'size:', file.size)
 
-    // Get Payload instance
+    // Get Payload instance just to access MongoDB connection
     const payload = await getPayload({ config })
 
-    // First create media document WITHOUT base64 (to avoid validation issues)
-    const media = await payload.create({
-      collection: 'media',
-      data: {
-        alt: altText,
-        filename: sanitizedFilename,
-        mimeType: file.type || 'image/jpeg',
-        filesize: file.size,
-      },
-      overrideAccess: true,
-    })
-
-    // Now store base64 separately using Payload's MongoDB connection
-    // Access the mongoose connection from Payload's db adapter
+    // Access MongoDB directly through Payload's db adapter
     const mongoose = (payload.db as any).connection
     const db = mongoose.db
 
-    // Store base64 in a separate collection
-    await db.collection('media_data').updateOne(
-      { mediaId: media.id },
-      { $set: { mediaId: media.id, base64: base64, mimeType: file.type || 'image/jpeg' } },
-      { upsert: true }
-    )
+    // Generate new ObjectId for the media document
+    const mediaId = new ObjectId()
 
-    console.log('Media created:', media.id)
+    // Insert directly into media collection, bypassing Payload validation entirely
+    await db.collection('media').insertOne({
+      _id: mediaId,
+      alt: altText,
+      filename: sanitizedFilename,
+      mimeType: file.type || 'image/jpeg',
+      filesize: file.size,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    // Store base64 in separate collection
+    await db.collection('media_data').insertOne({
+      mediaId: mediaId.toString(),
+      base64: base64,
+      mimeType: file.type || 'image/jpeg',
+    })
+
+    console.log('Media created:', mediaId.toString())
 
     return NextResponse.json({
-      id: media.id,
-      url: `/api/media/${media.id}/view`,
+      id: mediaId.toString(),
+      url: `/api/media/${mediaId.toString()}/view`,
       filename: sanitizedFilename
     }, { status: 201 })
   } catch (error: any) {
