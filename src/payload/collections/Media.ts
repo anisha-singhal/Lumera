@@ -1,5 +1,4 @@
 import { CollectionConfig } from 'payload'
-import path from 'path'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -13,40 +12,9 @@ export const Media: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: () => true, // Allow API uploads without auth
+    create: () => true,
     update: () => true,
     delete: ({ req: { user } }) => !!user,
-  },
-  upload: {
-    staticDir: path.resolve(process.cwd(), 'public/media'),
-    imageSizes: [
-      {
-        name: 'thumbnail',
-        width: 300,
-        height: 300,
-        position: 'centre',
-      },
-      {
-        name: 'card',
-        width: 600,
-        height: 600,
-        position: 'centre',
-      },
-      {
-        name: 'hero',
-        width: 1920,
-        height: 1080,
-        position: 'centre',
-      },
-      {
-        name: 'banner',
-        width: 1920,
-        height: 600,
-        position: 'centre',
-      },
-    ],
-    adminThumbnail: 'thumbnail',
-    mimeTypes: ['image/*', 'video/mp4', 'application/pdf'],
   },
   fields: [
     {
@@ -58,9 +26,36 @@ export const Media: CollectionConfig = {
       },
     },
     {
-      name: 'caption',
+      name: 'filename',
       type: 'text',
-      label: 'Caption',
+      label: 'Filename',
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'mimeType',
+      type: 'text',
+      label: 'MIME Type',
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'filesize',
+      type: 'number',
+      label: 'File Size',
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'base64',
+      type: 'textarea',
+      label: 'Image Data',
+      admin: {
+        hidden: true,
+      },
     },
     {
       name: 'category',
