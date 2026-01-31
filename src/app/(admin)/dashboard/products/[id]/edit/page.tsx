@@ -86,12 +86,28 @@ export default function EditProductPage() {
       if (response.ok) {
         const product = await response.json()
 
+        // Extract description - handle both old richText format and new string format
+        let descriptionText = ''
+        if (typeof product.description === 'string') {
+          descriptionText = product.description
+        } else if (Array.isArray(product.description)) {
+          // Old richText format - extract text from children
+          descriptionText = product.description
+            .map((block: any) => block.children?.map((child: any) => child.text).join('') || '')
+            .join('\n')
+        } else if (product.description?.root?.children) {
+          // Lexical format
+          descriptionText = product.description.root.children
+            .map((block: any) => block.children?.map((child: any) => child.text).join('') || '')
+            .join('\n')
+        }
+
         // Map product data to form
         setForm({
           name: product.name || '',
           slug: product.slug || '',
           tagline: product.tagline || '',
-          description: product.description || '',
+          description: descriptionText,
           price: product.pricing?.price?.toString() || '',
           compareAtPrice: product.pricing?.compareAtPrice?.toString() || '',
           productCollection: product.productCollection?.id || product.productCollection || '',

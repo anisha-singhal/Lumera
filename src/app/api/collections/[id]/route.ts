@@ -21,6 +21,7 @@ export async function PATCH(
         slug: body.slug,
         description: body.description || undefined,
       },
+      overrideAccess: true,
     })
 
     return NextResponse.json(collection)
@@ -34,7 +35,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -48,6 +49,7 @@ export async function DELETE(
     await payload.delete({
       collection: 'collections',
       id,
+      overrideAccess: true,
     })
 
     return NextResponse.json({ success: true })

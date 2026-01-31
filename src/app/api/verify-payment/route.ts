@@ -97,8 +97,8 @@ export async function POST(request: NextRequest) {
     // Try to save to database, but don't fail if it doesn't work
     try {
       const { getPayload } = await import('payload')
-      const config = (await import('@payload-config')).default
-      const payload = await getPayload({ config })
+      const config = await import('@/payload.config')
+      const payload = await getPayload({ config: config.default })
 
       // Convert state name to code if needed
       const stateValue = orderData?.shippingAddress?.state || 'DL'
@@ -106,6 +106,7 @@ export async function POST(request: NextRequest) {
 
       await payload.create({
         collection: 'orders',
+        overrideAccess: true,
         data: {
           orderNumber,
           customer: {

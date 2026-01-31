@@ -389,13 +389,13 @@ export default function NewProductPage() {
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/gif"
               multiple
               onChange={handleImageSelect}
               className="hidden"
             />
             <p className="text-xs text-gray-500">
-              Upload at least 1 image (up to 5). The first image will be the primary image.
+              Upload at least 1 image (up to 5). Formats: JPG, PNG, WebP. <span className="text-amber-600 font-medium">HEIC not supported.</span>
             </p>
           </div>
         </div>

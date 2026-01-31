@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -48,27 +48,12 @@ export async function PATCH(
     const config = await import('@/payload.config')
     const payload = await getPayload({ config: config.default })
 
-    // Update the product
+    // Update the product - data is already formatted from the client
     const product = await payload.update({
       collection: 'products',
       id,
-      data: {
-        name: body.name,
-        slug: body.slug,
-        tagline: body.tagline,
-        promoTag: body.promoTag,
-        description: body.description || undefined,
-        pricing: body.pricing,
-        collection: body.collection || null,
-        status: body.status || 'draft',
-        featured: body.featured || false,
-        bestSeller: body.bestSeller || false,
-        newArrival: body.newArrival || false,
-        inventory: body.inventory,
-        specifications: body.specifications,
-        fragrance: body.fragrance,
-        images: body.images,
-      },
+      data: body,
+      overrideAccess: true,
     })
 
     return NextResponse.json(product)
@@ -82,7 +67,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -96,6 +81,7 @@ export async function DELETE(
     await payload.delete({
       collection: 'products',
       id,
+      overrideAccess: true,
     })
 
     return NextResponse.json({ success: true })

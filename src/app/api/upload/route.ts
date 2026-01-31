@@ -15,6 +15,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check for unsupported formats like HEIC
+    const fileName = file.name.toLowerCase()
+    if (fileName.endsWith('.heic') || fileName.endsWith('.heif')) {
+      return NextResponse.json(
+        { error: 'HEIC/HEIF images are not supported. Please upload JPG, PNG, or WebP images instead.' },
+        { status: 400 }
+      )
+    }
+
     // Dynamically import Payload
     const { getPayload } = await import('payload')
     const config = await import('@/payload.config')

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Dynamically import Payload
     const { getPayload } = await import('payload')
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     const config = await import('@/payload.config')
     const payload = await getPayload({ config: config.default })
 
-    const collection = await payload.create({
+    const collection = await (payload.create as any)({
       collection: 'collections',
       data: {
         name: body.name,
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         collectionType: 'signature',
         status: 'draft',
       },
-      overrideAccess: true, // Bypass access control for dashboard
+      overrideAccess: true,
     })
 
     return NextResponse.json(collection, { status: 201 })
