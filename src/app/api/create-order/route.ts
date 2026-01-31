@@ -41,10 +41,24 @@ export async function POST(request: NextRequest) {
     })
   } catch (error: any) {
     console.error('Razorpay order creation error:', error)
+
+    // Extract more specific error message
+    let errorMessage = 'Failed to create order'
+    if (error.error?.description) {
+      errorMessage = error.error.description
+    } else if (error.message) {
+      errorMessage = error.message
+    }
+
+    // Check if it's an authentication error
+    if (error.statusCode === 401 || error.error?.code === 'BAD_REQUEST_ERROR') {
+      errorMessage = 'Payment gateway configuration error. Please contact support.'
+    }
+
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to create order',
+        error: errorMessage,
       },
       { status: 500 }
     )

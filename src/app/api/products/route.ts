@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     console.error('Error creating product:', error)
     // Include validation errors if available
     const errorMessage = error.data?.errors
-      ? error.data.errors.map((e: any) => `${e.field}: ${e.message}`).join(', ')
+      ? error.data.errors.map((e: any) => `${e.path || e.field || 'Field'}: ${e.message}`).join(', ')
       : error.message || 'Failed to create product'
     return NextResponse.json(
       { error: errorMessage },

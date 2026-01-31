@@ -538,9 +538,10 @@ export const Products: CollectionConfig = {
         if (operation === 'create' && !data.inventory?.sku) {
           const prefix = 'LUM'
           const timestamp = Date.now().toString(36).toUpperCase()
+          const random = Math.random().toString(36).substring(2, 6).toUpperCase()
           data.inventory = {
             ...data.inventory,
-            sku: `${prefix}-${timestamp}`,
+            sku: `${prefix}-${timestamp}-${random}`,
           }
         }
         return data
