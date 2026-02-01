@@ -842,36 +842,6 @@ export default function CheckoutPage() {
                     </span>
                   </label>
 
-                  {/* Cash on Delivery */}
-                  <label
-                    className={`flex items-center gap-4 p-4 border cursor-pointer transition-colors ${
-                      paymentMethod === 'cod'
-                        ? 'border-burgundy-700 bg-burgundy-700/5'
-                        : 'border-burgundy-700/10 hover:border-burgundy-700/30'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="cod"
-                      checked={paymentMethod === 'cod'}
-                      onChange={() => setPaymentMethod('cod')}
-                      className="w-4 h-4 text-burgundy-700"
-                    />
-                    <div className="flex items-center gap-3 flex-1">
-                      <div className="w-10 h-10 bg-burgundy-700/10 rounded-lg flex items-center justify-center">
-                        <Truck className="w-5 h-5 text-burgundy-700" />
-                      </div>
-                      <div>
-                        <p className="font-sans font-medium text-burgundy-700">
-                          Cash on Delivery
-                        </p>
-                        <p className="text-sm font-sans text-burgundy-700/60">
-                          Pay when your order arrives
-                        </p>
-                      </div>
-                    </div>
-                  </label>
                 </div>
 
                 <div className="flex gap-4 mt-8">
