@@ -21,39 +21,39 @@ interface Collection {
 const collections: Collection[] = [
   {
     id: 1,
-    name: 'The Signature Collection',
-    slug: 'signature',
+    name: 'The "Prestige" Collection',
+    slug: 'prestige',
     tagline: 'Luxury Redefined',
     description:
       'Our most exquisite creations. Complex, sophisticated fragrances for those who demand excellence.',
-    image: '/images/collections/signature.jpg',
+    image: '/images/collections/prestige.png',
     productCount: 3,
     priceRange: '₹1,499 - ₹4,999',
     mood: 'Bold & Luxurious',
   },
   {
     id: 2,
-    name: 'Moments Collection',
-    slug: 'moments',
-    tagline: 'Gift a Pause',
+    name: 'The "State of Being" Series',
+    slug: 'state-of-being',
+    tagline: 'Embrace Every Emotion',
     description:
-      'Thoughtfully curated candles perfect for gifting. Create lasting memories with every flame.',
-    image: '/images/collections/essence.jpg',
+      'Candles that capture the essence of human emotions. From calm to passion, find your state.',
+    image: '/images/collections/state-of-being.png',
     productCount: 3,
     priceRange: '₹999 - ₹2,499',
-    mood: 'Heartfelt & Celebratory',
+    mood: 'Emotional & Expressive',
   },
   {
     id: 3,
-    name: 'The Ritual Edit',
-    slug: 'ritual',
-    tagline: 'Daily Sacred Moments',
+    name: 'The "Mineral & Texture" Edit',
+    slug: 'mineral-texture',
+    tagline: 'Earth\'s Refined Elements',
     description:
-      'Candles designed for your daily rituals and self-care. Make the ordinary extraordinary.',
-    image: '/images/collections/serene.jpg',
+      'Inspired by nature\'s raw beauty. Earthy, grounding fragrances with unique textural experiences.',
+    image: '/images/collections/mineral-texture.png',
     productCount: 3,
     priceRange: '₹899 - ₹1,999',
-    mood: 'Calm & Intentional',
+    mood: 'Grounded & Natural',
   },
 ]
 
@@ -166,33 +166,6 @@ export default function CollectionsSection() {
                       sizes="(max-width: 1024px) 85vw, 33vw"
                     />
 
-                    {/* Gradient Overlay - Deep burgundy matching hero section */}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background: 'linear-gradient(to top, rgba(128, 0, 32, 0.85), rgba(128, 0, 32, 0.3), transparent)'
-                      }}
-                    />
-
-                    {/* Collection Name Overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <p className="text-xs font-sans tracking-wider uppercase text-cream-100/70 mb-2">
-                        {collection.mood}
-                      </p>
-                      <h3 className="font-serif text-2xl sm:text-3xl text-cream-100 mb-1">
-                        {collection.name}
-                      </h3>
-                      <p className="font-serif text-base sm:text-lg text-champagne-400 italic">
-                        {collection.tagline}
-                      </p>
-                    </div>
-
-                    {/* Product Count Badge */}
-                    <div className="absolute top-4 right-4">
-                      <span className="px-3 py-1 bg-cream-100/90 backdrop-blur-sm text-xs font-sans tracking-wider text-burgundy-700">
-                        {collection.productCount} Products
-                      </span>
-                    </div>
                   </div>
 
                   {/* Content - flex-grow to ensure equal height */}

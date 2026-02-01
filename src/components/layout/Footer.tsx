@@ -49,14 +49,13 @@ const customerServiceLinks = [
   { label: 'Shipping Policy', href: '/policies/shipping' },
   { label: 'Cancellation Policy', href: '/policies/cancellation' },
   { label: 'Return and Exchange Policy', href: '/policies/returns' },
-  { label: 'Refund Policy', href: '/policies/refund' },
   { label: 'Product Care and Safety', href: '/policies/candle-care' },
   { label: 'Privacy Policy', href: '/policies/privacy' },
 ]
 
 const socialLinks = [
   { icon: <WhatsAppIcon />, href: 'https://wa.me/919625205260', label: 'WhatsApp' },
-  { icon: <LinkedInIcon />, href: 'https://linkedin.com/company/lumera', label: 'LinkedIn' },
+  { icon: <LinkedInIcon />, href: 'https://www.linkedin.com/company/lumera-candles/', label: 'LinkedIn' },
   { icon: <InstagramIcon />, href: 'https://www.instagram.com/lumeracandles.in', label: 'Instagram' },
   // { icon: <FacebookIcon />, href: 'https://facebook.com/lumera.candles', label: 'Facebook' },
 ]

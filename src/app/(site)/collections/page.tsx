@@ -43,9 +43,9 @@ interface Product {
 
 const collections = [
   { name: 'All', slug: 'all' },
-  { name: 'Signature', slug: 'signature' },
-  { name: 'Moments', slug: 'moments' },
-  { name: 'Ritual', slug: 'ritual' },
+  { name: 'Prestige', slug: 'prestige' },
+  { name: 'State of Being', slug: 'state-of-being' },
+  { name: 'Mineral & Texture', slug: 'mineral-texture' },
 ]
 
 const sortOptions = [

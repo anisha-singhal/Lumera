@@ -327,53 +327,15 @@ export default function OurStoryPage() {
               </ul>
             </FadeIn>
 
-            {/* Right Column - Image Cards */}
+            {/* Right Column - Single Featured Image */}
             <FadeIn delay={0.3}>
-              <div className="grid grid-cols-3 gap-4 md:gap-6">
-                {/* Card 1 */}
-                <div className="text-center">
-                  <div className="relative aspect-square rounded-lg overflow-hidden mb-4 bg-[#F6F1EB]">
-                    <Image
-                      src="/images/custom/vessels/frosted-glass.png"
-                      alt="Thoughtfully crafted"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <p className="font-serif text-xs md:text-sm leading-relaxed" style={{ color: '#C9A24D' }}>
-                    Small batch<br />craftsmanship
-                  </p>
-                </div>
-
-                {/* Card 2 */}
-                <div className="text-center">
-                  <div className="relative aspect-square rounded-lg overflow-hidden mb-4 bg-[#F6F1EB]">
-                    <Image
-                      src="/images/linger-candle.jpg"
-                      alt="Clean-burning"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <p className="font-serif text-xs md:text-sm leading-relaxed" style={{ color: '#C9A24D' }}>
-                    Premium<br />ingredients
-                  </p>
-                </div>
-
-                {/* Card 3 */}
-                <div className="text-center">
-                  <div className="relative aspect-square rounded-lg overflow-hidden mb-4 bg-[#F6F1EB]">
-                    <Image
-                      src="/images/sit-candle.jpg"
-                      alt="Imported glass jars"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <p className="font-serif text-xs md:text-sm leading-relaxed" style={{ color: '#C9A24D' }}>
-                    Imported<br />glass jars
-                  </p>
-                </div>
+              <div className="relative aspect-[4/3] md:aspect-square w-full rounded-lg overflow-hidden bg-[#F6F1EB]">
+                <Image
+                  src="/images/our-story-candes.jpg"
+                  alt="Lumera candles collection with roses"
+                  fill
+                  className="object-cover"
+                />
               </div>
             </FadeIn>
           </div>

@@ -4,101 +4,58 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Search, X, ArrowRight } from 'lucide-react'
+import { Search, X, ArrowRight, Loader2 } from 'lucide-react'
 import { useSearch } from '@/context'
-import { placeholderImages } from '@/lib/placeholders'
 
-// Sample products for search - in production this would come from API
-const allProducts = [
-  {
-    id: '1',
-    name: 'Vanilla Dreams',
-    slug: 'vanilla-dreams',
-    price: 1299,
-    image: placeholderImages.products.vanillaDreams,
-    collection: 'Signature',
-    tagline: 'A warm embrace of comfort',
-  },
-  {
-    id: '2',
-    name: 'Rose Garden',
-    slug: 'rose-garden',
-    price: 1499,
-    image: placeholderImages.products.roseGarden,
-    collection: 'Moments',
-    tagline: 'Petals of pure elegance',
-  },
-  {
-    id: '3',
-    name: 'Midnight Oud',
-    slug: 'midnight-oud',
-    price: 2499,
-    image: placeholderImages.products.midnightOud,
-    collection: 'Signature',
-    tagline: 'Mystery in every flame',
-  },
-  {
-    id: '4',
-    name: 'Citrus Burst',
-    slug: 'citrus-burst',
-    price: 999,
-    image: placeholderImages.products.citrusBurst,
-    collection: 'Ritual',
-    tagline: 'Morning sunshine captured',
-  },
-  {
-    id: '5',
-    name: 'Lavender Fields',
-    slug: 'lavender-fields',
-    price: 1199,
-    image: placeholderImages.products.lavenderFields,
-    collection: 'Ritual',
-    tagline: 'Peace in purple blooms',
-  },
-  {
-    id: '6',
-    name: 'Ocean Breeze',
-    slug: 'ocean-breeze',
-    price: 1099,
-    image: placeholderImages.products.oceanBreeze,
-    collection: 'Ritual',
-    tagline: 'Waves of tranquility',
-  },
-  {
-    id: '7',
-    name: 'Warm Amber',
-    slug: 'warm-amber',
-    price: 1399,
-    image: placeholderImages.products.warmAmber,
-    collection: 'Moments',
-    tagline: 'Golden warmth within',
-  },
-  {
-    id: '8',
-    name: 'Forest Pine',
-    slug: 'forest-pine',
-    price: 1299,
-    image: placeholderImages.products.forestPine,
-    collection: 'Moments',
-    tagline: 'Nature\'s embrace',
-  },
-  {
-    id: '9',
-    name: 'Royal Jasmine',
-    slug: 'royal-jasmine',
-    price: 2999,
-    image: placeholderImages.products.royalJasmine,
-    collection: 'Signature',
-    tagline: 'Elegance personified',
-  },
-]
+interface Product {
+  id: string
+  name: string
+  slug: string
+  tagline?: string
+  pricing: {
+    price: number
+  }
+  images?: Array<{
+    image: {
+      id: string
+      url?: string
+    }
+  }>
+  productCollection?: {
+    name: string
+  }
+}
 
-const popularSearches = ['Vanilla', 'Rose', 'Lavender', 'Signature Collection', 'Gift Sets']
+const popularSearches = ['Candle', 'Rose', 'Lavender', 'Vanilla', 'Gift']
 
 export default function SearchModal() {
   const { isSearchOpen, setIsSearchOpen, searchQuery, setSearchQuery } = useSearch()
-  const [results, setResults] = useState<typeof allProducts>([])
+  const [results, setResults] = useState<Product[]>([])
+  const [allProducts, setAllProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Fetch products when modal opens
+  useEffect(() => {
+    if (isSearchOpen && allProducts.length === 0) {
+      fetchProducts()
+    }
+  }, [isSearchOpen])
+
+  const fetchProducts = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/products?limit=100')
+      if (res.ok) {
+        const data = await res.json()
+        setAllProducts(data.docs || [])
+      }
+    } catch (err) {
+      console.error('Failed to fetch products for search:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Focus input when modal opens
   useEffect(() => {
@@ -118,11 +75,11 @@ export default function SearchModal() {
     const filtered = allProducts.filter(
       (product) =>
         product.name.toLowerCase().includes(query) ||
-        product.collection.toLowerCase().includes(query) ||
-        product.tagline.toLowerCase().includes(query)
+        (product.productCollection?.name || '').toLowerCase().includes(query) ||
+        (product.tagline || '').toLowerCase().includes(query)
     )
     setResults(filtered)
-  }, [searchQuery])
+  }, [searchQuery, allProducts])
 
   // Close on escape key
   useEffect(() => {
@@ -154,6 +111,13 @@ export default function SearchModal() {
       currency: 'INR',
       minimumFractionDigits: 0,
     }).format(amount)
+  }
+
+  const getProductImage = (product: Product) => {
+    if (product.images && product.images.length > 0 && product.images[0].image) {
+      return `/api/media/${product.images[0].image.id}/view`
+    }
+    return '/favicon.svg'
   }
 
   return (
@@ -202,7 +166,12 @@ export default function SearchModal() {
 
               {/* Results or Suggestions */}
               <div className="max-h-[60vh] overflow-y-auto">
-                {searchQuery.trim() === '' ? (
+                {loading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="w-6 h-6 text-burgundy-700 animate-spin" />
+                    <span className="ml-2 text-burgundy-700/60">Loading products...</span>
+                  </div>
+                ) : searchQuery.trim() === '' ? (
                   // Popular Searches
                   <div>
                     <p className="text-xs font-sans tracking-wider uppercase text-burgundy-700/50 mb-4">
@@ -220,27 +189,61 @@ export default function SearchModal() {
                       ))}
                     </div>
 
-                    {/* Quick Links */}
-                    <div className="mt-8">
-                      <p className="text-xs font-sans tracking-wider uppercase text-burgundy-700/50 mb-4">
-                        Collections
-                      </p>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        {['Signature', 'Moments', 'Ritual'].map((collection) => (
-                          <Link
-                            key={collection}
-                            href={`/collections?collection=${collection.toLowerCase()}`}
-                            onClick={handleClose}
-                            className="flex items-center justify-between p-4 bg-ivory-200/30 border border-burgundy-700/10 hover:border-burgundy-700/30 transition-colors group"
-                          >
-                            <span className="font-serif text-lg text-burgundy-700">
-                              {collection}
-                            </span>
-                            <ArrowRight className="w-4 h-4 text-burgundy-700/40 group-hover:text-burgundy-700 transition-colors" />
-                          </Link>
-                        ))}
+                    {/* Show all products if available */}
+                    {allProducts.length > 0 && (
+                      <div className="mt-8">
+                        <p className="text-xs font-sans tracking-wider uppercase text-burgundy-700/50 mb-4">
+                          All Products ({allProducts.length})
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {allProducts.slice(0, 6).map((product) => (
+                            <Link
+                              key={product.id}
+                              href={`/products/${product.slug}`}
+                              onClick={handleClose}
+                              className="flex gap-4 p-3 bg-white/50 border border-burgundy-700/10 hover:border-burgundy-700/30 hover:shadow-luxury transition-all group"
+                            >
+                              <div className="relative w-20 h-20 flex-shrink-0 bg-ivory-200 overflow-hidden">
+                                <Image
+                                  src={getProductImage(product)}
+                                  alt={product.name}
+                                  fill
+                                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-sans text-burgundy-700/50 uppercase tracking-wider">
+                                  {product.productCollection?.name || 'Collection'}
+                                </p>
+                                <h3 className="font-serif text-lg text-burgundy-700 truncate">
+                                  {product.name}
+                                </h3>
+                                {product.tagline && (
+                                  <p className="text-sm font-sans text-burgundy-700/60 truncate">
+                                    {product.tagline}
+                                  </p>
+                                )}
+                                <p className="font-sans font-medium text-burgundy-700 mt-1">
+                                  {formatPrice(product.pricing?.price || 0)}
+                                </p>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                        {allProducts.length > 6 && (
+                          <div className="mt-4 text-center">
+                            <Link
+                              href="/collections"
+                              onClick={handleClose}
+                              className="btn-ghost inline-flex items-center gap-2"
+                            >
+                              View all {allProducts.length} products
+                              <ArrowRight className="w-4 h-4" />
+                            </Link>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    )}
                   </div>
                 ) : results.length > 0 ? (
                   // Search Results
@@ -258,7 +261,7 @@ export default function SearchModal() {
                         >
                           <div className="relative w-20 h-20 flex-shrink-0 bg-ivory-200 overflow-hidden">
                             <Image
-                              src={product.image}
+                              src={getProductImage(product)}
                               alt={product.name}
                               fill
                               className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -266,16 +269,18 @@ export default function SearchModal() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-sans text-burgundy-700/50 uppercase tracking-wider">
-                              {product.collection}
+                              {product.productCollection?.name || 'Collection'}
                             </p>
                             <h3 className="font-serif text-lg text-burgundy-700 truncate">
                               {product.name}
                             </h3>
-                            <p className="text-sm font-sans text-burgundy-700/60 truncate">
-                              {product.tagline}
-                            </p>
+                            {product.tagline && (
+                              <p className="text-sm font-sans text-burgundy-700/60 truncate">
+                                {product.tagline}
+                              </p>
+                            )}
                             <p className="font-sans font-medium text-burgundy-700 mt-1">
-                              {formatPrice(product.price)}
+                              {formatPrice(product.pricing?.price || 0)}
                             </p>
                           </div>
                         </Link>

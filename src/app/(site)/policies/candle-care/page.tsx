@@ -82,9 +82,9 @@ export default function CandleCarePage() {
             </div>
 
             {/* Additional Tips */}
-            <div className="mt-12 p-6 bg-burgundy-700 text-cream-100">
-              <h2 className="font-serif text-xl mb-4 text-[#C9A24D]">Pro Tips for Best Experience</h2>
-              <ul className="space-y-3 text-sm font-sans text-cream-100/90">
+            <div className="mt-12 p-6 bg-cream-200/50 border border-burgundy-700/10">
+              <h2 className="font-serif text-xl mb-4 text-burgundy-700">Pro Tips for Best Experience</h2>
+              <ul className="space-y-3 text-sm font-sans text-burgundy-700/70">
                 <li className="flex items-start gap-2">
                   <span className="text-[#C9A24D]">•</span>
                   For the first burn, let the wax melt to the edges of the container to prevent tunneling.
