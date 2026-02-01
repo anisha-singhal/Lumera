@@ -33,32 +33,6 @@ const heroSlides: HeroSlide[] = [
     image: '/images/hero-bg.jpg',
     imageAlt: 'Lumera luxury candle with warm ambient lighting',
   },
-  {
-    id: 2,
-    title: 'Melt Into Luxury',
-    subtitle: 'SIGNATURE SERIES',
-    description:
-      'Handcrafted with intention. Each flame tells a story of serenity, warmth, and timeless elegance.',
-    cta: {
-      text: 'Shop Signature',
-      href: '/collections/signature',
-    },
-    image: 'https://images.unsplash.com/photo-1603006905003-be475563bc59?w=1920&h=1080&fit=crop&q=80',
-    imageAlt: 'Signature collection candles in elegant setting',
-  },
-  {
-    id: 3,
-    title: 'Essence of Calm',
-    subtitle: 'NEW ARRIVALS',
-    description:
-      'Discover our newest fragrances — thoughtfully curated to transform your space into a sanctuary.',
-    cta: {
-      text: 'Discover New',
-      href: '/collections/new-arrivals',
-    },
-    image: 'https://images.unsplash.com/photo-1608181831688-ba943e05dff4?w=1920&h=1080&fit=crop&q=80',
-    imageAlt: 'New arrival candles with botanical elements',
-  },
 ]
 
 export default function Hero() {
