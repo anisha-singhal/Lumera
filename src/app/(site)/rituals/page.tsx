@@ -100,8 +100,8 @@ export default function RitualsPage() {
           {/* Background Image - Candle Flame (Dimmed) */}
           <div className="absolute inset-0">
             <Image
-              src="https://images.unsplash.com/photo-1602028915047-37269d1a73f7?w=1920&h=1080&fit=crop&q=90"
-              alt="Candle flame flickering"
+              src="/images/rituals-hero.jpg"
+              alt="Lumera candle ambiance"
               fill
               className="object-cover opacity-40"
               priority
