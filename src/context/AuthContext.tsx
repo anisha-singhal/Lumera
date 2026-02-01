@@ -142,22 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true)
     try {
-      const emailKey = email.toLowerCase()
-      const map = loadPasswordMap()
-      const entry = map[emailKey]
-
-      // Check if account exists
-      if (!entry) {
-        setIsLoading(false)
-        return { success: false, error: 'no_account' }
-      }
-
-      // Check if password matches
-      if (entry.password !== password) {
-        setIsLoading(false)
-        return { success: false, error: 'wrong_password' }
-      }
-
+      // Authenticate directly via NextAuth - it will check the database
       const result = await signIn('credentials', {
         email,
         password,
@@ -167,9 +152,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false)
 
       if (result?.ok) {
+        // Store password locally for change-password feature
+        const emailKey = email.toLowerCase()
+        const map = loadPasswordMap()
+        map[emailKey] = { password }
+        savePasswordMap(map)
+
         setIsAuthModalOpen(false)
         return { success: true }
       }
+
+      // Check the error from NextAuth
+      if (result?.error) {
+        // NextAuth returns generic "CredentialsSignin" error
+        // We can't distinguish between wrong password and no account from here
+        // So return a generic auth_failed which will show a helpful message
+        return { success: false, error: 'auth_failed' }
+      }
+
       return { success: false, error: 'auth_failed' }
     } catch {
       setIsLoading(false)

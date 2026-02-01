@@ -42,7 +42,7 @@ export default function AuthModal() {
       case 'account_exists':
         return 'An account with this email already exists. Please sign in instead.'
       case 'auth_failed':
-        return isLogin ? 'Login failed. Please try again.' : 'Failed to create account.'
+        return isLogin ? 'Invalid email or password. Please check your credentials and try again.' : 'Failed to create account.'
       case 'signup_failed':
         return 'Failed to create account. Please try again.'
       default:
