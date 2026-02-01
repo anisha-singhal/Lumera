@@ -4,6 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { sendMail } from '@/lib/sendMail'
+import { randomUUID } from 'crypto'
 
 export const authOptions: NextAuthOptions = {
   providers: [

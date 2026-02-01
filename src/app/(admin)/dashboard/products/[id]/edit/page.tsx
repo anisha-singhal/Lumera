@@ -128,11 +128,21 @@ export default function EditProductPage() {
 
         // Map existing images
         if (product.images && product.images.length > 0) {
-          const imgs = product.images.map((img: any) => ({
-            id: img.image?.id || img.image,
-            url: img.image?.url || '',
-            isPrimary: img.isPrimary || false,
-          })).filter((img: ExistingImage) => img.url)
+          const imgs = product.images.map((img: any) => {
+            // Get the image ID - could be string ID or object with id
+            const imageId = typeof img.image === 'string'
+              ? img.image
+              : (img.image?.id || img.image?._id || '')
+
+            // Construct URL from ID - images are served from /api/media/{id}/view
+            const imageUrl = imageId ? `/api/media/${imageId}/view` : ''
+
+            return {
+              id: imageId,
+              url: imageUrl,
+              isPrimary: img.isPrimary || false,
+            }
+          }).filter((img: ExistingImage) => img.id && img.url)
           setExistingImages(imgs)
         }
       } else {
