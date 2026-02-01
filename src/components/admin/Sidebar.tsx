@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -24,6 +24,13 @@ const navigation = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await fetch('/api/admin/logout', { method: 'POST' })
+    router.push('/dashboard/login')
+    router.refresh()
+  }
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-100 flex flex-col">
@@ -73,7 +80,10 @@ export default function Sidebar() {
             <p className="text-xs text-gray-500 truncate">admin@lumera.com</p>
           </div>
         </div>
-        <button className="mt-2 w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+        <button
+          onClick={handleLogout}
+          className="mt-2 w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+        >
           <LogOut className="w-4 h-4" />
           Sign out
         </button>

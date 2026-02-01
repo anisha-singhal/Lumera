@@ -10,7 +10,7 @@ export const Collections: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'slug', 'status', 'productCount'],
     group: 'Shop',
-    description: 'Manage product collections (Serene, Essence, Signature)',
+    description: 'Manage product collections (Prestige, State of Being, Mineral & Texture)',
   },
   access: {
     read: () => true,
@@ -25,7 +25,7 @@ export const Collections: CollectionConfig = {
       required: true,
       label: 'Collection Name',
       admin: {
-        description: 'e.g., Serene, Essence, Signature',
+        description: 'e.g., The Prestige Collection, The State of Being Series',
       },
     },
     {
@@ -130,7 +130,7 @@ export const Collections: CollectionConfig = {
           type: 'select',
           label: 'Collection Mood',
           options: [
-            { label: 'Calm & Serene', value: 'serene' },
+            { label: 'Prestige & Luxurious', value: 'prestige' },
             { label: 'Warm & Inviting', value: 'warm' },
             { label: 'Bold & Luxurious', value: 'luxurious' },
             { label: 'Fresh & Energizing', value: 'fresh' },
@@ -148,13 +148,13 @@ export const Collections: CollectionConfig = {
       label: 'Collection Type',
       required: true,
       options: [
-        { label: 'Signature Collection', value: 'signature' },
-        { label: 'Seasonal Collection', value: 'seasonal' },
+        { label: 'Prestige Collection', value: 'prestige' },
+        { label: 'State of Being Series', value: 'state-of-being' },
+        { label: 'Mineral & Texture Edit', value: 'mineral-texture' },
         { label: 'Limited Edition', value: 'limited' },
         { label: 'Gift Sets', value: 'gift' },
-        { label: 'Essentials', value: 'essentials' },
       ],
-      defaultValue: 'signature',
+      defaultValue: 'prestige',
       admin: {
         position: 'sidebar',
       },

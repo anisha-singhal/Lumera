@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Settings as SettingsIcon, Save, Loader2, Truck, Percent, Phone, Sliders, Ticket } from 'lucide-react'
+import { Settings as SettingsIcon, Save, Loader2, Truck, Percent, Phone, Sliders, Ticket, Database, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 
 export default function SettingsPage() {
@@ -16,6 +16,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState({ type: '', text: '' })
+  const [updatingCollections, setUpdatingCollections] = useState(false)
 
   useEffect(() => {
     fetchSettings()
@@ -39,6 +40,29 @@ export default function SettingsPage() {
       console.error('Failed to fetch settings:', err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleUpdateCollections = async () => {
+    setUpdatingCollections(true)
+    setMessage({ type: '', text: '' })
+
+    try {
+      const response = await fetch('/api/admin/update-collections', {
+        method: 'POST',
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: 'Collection names updated successfully! Refresh the products page to see changes.' })
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Failed to update collections.' })
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: 'An error occurred while updating collections.' })
+    } finally {
+      setUpdatingCollections(false)
     }
   }
 
@@ -227,6 +251,42 @@ export default function SettingsPage() {
               </button>
             </div>
           </form>
+
+          {/* Database Maintenance */}
+          <div className="bg-white rounded-xl border border-gray-100 p-6 mt-6">
+            <div className="flex items-center gap-2 mb-4 text-[#1e3a5f]">
+              <Database className="w-5 h-5" />
+              <h2 className="font-medium">Database Maintenance</h2>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Update Collection Names</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Updates collection names to: Prestige, State of Being, Mineral & Texture
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleUpdateCollections}
+                  disabled={updatingCollections}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#800020] text-white text-sm font-medium rounded-lg hover:bg-[#600018] disabled:opacity-50 transition-colors"
+                >
+                  {updatingCollections ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="w-4 h-4" />
+                      Update
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

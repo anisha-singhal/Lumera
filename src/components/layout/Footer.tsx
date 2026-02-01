@@ -101,7 +101,7 @@ export default function Footer() {
         <div className="px-6 md:px-8 max-w-7xl mx-auto py-10 md:py-12">
           <div className="text-center mb-8">
             <span className="text-xs font-sans tracking-[0.2em] uppercase text-burgundy-815 font-medium">
-              Exclusively on Lumera.com
+              Exclusively on Lumeracandles.in
             </span>
           </div>
 

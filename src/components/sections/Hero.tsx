@@ -260,7 +260,7 @@ export default function Hero() {
           className="text-xs font-sans tracking-[0.2em] transform -rotate-90 whitespace-nowrap"
           style={{ color: 'rgba(128, 0, 32, 0.4)' }}
         >
-          EXCLUSIVELY ON LUMERA.COM
+          EXCLUSIVELY ON LUMERACANDLES.IN
         </p>
       </div>
     </section>

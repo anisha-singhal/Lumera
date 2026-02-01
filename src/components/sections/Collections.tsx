@@ -21,7 +21,7 @@ interface Collection {
 const collections: Collection[] = [
   {
     id: 1,
-    name: 'The "Prestige" Collection',
+    name: 'The Prestige Collection',
     slug: 'prestige',
     tagline: 'Luxury Redefined',
     description:
@@ -33,7 +33,7 @@ const collections: Collection[] = [
   },
   {
     id: 2,
-    name: 'The "State of Being" Series',
+    name: 'The State of Being Series',
     slug: 'state-of-being',
     tagline: 'Embrace Every Emotion',
     description:
@@ -45,7 +45,7 @@ const collections: Collection[] = [
   },
   {
     id: 3,
-    name: 'The "Mineral & Texture" Edit',
+    name: 'The Mineral & Texture Edit',
     slug: 'mineral-texture',
     tagline: 'Earth\'s Refined Elements',
     description:
@@ -155,7 +155,7 @@ export default function CollectionsSection() {
               className="group flex-shrink-0 w-[85vw] sm:w-[70vw] lg:w-auto snap-center"
             >
               <Link href={`/collections?collection=${collection.slug}`} className="block h-full">
-                <div className="relative overflow-hidden bg-white border border-burgundy-700/10 hover:border-burgundy-700/20 transition-all duration-500 hover:shadow-luxury-lg h-full flex flex-col">
+                <div className="relative overflow-hidden bg-white border border-burgundy-700/10 hover:border-[#C9A24D]/40 transition-all duration-500 shadow-lg hover:shadow-2xl h-full flex flex-col">
                   {/* Image Container */}
                   <div className="relative h-64 sm:h-80 overflow-hidden flex-shrink-0">
                     <Image
@@ -168,22 +168,51 @@ export default function CollectionsSection() {
 
                   </div>
 
-                  {/* Content - flex-grow to ensure equal height */}
-                  <div className="p-6 flex flex-col flex-grow">
-                    {/* Description - fixed height with line clamp */}
-                    <p className="text-sm font-sans text-burgundy-700/70 mb-4 leading-relaxed line-clamp-3 flex-grow">
-                      {collection.description}
-                    </p>
+                  {/* Collection Name & CTA - Premium Style */}
+                  <div
+                    className="p-6 relative overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, #800020 0%, #5c0017 50%, #800020 100%)',
+                    }}
+                  >
+                    {/* Subtle texture overlay */}
+                    <div
+                      className="absolute inset-0 opacity-10"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A24D' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                      }}
+                    />
 
-                    {/* Price Range & CTA */}
-                    <div className="flex items-center justify-between pt-4 border-t border-burgundy-700/10 mt-auto">
-                      <span className="text-sm font-sans text-burgundy-700/60">
-                        {collection.priceRange}
-                      </span>
-                      <span className="inline-flex items-center gap-2 text-sm font-sans font-medium text-burgundy-700 group-hover:text-burgundy-600 transition-colors">
+                    {/* Gold accent line */}
+                    <div
+                      className="absolute top-0 left-0 right-0 h-[2px]"
+                      style={{
+                        background: 'linear-gradient(90deg, transparent, #C9A24D, transparent)',
+                      }}
+                    />
+
+                    <div className="relative flex items-center justify-between">
+                      <div>
+                        <p
+                          className="text-[10px] font-sans tracking-[0.3em] uppercase mb-2"
+                          style={{ color: '#C9A24D' }}
+                        >
+                          Collection
+                        </p>
+                        <h3
+                          className="font-serif text-xl md:text-2xl leading-tight"
+                          style={{ color: '#F6F1EB' }}
+                        >
+                          {collection.name}
+                        </h3>
+                      </div>
+                      <span
+                        className="inline-flex items-center gap-2 text-sm font-sans font-medium transition-all duration-300 group-hover:gap-3"
+                        style={{ color: '#C9A24D' }}
+                      >
                         Explore
                         <svg
-                          className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
+                          className="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
