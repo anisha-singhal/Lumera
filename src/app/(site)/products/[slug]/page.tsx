@@ -259,16 +259,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         New
                       </span>
                     )}
-                    {isBestSeller && (
-                      <span className="px-3 py-1 bg-champagne-500 text-burgundy-700 text-xs font-sans tracking-wider uppercase">
-                        Best Seller
-                      </span>
-                    )}
-                    {discount > 0 && (
-                      <span className="px-3 py-1 bg-burgundy-700/90 text-cream-100 text-xs font-sans tracking-wider">
-                        -{discount}%
-                      </span>
-                    )}
                   </div>
                 </div>
 
@@ -363,25 +353,25 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 )}
 
                 {/* Quantity & Add to Cart */}
-                <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                <div className="flex flex-col sm:flex-row items-stretch gap-4 mb-6 w-full">
                   {/* Quantity - Touch-friendly buttons */}
-                  <div className="flex items-center border border-burgundy-700/20">
+                  <div className="flex items-center justify-center border border-burgundy-700/20 w-full sm:w-auto">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="p-4 min-w-[48px] min-h-[48px] hover:bg-burgundy-700/5 transition-colors flex items-center justify-center"
+                      className="p-4 min-w-[56px] min-h-[52px] hover:bg-burgundy-700/5 transition-colors flex items-center justify-center flex-1 sm:flex-none"
                       aria-label="Decrease quantity"
                     >
-                      <Minus className="w-4 h-4 text-burgundy-700" />
+                      <Minus className="w-5 h-5 text-burgundy-700" />
                     </button>
-                    <span className="w-14 text-center font-sans text-burgundy-700">
+                    <span className="w-16 text-center font-sans text-burgundy-700 text-lg">
                       {quantity}
                     </span>
                     <button
                       onClick={() => setQuantity(Math.min(stockQty, quantity + 1))}
-                      className="p-4 min-w-[48px] min-h-[48px] hover:bg-burgundy-700/5 transition-colors flex items-center justify-center"
+                      className="p-4 min-w-[56px] min-h-[52px] hover:bg-burgundy-700/5 transition-colors flex items-center justify-center flex-1 sm:flex-none"
                       aria-label="Increase quantity"
                     >
-                      <Plus className="w-4 h-4 text-burgundy-700" />
+                      <Plus className="w-5 h-5 text-burgundy-700" />
                     </button>
                   </div>
 
@@ -405,7 +395,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         setIsCartOpen(true)
                       }, 500)
                     }}
-                    className="flex-1 btn-primary flex items-center justify-center gap-2"
+                    className="flex-1 w-full btn-primary flex items-center justify-center gap-2 min-h-[52px] text-base"
                   >
                     {isAdded ? (
                       <>
@@ -436,7 +426,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         })
                       }
                     }}
-                    className={`p-3 border transition-all duration-300 ${
+                    className={`p-4 w-full sm:w-auto min-w-[56px] min-h-[52px] flex items-center justify-center border transition-all duration-300 ${
                       isInWishlist(product.id)
                         ? 'bg-burgundy-700 border-burgundy-700 text-cream-100'
                         : 'border-burgundy-700/20 text-burgundy-700 hover:border-burgundy-700'
@@ -484,14 +474,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
             {/* Tabs */}
             <div className="mt-16">
-              <div className="flex border-b border-burgundy-700/10">
+              <div className="flex gap-2 md:gap-4 border-b border-burgundy-700/10">
                 {(['description', 'details', 'care'] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-6 py-4 text-sm font-sans tracking-wider uppercase transition-all ${
+                    className={`px-4 md:px-8 py-4 text-xs md:text-sm font-sans tracking-wider uppercase transition-all whitespace-nowrap ${
                       activeTab === tab
-                        ? 'text-burgundy-700 border-b-2 border-burgundy-700'
+                        ? 'text-burgundy-700 border-b-2 border-burgundy-700 -mb-[1px]'
                         : 'text-burgundy-700/50 hover:text-burgundy-700'
                     }`}
                   >

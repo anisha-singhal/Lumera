@@ -170,19 +170,9 @@ function ProductItem({ product }: { product: Product }) {
                 {product.promoTag}
               </span>
             )}
-            {product.bestSeller && (
-              <span className="px-2 py-1 text-[10px] tracking-wider uppercase bg-[#800020] text-[#C9A24D]">
-                Best Seller
-              </span>
-            )}
             {product.newArrival && (
               <span className="px-2 py-1 text-[10px] tracking-wider uppercase bg-[#C9A24D] text-[#800020]">
                 New
-              </span>
-            )}
-            {product.pricing.compareAtPrice && product.pricing.compareAtPrice > product.pricing.price && (
-              <span className="px-2 py-1 text-[10px] tracking-wider uppercase bg-green-600 text-white">
-                Sale
               </span>
             )}
           </div>

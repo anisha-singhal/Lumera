@@ -173,37 +173,15 @@ export default function ProductCard({
             </span>
           )}
           {isNew && (
-            <span 
+            <span
               className="px-3 py-1 text-xs font-sans tracking-wider uppercase"
-              style={{ 
+              style={{
                 backgroundColor: '#C9A24D', /* Champagne Gold */
                 color: '#1C1C1C',
                 border: '1px solid #C9A24D'
               }}
             >
               New Arrival
-            </span>
-          )}
-          {isBestSeller && (
-            <span 
-              className="px-3 py-1 text-xs font-sans tracking-wider uppercase"
-              style={{ 
-                backgroundColor: '#800020', /* Burgundy 815 */
-                color: '#F6F1EB'
-              }}
-            >
-              Best Seller
-            </span>
-          )}
-          {discount > 0 && (
-            <span 
-              className="px-3 py-1 text-xs font-sans tracking-wider"
-              style={{ 
-                backgroundColor: '#800020', /* Burgundy 815 */
-                color: '#F6F1EB'
-              }}
-            >
-              -{discount}%
             </span>
           )}
           {!inStock && (
