@@ -337,23 +337,22 @@ function CollectionsContent() {
       <Header />
       <main className="pt-20">
         {/* Hero Banner */}
-        <section className="relative h-64 md:h-80 bg-cream-200 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-burgundy-700/10 to-transparent" />
-          <div className="section-container h-full flex items-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <p className="text-sm font-sans tracking-wide-luxury uppercase text-burgundy-700/60 mb-2">
-                Explore Our
-              </p>
-              <h1 className="font-serif text-burgundy-700 mb-4">Collections</h1>
-              <p className="text-burgundy-700/70 font-sans max-w-md">
-                Discover handcrafted candles designed to elevate every moment of your day.
-              </p>
-            </motion.div>
-          </div>
+        <section className="relative w-full bg-cream-200">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="relative w-full"
+          >
+            <Image
+              src="/images/collections-header.png"
+              alt="Lumera Collections"
+              width={1920}
+              height={600}
+              className="w-full h-auto object-contain"
+              priority
+            />
+          </motion.div>
         </section>
 
         {/* Filters & Products */}
