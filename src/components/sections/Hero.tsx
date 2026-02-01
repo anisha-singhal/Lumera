@@ -40,8 +40,8 @@ const heroSlides: HeroSlide[] = [
     description:
       'Handcrafted with intention. Each flame tells a story of serenity, warmth, and timeless elegance.',
     cta: {
-      text: 'Shop Signature',
-      href: '/collections/signature',
+      text: 'Explore Collection',
+      href: '/collections',
     },
     image: 'https://images.unsplash.com/photo-1603006905003-be475563bc59?w=1920&h=1080&fit=crop&q=80',
     imageAlt: 'Signature collection candles in elegant setting',
@@ -53,10 +53,10 @@ const heroSlides: HeroSlide[] = [
     description:
       'Discover our newest fragrances — thoughtfully curated to transform your space into a sanctuary.',
     cta: {
-      text: 'Discover New',
-      href: '/collections/new-arrivals',
+      text: 'Explore Collection',
+      href: '/collections',
     },
-    image: 'https://images.unsplash.com/photo-1608181831688-ba943e05dff4?w=1920&h=1080&fit=crop&q=80',
+    image: '/images/hero-essence.png',
     imageAlt: 'New arrival candles with botanical elements',
   },
 ]

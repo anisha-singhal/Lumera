@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
-    shippingCost: 99,
+    shippingCost: 49,
     freeShippingThreshold: 999,
     gstRate: 18,
     email: '',
@@ -28,7 +28,7 @@ export default function SettingsPage() {
       if (response.ok) {
         const data = await response.json()
         setSettings({
-          shippingCost: data.shippingCost || 99,
+          shippingCost: data.shippingCost || 49,
           freeShippingThreshold: data.freeShippingThreshold || 999,
           gstRate: data.gstRate || 18,
           email: data.email || '',

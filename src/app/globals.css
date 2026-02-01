@@ -404,6 +404,7 @@
     display: none;
   }
 
+
   /* Luxury Letter Spacing */
   .tracking-luxury {
     letter-spacing: 0.15em;
@@ -631,5 +632,41 @@ select option:checked {
   }
 }
 
+/* ========================================
+   HORIZONTAL SCROLLBAR - High specificity
+   ======================================== */
+
+.scrollbar-visible {
+  overflow-x: scroll !important;
+  scrollbar-width: auto !important;
+  scrollbar-color: #C9A24D #E7DED4 !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.scrollbar-visible::-webkit-scrollbar {
+  height: 14px !important;
+  display: block !important;
+  background: #E7DED4 !important;
+}
+
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: #E7DED4 !important;
+  border-radius: 6px !important;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background: #C9A24D !important;
+  border-radius: 6px !important;
+  min-width: 40px !important;
+  border: 2px solid #E7DED4 !important;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  background: #B8933F !important;
+}
+
+.scrollbar-visible::-webkit-scrollbar-button {
+  display: none !important;
+}
 
 

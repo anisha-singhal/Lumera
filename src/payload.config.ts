@@ -15,6 +15,7 @@ import {
   Coupons,
   OTPs,
 } from './payload/collections'
+import { Settings } from './payload/globals/Settings'
 
 
 const filename = fileURLToPath(import.meta.url)
@@ -62,6 +63,7 @@ export default buildConfig({
     // Marketing
     Subscribers,
   ],
+  globals: [Settings],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || 'lumera-secret-key-change-in-production',
   typescript: {

@@ -27,7 +27,7 @@ export default function CartPage() {
 
   const shippingThreshold = 999
   const freeShipping = subtotal >= shippingThreshold
-  const shipping = freeShipping ? 0 : 99
+  const shipping = freeShipping ? 0 : 49
   const total = subtotal + shipping
 
   return (

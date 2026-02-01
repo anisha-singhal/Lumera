@@ -105,7 +105,7 @@ export default function CheckoutPage() {
   }, [items, router, orderPlaced])
 
   const [storeSettings, setStoreSettings] = useState({
-    shippingCost: 99,
+    shippingCost: 49,
     freeShippingThreshold: 999,
   })
 
@@ -116,7 +116,7 @@ export default function CheckoutPage() {
         if (response.ok) {
           const data = await response.json()
           setStoreSettings({
-            shippingCost: data.shippingCost || 99,
+            shippingCost: data.shippingCost || 49,
             freeShippingThreshold: data.freeShippingThreshold || 999,
           })
         }

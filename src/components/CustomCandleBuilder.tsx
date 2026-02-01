@@ -10,7 +10,7 @@ import { useCart } from '@/context/CartContext'
 
 // Types
 type StepId = 1 | 2 | 3 | 4 | 5
-type VesselId = 'obsidian-matte' | 'ivory-frost' | 'champagne-gold' | 'ceramic-artisan' | 'hammered-brass'
+type VesselId = 'pure-glow' | 'shadow-luxe' | 'signature' | 'royal-bloom' | 'amber-glow'
 type FragranceFamily = 'floral' | 'woody' | 'fresh' | 'oriental' | 'gourmand'
 type FragranceMode = 'single' | 'blend'
 type WaxType = 'soy' | 'beeswax' | 'coconut-blend' | 'coconut-luxe'
@@ -55,44 +55,44 @@ const vesselOptions: {
   imageSrc: string
 }[] = [
   {
-    id: 'ivory-frost',
-    name: 'Ivory Frost',
-    material: 'Soft matte frosted glass',
-    priceDelta: 0,
-    description: 'Our signature jar with diffused glow.',
-    imageSrc: '/images/custom/vessels/frosted-glass.png',
+    id: 'pure-glow',
+    name: 'Pure Glow',
+    material: '',
+    priceDelta: 150,
+    description: 'A timeless clear glass jar',
+    imageSrc: '/images/custom/vessels/pure-glow.png',
   },
   {
-    id: 'obsidian-matte',
-    name: 'Obsidian Matte',
-    material: 'Hand-finished black glass',
+    id: 'shadow-luxe',
+    name: 'Shadow Luxe',
+    material: '',
     priceDelta: 200,
-    description: 'Deep, mysterious, and endlessly elegant.',
-    imageSrc: '/images/custom/vessels/frosted-glass.png',
+    description: 'A bold matte black jar',
+    imageSrc: '/images/custom/vessels/shadow-luxe.png',
   },
   {
-    id: 'champagne-gold',
-    name: 'Champagne Gold',
-    material: 'Metallic-finished glass',
-    priceDelta: 350,
-    description: 'Celebratory and luminous.',
-    imageSrc: '/images/custom/vessels/frosted-glass.png',
+    id: 'signature',
+    name: 'Signature',
+    material: '',
+    priceDelta: 150,
+    description: 'Our classic labelled jar',
+    imageSrc: '/images/custom/vessels/signature.png',
   },
   {
-    id: 'ceramic-artisan',
-    name: 'Ceramic Artisan',
-    material: 'Hand-glazed stoneware',
-    priceDelta: 400,
-    description: 'Tactile, weighty, perfect for re-use.',
-    imageSrc: '/images/custom/vessels/ceramic.png',
+    id: 'royal-bloom',
+    name: 'Royal Bloom',
+    material: '',
+    priceDelta: 250,
+    description: 'An ornate textured glass jar',
+    imageSrc: '/images/custom/vessels/royal-bloom.png',
   },
   {
-    id: 'hammered-brass',
-    name: 'Hammered Brass',
-    material: 'Hand-hammered brass finish',
-    priceDelta: 600,
-    description: 'Reflective, festive, statement-making.',
-    imageSrc: '/images/custom/vessels/hammered-metal.png',
+    id: 'amber-glow',
+    name: 'Amber Glow',
+    material: '',
+    priceDelta: 200,
+    description: 'A warm amber toned glass jar',
+    imageSrc: '/images/custom/vessels/amber-glow.png',
   },
 ]
 
@@ -106,45 +106,61 @@ const fragranceFamilies: Record<FragranceFamily, {
     name: 'Floral',
     description: 'Delicate blooms and garden whispers',
     scents: [
-      { id: 'bulgarian-rose', name: 'Bulgarian Rose', notes: 'Rose, peony, pink pepper', priceDelta: 300 },
-      { id: 'jasmine-night', name: 'Jasmine Night', notes: 'Jasmine, tuberose, musk', priceDelta: 350 },
-      { id: 'lavender-dreams', name: 'Lavender Dreams', notes: 'Lavender, vanilla, sandalwood', priceDelta: 250 },
+      { id: 'water-lily', name: ' Water Lily', notes: '', priceDelta: 100 },
+      { id: 'honey-suckle', name: 'Honey Suckle', notes: '', priceDelta: 100 },
+      { id: 'lilac', name: 'Lilac', notes: '', priceDelta: 100 },
+      { id: 'jasmine', name: 'Jasmine', notes: '', priceDelta: 100 },
+      //{ id: 'kenzo-flower', name: 'Kenzo Flower', notes: '', priceDelta: 100 },
+      //{ id: 'lotus', name: 'Lotus', notes: '', priceDelta: 100 },
+      { id: 'mogra', name: 'Mogra', notes: '', priceDelta: 100 },
     ],
   },
   woody: {
     name: 'Woody',
     description: 'Grounding earth and ancient trees',
     scents: [
-      { id: 'sacred-oud', name: 'Sacred Oud', notes: 'Oud, rose, saffron', priceDelta: 500 },
-      { id: 'sandalwood-silk', name: 'Sandalwood Silk', notes: 'Sandalwood, vanilla, amber', priceDelta: 350 },
-      { id: 'cedarwood-mist', name: 'Cedarwood Mist', notes: 'Cedar, vetiver, moss', priceDelta: 300 },
+      { id: 'white-oud', name: 'White Oud', notes: '', priceDelta: 100 },
+      { id: 'black-oud', name: 'Black Oud', notes: '', priceDelta: 100 },
+      { id: 'dubai-oud', name: 'Dubai Oud', notes: '', priceDelta: 100 },
+      //{ id: 'sandalwood-amber', name: 'Sandalwood Amber', notes: '', priceDelta: 100 },
+      { id: 'tobacco-noir', name: 'Tobacco Noir', notes: '', priceDelta: 100 },
+      //{ id: 'patchouli', name: 'Patchouli', notes: '', priceDelta: 100 },
     ],
   },
   fresh: {
     name: 'Fresh',
     description: 'Crisp mornings and ocean breeze',
     scents: [
-      { id: 'morning-dew', name: 'Morning Dew', notes: 'Green tea, bergamot, mint', priceDelta: 250 },
-      { id: 'sea-salt', name: 'Sea Salt & Sage', notes: 'Sea salt, sage, driftwood', priceDelta: 280 },
-      { id: 'citrus-grove', name: 'Citrus Grove', notes: 'Grapefruit, lemon, basil', priceDelta: 250 },
+      { id: 'white-tea', name: 'White Tea', notes: '', priceDelta: 100 },
+      { id: 'lemon-grass', name: 'Lemon Grass', notes: '', priceDelta: 100 },
+      { id: 'cool-water', name: 'Cool Water', notes: '', priceDelta: 100 },
+       { id: 'blue-lagoon', name: 'Blue Lagoon', notes: '', priceDelta: 100 },
     ],
   },
   oriental: {
     name: 'Oriental',
     description: 'Mysterious spice and warmth',
     scents: [
-      { id: 'amber-nights', name: 'Amber Nights', notes: 'Amber, vanilla, cinnamon', priceDelta: 350 },
-      { id: 'saffron-rose', name: 'Saffron Rose', notes: 'Saffron, rose, oud', priceDelta: 450 },
-      { id: 'mystic-incense', name: 'Mystic Incense', notes: 'Frankincense, myrrh, sandalwood', priceDelta: 380 },
+      { id: 'amber-nights', name: 'Amber Nights', notes: '', priceDelta: 100 },
+      { id: 'saffron-rose', name: 'Saffron Rose', notes: '', priceDelta: 100 },
+      { id: 'vanilla', name: 'Vanilla', notes: '', priceDelta: 100 },
+      { id: 'one-million gold', name: 'One Million Gold', notes: '', priceDelta: 100 },
+      { id: 'cinnamon', name: 'Cinnamon', notes: '', priceDelta: 100 },
     ],
   },
   gourmand: {
     name: 'Gourmand',
     description: 'Sweet indulgence and comfort',
     scents: [
-      { id: 'vanilla-bean', name: 'Vanilla Bean', notes: 'Vanilla, tonka, caramel', priceDelta: 280 },
-      { id: 'honey-almond', name: 'Honey & Almond', notes: 'Honey, almond, warm milk', priceDelta: 300 },
-      { id: 'coffee-cream', name: 'Coffee & Cream', notes: 'Coffee, cream, hazelnut', priceDelta: 320 },
+      { id: 'vanilla-bean', name: 'Vanilla Bean', notes: '', priceDelta: 100 },
+      //{ id: 'honey-almond', name: 'Honey & Almond', notes: '', priceDelta: 100 },
+      { id: 'coffee-cream', name: 'Coffee & Cream', notes: '', priceDelta: 100 },
+      { id: 'strawberry', name: 'Strawberry', notes: '', priceDelta: 100 },
+      //{ id: 'thousand-wishes', name: 'Thousand Wishes', notes: '', priceDelta: 100 },
+      //{ id: 'raspberry', name: 'Raspberry', notes: '', priceDelta: 100 },
+      { id: 'chocolate', name: 'Chocolate', notes: '', priceDelta: 100 },
+      { id: 'cherry', name: 'Cherry', notes: '', priceDelta: 100 },
+      //{ id: 'bubblegum', name: 'Bubblegum', notes: '', priceDelta: 100 },
     ],
   },
 }
@@ -168,10 +184,7 @@ const waxTypes: {
   name: string
   priceDelta: number
 }[] = [
-  { id: 'soy', name: 'Pure Soy Wax', priceDelta: 0 },
-  { id: 'beeswax', name: 'Natural Beeswax', priceDelta: 200 },
-  { id: 'coconut-blend', name: 'Coconut & Soy Blend', priceDelta: 100 },
-  { id: 'coconut-luxe', name: 'Coconut & Soy Luxe', priceDelta: 180 },
+  { id: 'soy', name: 'Pure Soy Wax', priceDelta: 200 },
 ]
 
 // Wick types
@@ -182,7 +195,7 @@ const wickTypes: {
 }[] = [
   { id: 'cotton', name: 'Braided Cotton', priceDelta: 0 },
   { id: 'wooden-crackle', name: 'Wooden Crackle', priceDelta: 150 },
-  { id: 'dual-wick', name: 'Dual Wick', priceDelta: 200 },
+  { id: 'dual-wick', name: 'Dual Wick', priceDelta: 150 },
 ]
 
 // Foil finishes
@@ -192,9 +205,7 @@ const foilFinishes: {
   priceDelta: number
 }[] = [
   { id: 'none', name: 'No Foil', priceDelta: 0 },
-  { id: 'gold', name: 'Gold Foil', priceDelta: 100 },
-  { id: 'rose-gold', name: 'Rose Gold', priceDelta: 100 },
-  { id: 'matte-black', name: 'Matte Black', priceDelta: 100 },
+  { id: 'gold', name: 'Gold Foil', priceDelta: 150 },
 ]
 
 // Finishing touch add-ons (checkbox style)
@@ -208,19 +219,7 @@ const finishingTouchOptions: {
     id: 'engraved-wooden-lid',
     name: 'Engraved Wooden Lid',
     description: 'Custom engraved wooden lid with your initials.',
-    priceDelta: 250,
-  },
-  {
-    id: 'gold-metal-lid',
-    name: 'Gold Metal Lid',
-    description: 'Luxurious gold-plated metal lid.',
-    priceDelta: 350,
-  },
-  {
-    id: 'wax-seal',
-    name: 'Wax Seal',
-    description: 'Hand-stamped wax seal on packaging.',
-    priceDelta: 150,
+    priceDelta: 200,
   },
   {
     id: 'handwritten-note',
@@ -264,7 +263,7 @@ const packagingOptions: {
   },
 ]
 
-const BASE_PRICE = 1999
+const BASE_PRICE = 199
 
 export default function CustomCandleBuilder() {
   const { addToCart } = useCart()
@@ -276,16 +275,16 @@ export default function CustomCandleBuilder() {
   const incrementQty = () => setQuantity(prev => Math.min(prev + 1, 10))
   const decrementQty = () => setQuantity(prev => Math.max(prev - 1, 1))
   const [config, setConfig] = useState<CandleConfig>({
-    vessel: 'ivory-frost',
+    vessel: 'pure-glow',
     fragranceFamily: 'floral',
     fragranceMode: 'single',
     primaryScent: null,
     secondaryScent: null,
     waxType: 'soy',
-    waxColor: 'warm-grey',
+    waxColor: 'natural',
     wickType: 'cotton',
     labelText: '',
-    foilFinish: 'gold',
+    foilFinish: 'none',
     packaging: null,
     includeCard: false,
     waxSeal: false,
@@ -316,8 +315,8 @@ export default function CustomCandleBuilder() {
     }
 
     if (config.primaryScent) {
-      const family = fragranceFamilies[config.fragranceFamily]
-      const scent = family.scents.find((s) => s.id === config.primaryScent)
+      const allScents = Object.values(fragranceFamilies).flatMap(f => f.scents)
+      const scent = allScents.find((s) => s.id === config.primaryScent)
       if (scent) total += scent.priceDelta
     }
 
@@ -406,12 +405,8 @@ export default function CustomCandleBuilder() {
                   </h3>
                   <p className="text-[10px] sm:text-xs text-[#1C1C1C]/60 truncate mb-2">
                     {config.primaryScent ? (() => {
-                      const selectedIds = config.fragranceMode === 'blend'
-                        ? config.primaryScent.split(',').filter(id => id.trim())
-                        : [config.primaryScent]
                       const allScents = Object.values(fragranceFamilies).flatMap(f => f.scents)
-                      const names = selectedIds.map(id => allScents.find(s => s.id === id)?.name).filter(Boolean)
-                      return names.join(' + ')
+                      return allScents.find(s => s.id === config.primaryScent)?.name || 'Select Fragrance'
                     })() : 'Select Fragrance'}
                   </p>
 
@@ -479,39 +474,35 @@ export default function CustomCandleBuilder() {
                 <div className="space-y-3">
                   {/* Jar */}
                   <div className="flex items-center justify-between">
-                    <span className="text-[#1C1C1C]/60 text-sm">Jar</span>
-                    <span className="text-[#800020] text-sm font-medium">
+                    <span className="text-[#1C1C1C]/60 text-xs">Jar</span>
+                    <span className="text-[#800020] text-xs font-medium">
                       {config.vessel ? vesselOptions.find((v) => v.id === config.vessel)?.name : '—'}
                     </span>
                   </div>
 
                   {/* Fragrance */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#1C1C1C]/60 text-sm">Fragrance</span>
-                    <span className="text-[#800020] text-sm font-medium text-right max-w-[60%]">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[#1C1C1C]/60 text-xs flex-shrink-0">Fragrance</span>
+                    <span className="text-[#800020] text-xs font-medium text-right truncate max-w-[120px]">
                       {config.primaryScent ? (() => {
-                        const selectedIds = config.fragranceMode === 'blend'
-                          ? config.primaryScent.split(',').filter(id => id.trim())
-                          : [config.primaryScent]
                         const allScents = Object.values(fragranceFamilies).flatMap(f => f.scents)
-                        const names = selectedIds.map(id => allScents.find(s => s.id === id)?.name).filter(Boolean)
-                        return names.join(' + ')
+                        return allScents.find(s => s.id === config.primaryScent)?.name || '—'
                       })() : '—'}
                     </span>
                   </div>
 
                   {/* Wax */}
                   <div className="flex items-center justify-between">
-                    <span className="text-[#1C1C1C]/60 text-sm">Wax</span>
-                    <span className="text-[#800020] text-sm font-medium">
+                    <span className="text-[#1C1C1C]/60 text-xs">Wax</span>
+                    <span className="text-[#800020] text-xs font-medium">
                       {waxTypes.find((w) => w.id === config.waxType)?.name || '—'}
                     </span>
                   </div>
 
                   {/* Wick */}
                   <div className="flex items-center justify-between">
-                    <span className="text-[#1C1C1C]/60 text-sm">Wick</span>
-                    <span className="text-[#800020] text-sm font-medium">
+                    <span className="text-[#1C1C1C]/60 text-xs">Wick</span>
+                    <span className="text-[#800020] text-xs font-medium">
                       {config.wickType === 'cotton'
                         ? 'Cotton'
                         : config.wickType === 'wooden-crackle'
@@ -522,8 +513,8 @@ export default function CustomCandleBuilder() {
 
                   {/* Finishing Touches */}
                   <div className="flex items-center justify-between">
-                    <span className="text-[#1C1C1C]/60 text-sm">Finishing</span>
-                    <span className={config.finishingTouches.length > 0 ? 'text-[#800020] text-sm font-medium' : 'text-[#1C1C1C]/40 text-sm'}>
+                    <span className="text-[#1C1C1C]/60 text-xs">Finishing</span>
+                    <span className={config.finishingTouches.length > 0 ? 'text-[#800020] text-xs font-medium' : 'text-[#1C1C1C]/40 text-xs'}>
                       {config.finishingTouches.length > 0
                         ? `${config.finishingTouches.length} add-on${config.finishingTouches.length > 1 ? 's' : ''}`
                         : '—'}
@@ -532,7 +523,7 @@ export default function CustomCandleBuilder() {
 
                   {/* Quantity */}
                   <div className="flex items-center justify-between pt-3 mt-3 border-t border-[#1C1C1C]/10">
-                    <span className="text-[#1C1C1C]/60 text-sm">Quantity</span>
+                    <span className="text-[#1C1C1C]/60 text-xs">Quantity</span>
                     <div className="flex items-center gap-3">
                       <button
                         type="button"
@@ -544,7 +535,7 @@ export default function CustomCandleBuilder() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
                         </svg>
                       </button>
-                      <span className="text-[#800020] text-sm font-medium w-8 text-center">{quantity}</span>
+                      <span className="text-[#800020] text-xs font-medium w-6 text-center">{quantity}</span>
                       <button
                         type="button"
                         onClick={incrementQty}
@@ -579,7 +570,7 @@ export default function CustomCandleBuilder() {
         </div>
 
         {/* Right Panel - Steps */}
-        <div className="flex-1 bg-[#F6F1EB] flex flex-col min-h-[50vh] lg:min-h-[calc(100vh-7rem)]">
+        <div className="flex-1 bg-[#F6F1EB] flex flex-col min-h-[50vh] lg:min-h-[calc(100vh-7rem)] overflow-x-visible">
           {/* Step Header - Always scrollable to handle zoom */}
           <div className="bg-[#F6F1EB] border-b border-[#C9A24D]/20 sticky top-16 sm:top-20 lg:top-0 z-20">
             <div className="overflow-x-auto scrollbar-hide">
@@ -636,7 +627,7 @@ export default function CustomCandleBuilder() {
           </div>
 
           {/* Step Content */}
-          <div className="flex-1 p-4 sm:p-6 md:p-10 pb-24">
+          <div className="flex-1 p-4 sm:p-6 md:p-10 pb-24 overflow-x-visible overflow-y-visible">
             <AnimatePresence mode="wait">
               <motion.div
                 key={step}
@@ -644,6 +635,7 @@ export default function CustomCandleBuilder() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
+                className="overflow-visible"
               >
                 {step === 1 && (
                   <StepVessel config={config} updateConfig={updateConfig} onNext={goNext} />
@@ -840,7 +832,7 @@ function StepVessel({ config, updateConfig, onNext, onBack }: StepProps) {
                 type="button"
                 onClick={() => updateConfig('vessel', vessel.id)}
                 className={clsx(
-                  'relative p-3 sm:p-4 md:p-5 text-center transition-all duration-300 bg-white rounded-xl sm:rounded-2xl snap-start overflow-hidden',
+                  'relative p-3 sm:p-4 md:p-5 text-center transition-all duration-300 bg-white rounded-xl sm:rounded-2xl snap-start',
                   'w-[160px] sm:w-[180px] flex-shrink-0 lg:flex-shrink lg:w-auto',
                   isSelected
                     ? 'ring-2 ring-inset ring-[#800020] shadow-sm'
@@ -869,10 +861,10 @@ function StepVessel({ config, updateConfig, onNext, onBack }: StepProps) {
                 </div>
 
                 {/* Vessel Info */}
-                <h3 className="font-serif text-xs sm:text-sm text-[#800020] mb-1 sm:mb-2 break-words px-1">
+                <h3 className="font-serif text-[10px] sm:text-[11px] text-[#800020] mb-1 sm:mb-2 px-1">
                   {vessel.name}
                 </h3>
-                <p className="text-[9px] sm:text-[10px] text-[#1C1C1C]/50 mb-2 sm:mb-3 leading-relaxed break-words px-1">
+                <p className="text-[9px] sm:text-[10px] text-[#1C1C1C]/50 mb-2 sm:mb-3 leading-relaxed px-1">
                   {vessel.material}
                 </p>
                 <p className="text-[10px] sm:text-xs text-[#800020]">
@@ -896,78 +888,14 @@ function StepFragrance({ config, updateConfig, onNext, onBack }: StepProps) {
   const currentFamily = fragranceFamilies[config.fragranceFamily]
   const families = Object.entries(fragranceFamilies) as [FragranceFamily, typeof currentFamily][]
 
-  // Fragrance images - uses existing images, falls back to sandalwood for missing ones
-  const defaultImage = '/images/custom/fragrances/sandalwood.jpg'
-  const fragranceImages: Record<string, string> = {
-    'bulgarian-rose': '/images/custom/fragrances/rose.jpg',
-    'jasmine-night': '/images/custom/fragrances/jasmine.jpg',
-    'lavender-dreams': '/images/custom/fragrances/rose.jpg', // fallback
-    'sacred-oud': '/images/custom/fragrances/oud.jpg',
-    'sandalwood-silk': '/images/custom/fragrances/sandalwood.jpg',
-    'cedarwood-mist': '/images/custom/fragrances/sandalwood.jpg', // fallback to similar
-    'morning-dew': '/images/custom/fragrances/jasmine.jpg', // fallback
-    'sea-salt': '/images/custom/fragrances/sandalwood.jpg', // fallback
-    'citrus-grove': '/images/custom/fragrances/jasmine.jpg', // fallback
-    'amber-nights': '/images/custom/fragrances/oud.jpg', // fallback
-    'saffron-rose': '/images/custom/fragrances/rose.jpg', // fallback
-    'mystic-incense': '/images/custom/fragrances/oud.jpg', // fallback
-    'vanilla-bean': '/images/custom/fragrances/sandalwood.jpg', // fallback
-    'honey-almond': '/images/custom/fragrances/sandalwood.jpg', // fallback
-    'coffee-cream': '/images/custom/fragrances/oud.jpg', // fallback
-  }
-
-  // Get all selected scent IDs (stored as comma-separated in primaryScent when blending)
-  const getSelectedScents = (): string[] => {
-    if (!config.primaryScent) return []
-    if (config.fragranceMode === 'blend') {
-      return config.primaryScent.split(',').filter(id => id.trim())
-    }
-    return [config.primaryScent]
-  }
-
-  // Handle fragrance selection - multi-select when blending is enabled
+  // Handle fragrance selection - single select only
   const handleFragranceClick = (scentId: string) => {
-    if (config.fragranceMode === 'blend') {
-      // In blend mode, allow selecting multiple fragrances
-      const currentSelections = getSelectedScents()
-      
-      if (currentSelections.includes(scentId)) {
-        // Deselect - remove from array
-        const newSelections = currentSelections.filter(id => id !== scentId)
-        updateConfig('primaryScent', newSelections.length > 0 ? newSelections.join(',') : null)
-      } else {
-        // Select - add to array
-        const newSelections = [...currentSelections, scentId]
-        updateConfig('primaryScent', newSelections.join(','))
-      }
-    } else {
-      // Single mode - just select one
-      updateConfig('primaryScent', scentId)
-    }
+    updateConfig('primaryScent', scentId)
   }
 
   const isSelected = (scentId: string) => {
-    return getSelectedScents().includes(scentId)
+    return config.primaryScent === scentId
   }
-
-  const getSelectionNumber = (scentId: string) => {
-    const selections = getSelectedScents()
-    const index = selections.indexOf(scentId)
-    return index >= 0 ? index + 1 : 0
-  }
-
-  // Get selected scent names for display
-  const getSelectedScentNames = () => {
-    const selections = getSelectedScents()
-    const allScents = Object.values(fragranceFamilies).flatMap(f => f.scents)
-    const names = selections.map(id => {
-      const scent = allScents.find(s => s.id === id)
-      return scent?.name || ''
-    }).filter(Boolean)
-    return names.join(' + ')
-  }
-
-  const selectedCount = getSelectedScents().length
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -976,11 +904,6 @@ function StepFragrance({ config, updateConfig, onNext, onBack }: StepProps) {
         <h2 className="font-serif text-xl sm:text-2xl md:text-3xl text-[#800020]">
           Select Your Fragrance
         </h2>
-        {config.fragranceMode === 'blend' && (
-          <p className="text-xs sm:text-sm text-[#C9A24D] mt-2">
-            Blend Mode: Select multiple fragrances to create your unique blend
-          </p>
-        )}
       </header>
 
       {/* Family tabs - Horizontal scroll on mobile */}
@@ -989,10 +912,7 @@ function StepFragrance({ config, updateConfig, onNext, onBack }: StepProps) {
           <button
             key={id}
             type="button"
-            onClick={() => {
-              updateConfig('fragranceFamily', id)
-              // Don't clear selections when switching tabs - allow cross-category selection
-            }}
+            onClick={() => updateConfig('fragranceFamily', id)}
             className={clsx(
               'px-3 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-sans transition-all rounded-lg whitespace-nowrap flex-shrink-0',
               config.fragranceFamily === id
@@ -1003,195 +923,63 @@ function StepFragrance({ config, updateConfig, onNext, onBack }: StepProps) {
             {family.name}
           </button>
         ))}
-        {config.fragranceMode === 'blend' && (
-          <button
-            type="button"
-            onClick={() => updateConfig('fragranceFamily', 'all' as FragranceFamily)}
-            className={clsx(
-              'px-5 py-2.5 text-sm font-sans transition-all rounded-lg',
-              config.fragranceFamily === ('all' as FragranceFamily)
-                ? 'bg-[#C9A24D] text-white'
-                : 'bg-[#C9A24D]/20 text-[#C9A24D] hover:bg-[#C9A24D]/30'
-            )}
-          >
-            All Scents
-          </button>
-        )}
       </div>
 
-      {/* Selected Blend Display */}
-      {config.fragranceMode === 'blend' && selectedCount > 0 && (
-        <div className="bg-[#C9A24D]/10 rounded-xl p-4 border border-[#C9A24D]/30">
-          <div className="flex items-center justify-between mb-1">
-            <p className="text-xs text-[#1C1C1C]/50 uppercase tracking-wider">Your Blend</p>
-            <span className="text-xs bg-[#C9A24D] text-white px-2 py-0.5 rounded-full">
-              {selectedCount} selected
-            </span>
-          </div>
-          <p className="font-serif text-lg text-[#800020]">{getSelectedScentNames()}</p>
-        </div>
-      )}
-
       {/* Fragrance Cards - Horizontal Scroll */}
-      {config.fragranceMode === 'blend' && config.fragranceFamily === ('all' as FragranceFamily) ? (
-        // Show all scents grouped by family when "All Scents" is selected
-        <div className="space-y-6">
-          {families.map(([familyId, family]) => (
-            <div key={familyId}>
-              <h4 className="text-sm font-sans text-[#1C1C1C]/50 uppercase tracking-wider mb-3">
-                {family.name}
-              </h4>
-              <div className="relative -mx-2">
-                <div className="flex gap-4 overflow-x-auto px-2 py-2 snap-x snap-mandatory scrollbar-hide">
-                  {family.scents.map((scent) => {
-                    const selected = isSelected(scent.id)
-                    const selectionNum = getSelectionNumber(scent.id)
-                    return (
-                      <button
-                        key={scent.id}
-                        type="button"
-                        onClick={() => handleFragranceClick(scent.id)}
-                        className={clsx(
-                          'relative flex-shrink-0 w-[140px] md:w-[160px] text-left transition-all duration-300 bg-white rounded-xl overflow-hidden snap-start',
-                          selected
-                            ? 'ring-2 ring-[#800020] shadow-md'
-                            : 'border border-[#1C1C1C]/10 hover:border-[#800020]/30 hover:shadow-sm'
-                        )}
-                      >
-                        <div className="relative h-24 md:h-28 bg-[#E7DED4] overflow-hidden">
-                          <Image
-                            src={fragranceImages[scent.id] || defaultImage}
-                            alt={scent.name}
-                            fill
-                            className="object-cover object-center"
-                            sizes="160px"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.style.display = 'none'
-                            }}
-                          />
-                          {selected && (
-                            <div className="absolute top-2 right-2 w-5 h-5 bg-[#C9A24D] rounded-full flex items-center justify-center">
-                              <span className="text-white text-[10px] font-bold">{selectionNum}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="p-2">
-                          <h3 className="font-serif text-xs md:text-sm text-[#800020] line-clamp-1">
-                            {scent.name}
-                          </h3>
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        // Show current family scents
-        <div className="relative -mx-2">
-          <div className="flex gap-4 overflow-x-auto px-2 py-2 snap-x snap-mandatory scrollbar-hide">
-            {currentFamily.scents.map((scent) => {
-              const selected = isSelected(scent.id)
-              const selectionNum = getSelectionNumber(scent.id)
-              return (
-                <button
-                  key={scent.id}
-                  type="button"
-                  onClick={() => handleFragranceClick(scent.id)}
+      <div className="-mx-4 sm:-mx-6 md:-mx-10">
+        <div
+          className="flex gap-4 px-4 sm:px-6 md:px-10 py-2 pb-4 overflow-x-auto"
+          style={{
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#C9A24D #E7DED4',
+          }}
+        >
+          {currentFamily.scents.map((scent) => {
+            const selected = isSelected(scent.id)
+            return (
+              <button
+                key={scent.id}
+                type="button"
+                onClick={() => handleFragranceClick(scent.id)}
                 className={clsx(
-                  'relative flex-shrink-0 w-[160px] md:w-[180px] text-left transition-all duration-300 bg-white rounded-xl snap-start overflow-hidden',
+                  'relative flex-shrink-0 w-[160px] md:w-[180px] text-left transition-all duration-300 bg-white rounded-xl overflow-hidden',
                   selected
                     ? 'ring-2 ring-inset ring-[#800020] shadow-md'
                     : 'border border-[#1C1C1C]/10 hover:border-[#800020]/30 hover:shadow-sm'
                 )}
-                >
-                  {/* Image */}
-                  <div className="relative h-32 md:h-36 bg-[#E7DED4]">
-                    <Image
-                      src={fragranceImages[scent.id] || defaultImage}
-                      alt={scent.name}
-                      fill
-                      className="object-cover object-center"
-                      sizes="180px"
-                    />
+              >
+                <div className="p-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="font-serif text-[9px] md:text-[10px] text-[#800020]">
+                      {scent.name}
+                    </h3>
                     {selected && (
-                      <div className="absolute top-2 right-2 w-6 h-6 bg-[#C9A24D] rounded-full flex items-center justify-center">
-                        {config.fragranceMode === 'blend' ? (
-                          <span className="text-white text-xs font-bold">{selectionNum}</span>
-                        ) : (
-                          <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        )}
+                      <div className="w-6 h-6 bg-[#C9A24D] rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
                       </div>
                     )}
                   </div>
-                  
-                  {/* Content */}
-                  <div className="p-3">
-                    <h3 className="font-serif text-sm md:text-base text-[#800020] mb-1">
-                      {scent.name}
-                    </h3>
-                    <p className="text-[10px] md:text-xs text-[#1C1C1C]/50 leading-relaxed line-clamp-2 mb-2">
+                  {scent.notes && (
+                    <p className="text-[7px] md:text-[8px] text-[#1C1C1C]/50 leading-relaxed line-clamp-2 mb-1">
                       {scent.notes}
                     </p>
-                    
-                    {/* Icons/Tags Row */}
-                    <div className="flex items-center gap-2 text-[#1C1C1C]/30">
-                      <span className="text-xs">🌿</span>
-                      <span className="text-xs">✨</span>
-                      {scent.priceDelta >= 400 && <span className="text-xs">💎</span>}
-                    </div>
+                  )}
+                  <div className="flex items-center justify-between mt-1.5 pt-1.5 border-t border-[#1C1C1C]/5">
+                    <span className="text-[7px] text-[#1C1C1C]/40">Price</span>
+                    <span className="text-[8px] font-medium text-[#C9A24D]">
+                      +₹{scent.priceDelta}
+                    </span>
                   </div>
-                </button>
-              )
-            })}
-          </div>
+                </div>
+              </button>
+            )
+          })}
+          {/* End spacer */}
+          <div className="w-4 flex-shrink-0" />
         </div>
-      )}
-
-      {/* Advanced Craft Section */}
-      <div className="pt-4 border-t border-[#1C1C1C]/10">
-        <h3 className="font-serif text-lg text-[#1C1C1C] mb-3">Advanced Craft</h3>
-        <label className="flex items-start gap-3 cursor-pointer">
-          <div className="relative mt-0.5">
-            <input
-              type="checkbox"
-              checked={config.fragranceMode === 'blend'}
-              onChange={(e) => {
-                updateConfig('fragranceMode', e.target.checked ? 'blend' : 'single')
-                if (!e.target.checked) {
-                  // Keep only the first selection when disabling blend mode
-                  const selections = getSelectedScents()
-                  if (selections.length > 1) {
-                    updateConfig('primaryScent', selections[0])
-                  }
-                }
-              }}
-              className="sr-only"
-            />
-            <div className={clsx(
-              'w-5 h-5 border-2 rounded transition-all flex items-center justify-center',
-              config.fragranceMode === 'blend'
-                ? 'bg-[#800020] border-[#800020]'
-                : 'border-[#1C1C1C]/30'
-            )}>
-              {config.fragranceMode === 'blend' && (
-                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              )}
-            </div>
-          </div>
-          <span className="text-sm text-[#1C1C1C]/70">
-            Blending is recommended for a deeper, more personal fragrance.
-          </span>
-        </label>
       </div>
-
     </div>
   )
 }
