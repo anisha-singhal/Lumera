@@ -11,6 +11,7 @@ export interface CartItem {
   image: string
   quantity: number
   collection?: string
+  fragrance?: string
 }
 
 interface CartContextType {
@@ -75,11 +76,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addToCart = (item: Omit<CartItem, 'quantity'>, quantity: number = 1) => {
     setItems((prevItems) => {
-      const existingItem = prevItems.find((i) => i.id === item.id)
+      // Check for existing item with same id AND same fragrance
+      const existingItem = prevItems.find(
+        (i) => i.id === item.id && i.fragrance === item.fragrance
+      )
 
       if (existingItem) {
         return prevItems.map((i) =>
-          i.id === item.id
+          i.id === item.id && i.fragrance === item.fragrance
             ? { ...i, quantity: i.quantity + quantity }
             : i
         )

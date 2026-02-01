@@ -23,9 +23,6 @@ interface ProductForm {
   burnTimeMin: string
   burnTimeMax: string
   weight: string
-  topNotes: string
-  heartNotes: string
-  baseNotes: string
   promoTag: string
 }
 
@@ -33,6 +30,12 @@ interface ExistingImage {
   id: string
   url: string
   isPrimary: boolean
+}
+
+interface Fragrance {
+  id: string
+  name: string
+  slug: string
 }
 
 const initialForm: ProductForm = {
@@ -52,9 +55,6 @@ const initialForm: ProductForm = {
   burnTimeMin: '',
   burnTimeMax: '',
   weight: '',
-  topNotes: '',
-  heartNotes: '',
-  baseNotes: '',
   promoTag: '',
 }
 
@@ -74,10 +74,15 @@ export default function EditProductPage() {
   const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
   const [collections, setCollections] = useState<Array<{ id: string; name: string }>>([])
+  const [fragrances, setFragrances] = useState<Fragrance[]>([])
+  const [selectedFragrances, setSelectedFragrances] = useState<string[]>([])
+  const [newFragranceName, setNewFragranceName] = useState('')
+  const [addingFragrance, setAddingFragrance] = useState(false)
 
   useEffect(() => {
     fetchProduct()
     fetchCollections()
+    fetchFragrances()
   }, [productId])
 
   async function fetchProduct() {
@@ -120,11 +125,16 @@ export default function EditProductPage() {
           burnTimeMin: product.specifications?.burnTime?.minimum?.toString() || '',
           burnTimeMax: product.specifications?.burnTime?.maximum?.toString() || '',
           weight: product.specifications?.weight?.value?.toString() || '',
-          topNotes: product.fragrance?.topNotes?.map((n: any) => n.note).join(', ') || '',
-          heartNotes: product.fragrance?.heartNotes?.map((n: any) => n.note).join(', ') || '',
-          baseNotes: product.fragrance?.baseNotes?.map((n: any) => n.note).join(', ') || '',
           promoTag: product.promoTag || '',
         })
+
+        // Map existing fragrances
+        if (product.availableFragrances && Array.isArray(product.availableFragrances)) {
+          const fragranceIds = product.availableFragrances.map((f: any) =>
+            typeof f === 'string' ? f : f.id
+          )
+          setSelectedFragrances(fragranceIds)
+        }
 
         // Map existing images
         if (product.images && product.images.length > 0) {
@@ -165,6 +175,55 @@ export default function EditProductPage() {
       }
     } catch (err) {
       console.error('Failed to fetch collections:', err)
+    }
+  }
+
+  async function fetchFragrances() {
+    try {
+      const response = await fetch('/api/fragrances')
+      if (response.ok) {
+        const data = await response.json()
+        setFragrances(data.docs || [])
+      }
+    } catch (err) {
+      console.error('Failed to fetch fragrances:', err)
+    }
+  }
+
+  const toggleFragrance = (fragranceId: string) => {
+    setSelectedFragrances(prev =>
+      prev.includes(fragranceId)
+        ? prev.filter(id => id !== fragranceId)
+        : [...prev, fragranceId]
+    )
+  }
+
+  const addNewFragrance = async () => {
+    if (!newFragranceName.trim()) return
+
+    setAddingFragrance(true)
+    try {
+      const slug = newFragranceName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '')
+
+      const response = await fetch('/api/fragrances', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newFragranceName.trim(), slug }),
+      })
+
+      if (response.ok) {
+        const newFragrance = await response.json()
+        setFragrances(prev => [...prev, newFragrance])
+        setSelectedFragrances(prev => [...prev, newFragrance.id])
+        setNewFragranceName('')
+      }
+    } catch (err) {
+      console.error('Failed to add fragrance:', err)
+    } finally {
+      setAddingFragrance(false)
     }
   }
 
@@ -282,11 +341,7 @@ export default function EditProductPage() {
             unit: 'g',
           },
         },
-        fragrance: {
-          topNotes: form.topNotes ? form.topNotes.split(',').map(n => ({ note: n.trim() })) : [],
-          heartNotes: form.heartNotes ? form.heartNotes.split(',').map(n => ({ note: n.trim() })) : [],
-          baseNotes: form.baseNotes ? form.baseNotes.split(',').map(n => ({ note: n.trim() })) : [],
-        },
+        availableFragrances: selectedFragrances,
         images: allImages,
       }
 
@@ -758,52 +813,67 @@ export default function EditProductPage() {
           </div>
         </div>
 
-        {/* Fragrance Notes */}
+        {/* Available Fragrances */}
         <div className="bg-white rounded-xl border border-gray-100 p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Fragrance Notes</h2>
-          <div className="grid grid-cols-1 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Top Notes
-              </label>
-              <input
-                type="text"
-                name="topNotes"
-                value={form.topNotes}
-                onChange={handleChange}
-                placeholder="Lavender, Bergamot, Lemon (comma separated)"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-              />
-            </div>
+          <h2 className="text-lg font-medium text-gray-900 mb-4">Available Fragrances *</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Select which fragrances customers can choose from for this candle (select 1 or more)
+          </p>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Heart Notes
-              </label>
-              <input
-                type="text"
-                name="heartNotes"
-                value={form.heartNotes}
-                onChange={handleChange}
-                placeholder="Rose, Jasmine, Geranium (comma separated)"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-              />
+          {/* Existing fragrances */}
+          {fragrances.length > 0 && (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+              {fragrances.map(fragrance => (
+                <label
+                  key={fragrance.id}
+                  className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all ${
+                    selectedFragrances.includes(fragrance.id)
+                      ? 'border-[#1e3a5f] bg-[#1e3a5f]/5'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedFragrances.includes(fragrance.id)}
+                    onChange={() => toggleFragrance(fragrance.id)}
+                    className="w-4 h-4 rounded border-gray-300 text-[#1e3a5f] focus:ring-[#1e3a5f]"
+                  />
+                  <span className="text-sm text-gray-700">{fragrance.name}</span>
+                </label>
+              ))}
             </div>
+          )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Base Notes
-              </label>
-              <input
-                type="text"
-                name="baseNotes"
-                value={form.baseNotes}
-                onChange={handleChange}
-                placeholder="Sandalwood, Vanilla, Musk (comma separated)"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-              />
-            </div>
+          {/* Add new fragrance inline */}
+          <div className="flex gap-2 items-center pt-3 border-t border-gray-100">
+            <input
+              type="text"
+              value={newFragranceName}
+              onChange={(e) => setNewFragranceName(e.target.value)}
+              placeholder="Enter fragrance name (e.g., Lavender Dreams)"
+              className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  addNewFragrance()
+                }
+              }}
+            />
+            <button
+              type="button"
+              onClick={addNewFragrance}
+              disabled={addingFragrance || !newFragranceName.trim()}
+              className="px-4 py-2 text-sm font-medium text-white bg-[#1e3a5f] rounded-lg hover:bg-[#2a4d7a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {addingFragrance ? 'Adding...' : '+ Add'}
+            </button>
           </div>
+
+          {selectedFragrances.length > 0 && (
+            <p className="mt-3 text-xs text-gray-500">
+              {selectedFragrances.length} fragrance{selectedFragrances.length > 1 ? 's' : ''} selected
+            </p>
+          )}
         </div>
 
         {/* Actions */}

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 import {
   Products,
   Collections,
+  Fragrances,
   Orders,
   Media,
   Users,
@@ -50,6 +51,7 @@ export default buildConfig({
     // Shop Management
     Products,
     Collections,
+    Fragrances,
     Orders,
     Coupons,
     // Content
@@ -59,7 +61,6 @@ export default buildConfig({
     OTPs,
     // Marketing
     Subscribers,
-
   ],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || 'lumera-secret-key-change-in-production',

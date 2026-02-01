@@ -42,15 +42,11 @@ interface Product {
     name: string
     slug: string
   }
-  fragrance?: {
-    topNotes?: Array<{ note: string }>
-    heartNotes?: Array<{ note: string }>
-    baseNotes?: Array<{ note: string }>
-    family?: string
-    intensity?: string
-    fragranceFamily?: string
-    scentIntensity?: string
-  }
+  availableFragrances?: Array<{
+    id: string
+    name: string
+    slug: string
+  }>
   specifications: {
     burnTime: { minimum: number; maximum: number }
     weight: { value: number; unit: string }
@@ -101,6 +97,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState<'description' | 'details' | 'care'>('description')
   const [isAdded, setIsAdded] = useState(false)
+  const [selectedFragrance, setSelectedFragrance] = useState<string>('')
   
   const { addToCart, setIsCartOpen } = useCart()
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
@@ -130,6 +127,16 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     }
     fetchProduct()
   }, [slug])
+
+  // Auto-select first fragrance if only one available
+  // Must be before early returns to maintain hooks order
+  useEffect(() => {
+    const availableFragrances = product?.availableFragrances || []
+    const hasSingleFragrance = availableFragrances.length === 1
+    if (hasSingleFragrance && !selectedFragrance) {
+      setSelectedFragrance(availableFragrances[0].id)
+    }
+  }, [product, selectedFragrance])
 
   if (loading) {
      return (
@@ -167,13 +174,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   
   const collectionName = product.productCollection?.name || 'Collection'
   const collectionSlug = product.productCollection?.slug || 'all'
-  
-  // Normalize fragrance data
-  const fragranceFamily = product.fragrance?.fragranceFamily || product.fragrance?.family || 'Signature' 
-  const fragranceIntensity = product.fragrance?.scentIntensity || product.fragrance?.intensity || 'Moderate'
-  const topNotes = product.fragrance?.topNotes?.map(n => n.note).join(', ') || ''
-  const heartNotes = product.fragrance?.heartNotes?.map(n => n.note).join(', ') || ''
-  const baseNotes = product.fragrance?.baseNotes?.map(n => n.note).join(', ') || ''
+
+  // Available fragrances for this product
+  const availableFragrances = product.availableFragrances || []
+  const hasMultipleFragrances = availableFragrances.length > 1
+  const hasSingleFragrance = availableFragrances.length === 1
 
   // Normalize Images
   // Ensure we have at least one image
@@ -327,47 +332,33 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                   )}
                 </div>
 
-                {/* Fragrance Family */}
-                {product.fragrance && (
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-6 text-sm font-sans">
-                      <div className="flex items-center gap-2">
-                        <span className="text-burgundy-700/60">Fragrance Family:</span>
-                        <span className="text-burgundy-700 capitalize">{fragranceFamily}</span>
-                      </div>
-                      <span className="hidden sm:inline text-burgundy-700/30">|</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-burgundy-700/60">Intensity:</span>
-                        <span className="text-burgundy-700 capitalize">{fragranceIntensity}</span>
-                      </div>
-                    </div>
-                )}
-
-                {/* Fragrance Notes */}
-                {product.fragrance && (
+                {/* Fragrance Selection */}
+                {availableFragrances.length > 0 && (
                     <div className="mb-6 p-4 bg-cream-200/50 border border-burgundy-700/10">
-                    <p className="text-xs font-sans tracking-wider uppercase text-burgundy-700/50 mb-3">
-                        Fragrance Notes
-                    </p>
-                    <div className="space-y-2 text-sm font-sans">
-                        {topNotes && (
-                            <p>
-                                <span className="text-burgundy-700/60">Top:</span>{' '}
-                                <span className="text-burgundy-700">{topNotes}</span>
-                            </p>
-                        )}
-                        {heartNotes && (
-                        <p>
-                            <span className="text-burgundy-700/60">Heart:</span>{' '}
-                            <span className="text-burgundy-700">{heartNotes}</span>
+                      <p className="text-xs font-sans tracking-wider uppercase text-burgundy-700/50 mb-3">
+                        {hasMultipleFragrances ? 'Select Fragrance' : 'Fragrance'}
+                      </p>
+                      {hasSingleFragrance ? (
+                        <p className="font-serif text-xl text-burgundy-700">
+                          {availableFragrances[0].name}
                         </p>
-                        )}
-                        {baseNotes && (
-                        <p>
-                            <span className="text-burgundy-700/60">Base:</span>{' '}
-                            <span className="text-burgundy-700">{baseNotes}</span>
-                        </p>
-                        )}
-                    </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {availableFragrances.map(fragrance => (
+                            <button
+                              key={fragrance.id}
+                              onClick={() => setSelectedFragrance(fragrance.id)}
+                              className={`px-4 py-2 text-sm font-sans border transition-all ${
+                                selectedFragrance === fragrance.id
+                                  ? 'border-burgundy-700 bg-burgundy-700 text-cream-100'
+                                  : 'border-burgundy-700/30 text-burgundy-700 hover:border-burgundy-700'
+                              }`}
+                            >
+                              {fragrance.name}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                 )}
 
@@ -396,8 +387,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
                   {/* Add to Cart */}
                   <button
-                    disabled={!inStock || isAdded}
+                    disabled={!inStock || isAdded || (hasMultipleFragrances && !selectedFragrance)}
                     onClick={() => {
+                      const selectedFragranceObj = availableFragrances.find(f => f.id === selectedFragrance)
                       addToCart({
                         id: product.id,
                         name: product.name,
@@ -405,6 +397,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         price: price,
                         image: displayImages[0],
                         collection: collectionName,
+                        fragrance: selectedFragranceObj?.name,
                       }, quantity)
                       setIsAdded(true)
                       setTimeout(() => {

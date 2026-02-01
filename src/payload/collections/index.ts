@@ -1,5 +1,6 @@
 export { Products } from './Products'
 export { Collections } from './Collections'
+export { Fragrances } from './Fragrances'
 export { Orders } from './Orders'
 export { Media } from './Media'
 export { Users } from './Users'

@@ -91,83 +91,17 @@ export const Products: CollectionConfig = {
       },
     },
 
-    // Fragrance Details
+    // Available Fragrances - Select which fragrances this product offers
     {
-      type: 'group',
-      name: 'fragrance',
-      label: 'Fragrance Profile',
-      fields: [
-        {
-          name: 'topNotes',
-          type: 'array',
-          label: 'Top Notes',
-          admin: {
-            description: 'Initial scents (first 15-30 minutes)',
-          },
-          fields: [
-            {
-              name: 'note',
-              type: 'text',
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'heartNotes',
-          type: 'array',
-          label: 'Heart Notes',
-          admin: {
-            description: 'Core fragrance (after top notes fade)',
-          },
-          fields: [
-            {
-              name: 'note',
-              type: 'text',
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'baseNotes',
-          type: 'array',
-          label: 'Base Notes',
-          admin: {
-            description: 'Foundation scents (long-lasting)',
-          },
-          fields: [
-            {
-              name: 'note',
-              type: 'text',
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'fragranceFamily',
-          type: 'select',
-          label: 'Fragrance Family',
-          options: [
-            { label: 'Floral', value: 'floral' },
-            { label: 'Oriental', value: 'oriental' },
-            { label: 'Woody', value: 'woody' },
-            { label: 'Fresh', value: 'fresh' },
-            { label: 'Citrus', value: 'citrus' },
-            { label: 'Gourmand', value: 'gourmand' },
-            { label: 'Aromatic', value: 'aromatic' },
-            { label: 'Spicy', value: 'spicy' },
-          ],
-        },
-        {
-          name: 'scentIntensity',
-          type: 'select',
-          label: 'Scent Intensity',
-          options: [
-            { label: 'Light & Subtle', value: 'light' },
-            { label: 'Moderate', value: 'moderate' },
-            { label: 'Strong', value: 'strong' },
-          ],
-        },
-      ],
+      name: 'availableFragrances',
+      type: 'relationship',
+      relationTo: 'fragrances',
+      hasMany: true,
+      required: true,
+      label: 'Available Fragrances',
+      admin: {
+        description: 'Select the fragrances available for this candle (customers will choose from these)',
+      },
     },
 
     // Product Specifications

@@ -25,7 +25,7 @@ import { Icon as Icon_ee083e57cfeceb6433911927d214e2fa } from '@/payload/compone
 import { Logo as Logo_91bbc66a9b3ed1dae52e0caef1a54af7 } from '@/payload/components/Logo'
 import { DashboardBanner as DashboardBanner_2a1ff1bc23f75553f00256ccc3b609cd } from '@/payload/components/DashboardBanner'
 import { AdminStyles as AdminStyles_34971dab883e3ba45520aa883f4a093e } from '@/payload/components/AdminStyles'
-import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
+import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -55,5 +55,5 @@ export const importMap = {
   "@/payload/components/Logo#Logo": Logo_91bbc66a9b3ed1dae52e0caef1a54af7,
   "@/payload/components/DashboardBanner#DashboardBanner": DashboardBanner_2a1ff1bc23f75553f00256ccc3b609cd,
   "@/payload/components/AdminStyles#AdminStyles": AdminStyles_34971dab883e3ba45520aa883f4a093e,
-  "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

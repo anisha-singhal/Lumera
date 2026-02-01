@@ -30,7 +30,7 @@ const heroSlides: HeroSlide[] = [
       text: 'Explore Collection',
       href: '/collections',
     },
-    image: '/images/linger-candle.jpg',
+    image: '/images/hero-bg.jpg',
     imageAlt: 'Lumera luxury candle with warm ambient lighting',
   },
   {
@@ -92,9 +92,9 @@ export default function Hero() {
           transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
           className="absolute inset-0"
         >
-          {/* Gradient Overlays - Optimized for mobile readability */}
-          <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-lumera-ivory/95 via-lumera-ivory/80 to-lumera-ivory/50 z-10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-lumera-ivory/90 via-transparent to-lumera-ivory/30 z-10" />
+          {/* Gradient Overlays - Reduced opacity for better image visibility */}
+          <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-lumera-ivory/70 via-lumera-ivory/40 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-lumera-ivory/60 via-transparent to-transparent z-10" />
 
           {/* Background Image */}
           <div className="relative h-full w-full">
