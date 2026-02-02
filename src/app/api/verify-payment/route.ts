@@ -161,26 +161,18 @@ export async function POST(request: NextRequest) {
       })
       console.log('Order saved to database:', orderNumber)
       
-      // Increment coupon usage count if used
+      // Increment coupon usage count atomically using MongoDB's $inc operator
+      // This prevents race conditions when multiple orders use the same coupon
       if (orderData?.couponCode) {
         try {
-          const coupons = await payload.find({
-            collection: 'coupons',
-            where: {
-              code: { equals: orderData.couponCode.toUpperCase() },
-            },
-          })
-
-          if (coupons.docs.length > 0) {
-            const coupon = coupons.docs[0] as any
-            await payload.update({
-              collection: 'coupons',
-              id: coupon.id,
-              data: {
-                usageCount: (coupon.usageCount || 0) + 1,
-              },
-            })
-            console.log('Coupon usage count incremented:', orderData.couponCode)
+          const mongoose = await import('mongoose')
+          const db = mongoose.connection.db
+          if (db) {
+            await db.collection('coupons').updateOne(
+              { code: orderData.couponCode.toUpperCase() },
+              { $inc: { usageCount: 1 } }
+            )
+            console.log('Coupon usage count incremented atomically:', orderData.couponCode)
           }
         } catch (couponError) {
           console.error('Failed to increment coupon usage (non-fatal):', couponError)

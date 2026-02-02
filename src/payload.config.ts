@@ -93,6 +93,13 @@ export default buildConfig({
   },
   db: mongooseAdapter({
     url: process.env.MONGODB_URI || 'mongodb://localhost:27017/lumera',
+    // Connection pooling for handling concurrent requests
+    connectOptions: {
+      maxPoolSize: 50, // Max connections in the pool
+      minPoolSize: 10, // Min connections to maintain
+      serverSelectionTimeoutMS: 5000, // Timeout for server selection
+      socketTimeoutMS: 45000, // Timeout for socket operations
+    },
   }),
   cors: [
     process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',

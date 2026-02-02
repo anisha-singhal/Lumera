@@ -39,7 +39,42 @@ interface ShippingAddress {
 }
 
 const indianStates = [
-  'Delhi'
+  'Andaman and Nicobar Islands',
+  'Andhra Pradesh',
+  'Arunachal Pradesh',
+  'Assam',
+  'Bihar',
+  'Chandigarh',
+  'Chhattisgarh',
+  'Dadra and Nagar Haveli and Daman and Diu',
+  'Delhi',
+  'Goa',
+  'Gujarat',
+  'Haryana',
+  'Himachal Pradesh',
+  'Jammu and Kashmir',
+  'Jharkhand',
+  'Karnataka',
+  'Kerala',
+  'Ladakh',
+  'Lakshadweep',
+  'Madhya Pradesh',
+  'Maharashtra',
+  'Manipur',
+  'Meghalaya',
+  'Mizoram',
+  'Nagaland',
+  'Odisha',
+  'Puducherry',
+  'Punjab',
+  'Rajasthan',
+  'Sikkim',
+  'Tamil Nadu',
+  'Telangana',
+  'Tripura',
+  'Uttar Pradesh',
+  'Uttarakhand',
+  'West Bengal',
 ]
 
 export default function CheckoutPage() {
@@ -53,7 +88,6 @@ export default function CheckoutPage() {
   const [couponCode, setCouponCode] = useState('')
   const [couponApplied, setCouponApplied] = useState(false)
   const [couponDiscount, setCouponDiscount] = useState(0)
-  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'cod'>('razorpay')
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [orderId, setOrderId] = useState('')
 
@@ -248,38 +282,7 @@ export default function CheckoutPage() {
         orderNote,
       }
 
-      // --- COD FLOW ---
-      if (paymentMethod === 'cod') {
-        const response = await fetch('/api/place-cod-order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderData: orderPayload }),
-        })
-
-        const data = await response.json()
-
-        if (data.success) {
-          addOrder({
-            id: data.orderId,
-            items,
-            total: totalAmount,
-            paymentMethod: 'cod',
-            shippingAddress,
-          })
-          setOrderId(data.orderId)
-          clearCart()
-          setOrderPlaced(true)
-          setStep('confirmation')
-          window.scrollTo({ top: 0, behavior: 'smooth' })
-        } else {
-          throw new Error(data.error || 'Failed to place COD order')
-        }
-        return // Stop here for COD
-      }
-
-      // --- RAZORPAY FLOW ---
-
-      // Step 1: Create order on backend
+      // Create order on backend
       const createOrderResponse = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -331,7 +334,7 @@ export default function CheckoutPage() {
                 id: verifyData.orderId,
                 items,
                 total: totalAmount,
-                paymentMethod: 'razorpay',
+                paymentMethod: 'online',
                 shippingAddress,
               })
 
@@ -364,6 +367,13 @@ export default function CheckoutPage() {
             setIsProcessing(false)
           },
         },
+      }
+
+      // Check if Razorpay script is loaded
+      if (!window.Razorpay) {
+        alert('Payment system is loading. Please try again in a moment.')
+        setIsProcessing(false)
+        return
       }
 
       const razorpay = new window.Razorpay(options)
@@ -452,10 +462,10 @@ export default function CheckoutPage() {
 
   return (
     <>
-      {/* Load Razorpay Checkout Script */}
+      {/* Load Razorpay Checkout Script - beforeInteractive ensures it loads before page is interactive */}
       <Script
         src="https://checkout.razorpay.com/v1/checkout.js"
-        strategy="lazyOnload"
+        strategy="beforeInteractive"
       />
 
     <div className="min-h-screen bg-cream-100 pt-24 pb-16">
@@ -806,42 +816,24 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* Payment Options */}
-                <div className="space-y-4">
-                  {/* Razorpay */}
-                  <label
-                    className={`flex items-center gap-4 p-4 border cursor-pointer transition-colors ${
-                      paymentMethod === 'razorpay'
-                        ? 'border-burgundy-700 bg-burgundy-700/5'
-                        : 'border-burgundy-700/10 hover:border-burgundy-700/30'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="razorpay"
-                      checked={paymentMethod === 'razorpay'}
-                      onChange={() => setPaymentMethod('razorpay')}
-                      className="w-4 h-4 text-burgundy-700"
-                    />
-                    <div className="flex items-center gap-3 flex-1">
-                      <div className="w-10 h-10 bg-[#072654] rounded-lg flex items-center justify-center">
-                        <CreditCard className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <p className="font-sans font-medium text-burgundy-700">
-                          Pay Online
-                        </p>
-                        <p className="text-sm font-sans text-burgundy-700/60">
-                          UPI, Cards, Net Banking, Wallets
-                        </p>
-                      </div>
+                {/* Payment Option */}
+                <div className="flex items-center gap-4 p-4 border border-burgundy-700 bg-burgundy-700/5">
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="w-10 h-10 bg-[#072654] rounded-lg flex items-center justify-center">
+                      <CreditCard className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-xs font-sans px-2 py-1" style={{ backgroundColor: 'rgba(201, 162, 77, 0.2)', color: '#800020' }}>
-                      Recommended
-                    </span>
-                  </label>
-
+                    <div>
+                      <p className="font-sans font-medium text-burgundy-700">
+                        Pay Online
+                      </p>
+                      <p className="text-sm font-sans text-burgundy-700/60">
+                        UPI, Cards, Net Banking, Wallets
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-xs font-sans px-2 py-1" style={{ backgroundColor: 'rgba(201, 162, 77, 0.2)', color: '#800020' }}>
+                    Secure
+                  </span>
                 </div>
 
                 <div className="flex gap-4 mt-8">
