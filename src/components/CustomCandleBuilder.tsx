@@ -353,15 +353,39 @@ export default function CustomCandleBuilder() {
     setIsAddingToCart(true)
 
     const vessel = vesselOptions.find((v) => v.id === config.vessel)
+    const primaryScentObj = fragranceFamilies[config.fragranceFamily]?.scents.find(s => s.id === config.primaryScent)
+    const secondaryScentObj = config.secondaryScent
+      ? fragranceFamilies[config.fragranceFamily]?.scents.find(s => s.id === config.secondaryScent)
+      : null
     const configHash = `custom-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
+
+    // Build fragrance description for display
+    const fragranceDesc = config.fragranceMode === 'blend' && secondaryScentObj
+      ? `${primaryScentObj?.name || ''} + ${secondaryScentObj.name}`
+      : primaryScentObj?.name || ''
 
     const cartItem = {
       id: configHash,
-      name: `Custom Candle: "${config.labelText}"`,
+      name: `Custom Candle: "${config.labelText || 'Unnamed'}"`,
       slug: 'custom-candle',
       price: liveTotal,
       image: vessel?.imageSrc || '/images/custom/vessels/frosted-glass.png',
       collection: 'Custom',
+      fragrance: fragranceDesc,
+      customOptions: {
+        vessel: vessel?.name ?? (config.vessel ?? undefined),
+        fragranceFamily: fragranceFamilies[config.fragranceFamily]?.name || config.fragranceFamily,
+        fragranceMode: config.fragranceMode,
+        primaryScent: primaryScentObj?.name ?? (config.primaryScent ?? undefined),
+        secondaryScent: secondaryScentObj?.name ?? (config.secondaryScent ?? undefined),
+        waxType: waxTypes.find(w => w.id === config.waxType)?.name || config.waxType,
+        waxColor: waxColors.find(w => w.id === config.waxColor)?.name || config.waxColor,
+        wickType: wickTypes.find(w => w.id === config.wickType)?.name || config.wickType,
+        labelText: config.labelText,
+        foilFinish: foilFinishes.find(f => f.id === config.foilFinish)?.name || config.foilFinish,
+        packaging: packagingOptions.find(p => p.id === config.packaging)?.name ?? (config.packaging ?? undefined),
+        finishingTouches: config.finishingTouches.map(t => finishingTouchOptions.find(o => o.id === t)?.name || t),
+      },
     }
 
     addToCart(cartItem, quantity)

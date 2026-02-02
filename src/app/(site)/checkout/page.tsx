@@ -279,6 +279,8 @@ export default function CheckoutPage() {
           name: item.name,
           quantity: item.quantity,
           price: item.price,
+          fragrance: item.fragrance,
+          customOptions: item.customOptions,
         })),
         subtotal,
         shippingCost,

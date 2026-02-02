@@ -2,6 +2,21 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 
+export interface CustomCandleOptions {
+  vessel?: string
+  fragranceFamily?: string
+  fragranceMode?: string
+  primaryScent?: string
+  secondaryScent?: string
+  waxType?: string
+  waxColor?: string
+  wickType?: string
+  labelText?: string
+  foilFinish?: string
+  packaging?: string
+  finishingTouches?: string[]
+}
+
 export interface CartItem {
   id: string
   name: string
@@ -12,6 +27,7 @@ export interface CartItem {
   quantity: number
   collection?: string
   fragrance?: string
+  customOptions?: CustomCandleOptions
 }
 
 interface CartContextType {

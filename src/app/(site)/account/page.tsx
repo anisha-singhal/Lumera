@@ -739,10 +739,25 @@ function AccountPageContent() {
                 <h4 className="font-serif text-lg text-burgundy-700 mb-2">Items</h4>
                 <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                   {selectedOrder.items.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between text-sm font-sans">
-                      <div className="mr-4">
-                        <p className="text-burgundy-700">{item.name}</p>
-                        <p className="text-burgundy-700/60">
+                    <div key={item.id} className="flex items-center justify-between text-sm font-sans py-2 border-b border-burgundy-700/10 last:border-b-0">
+                      <div className="mr-4 flex-1">
+                        <p className="text-burgundy-700 font-medium">{item.name}</p>
+                        {item.fragrance && (
+                          <p className="text-burgundy-700/70 text-xs mt-0.5">
+                            Fragrance: {item.fragrance}
+                          </p>
+                        )}
+                        {item.customOptions && (
+                          <div className="text-burgundy-700/60 text-xs mt-1 space-y-0.5">
+                            {item.customOptions.vessel && <p>Vessel: {item.customOptions.vessel}</p>}
+                            {item.customOptions.primaryScent && (
+                              <p>Scent: {item.customOptions.primaryScent}{item.customOptions.secondaryScent ? ` + ${item.customOptions.secondaryScent}` : ''}</p>
+                            )}
+                            {item.customOptions.waxType && <p>Wax: {item.customOptions.waxType}</p>}
+                            {item.customOptions.wickType && <p>Wick: {item.customOptions.wickType}</p>}
+                          </div>
+                        )}
+                        <p className="text-burgundy-700/60 mt-1">
                           Qty {item.quantity} × {formatPrice(item.price)}
                         </p>
                       </div>

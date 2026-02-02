@@ -312,6 +312,23 @@ export const Orders: CollectionConfig = {
           type: 'text',
           label: 'SKU',
         },
+        {
+          name: 'fragrance',
+          type: 'text',
+          label: 'Fragrance',
+          admin: {
+            description: 'Selected fragrance for this candle',
+          },
+        },
+        {
+          name: 'customOptions',
+          type: 'json',
+          label: 'Custom Candle Options',
+          admin: {
+            description: 'Configuration details for custom candles (vessel, fragrance, wax, etc.)',
+            condition: (data, siblingData) => siblingData?.isCustomCandle,
+          },
+        },
       ],
     },
 

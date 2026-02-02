@@ -40,9 +40,13 @@ export async function GET() {
       items: (order.items || []).map((item: any) => ({
         id: item.id || item.product,
         name: item.productName,
+        slug: item.product?.slug || 'product',
         price: item.unitPrice,
         quantity: item.quantity,
         image: '', // Product images would need to be fetched separately
+        fragrance: item.fragrance || undefined,
+        customOptions: item.customOptions || undefined,
+        isCustomCandle: item.isCustomCandle || false,
       })),
       shippingAddress: {
         fullName: `${order.customer?.firstName || ''} ${order.customer?.lastName || ''}`.trim(),

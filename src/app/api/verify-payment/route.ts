@@ -136,11 +136,29 @@ export async function POST(request: NextRequest) {
       name: string
       quantity: number
       price: number
+      fragrance?: string
+      customOptions?: {
+        vessel?: string
+        fragranceFamily?: string
+        fragranceMode?: string
+        primaryScent?: string
+        secondaryScent?: string
+        waxType?: string
+        waxColor?: string
+        wickType?: string
+        labelText?: string
+        foilFinish?: string
+        packaging?: string
+        finishingTouches?: string[]
+      }
     }) => {
       // Check if it's a custom candle (ID starts with 'custom-') or invalid ObjectId
       const isCustomCandle = !item.id || item.id.startsWith('custom-') || !isValidObjectId(item.id)
 
-      console.log(`Item mapping: ${item.name}, ID: ${item.id}, isCustom: ${isCustomCandle}, isValidId: ${item.id ? isValidObjectId(item.id) : 'no id'}`)
+      console.log(`Item mapping: ${item.name}, ID: ${item.id}, isCustom: ${isCustomCandle}, fragrance: ${item.fragrance || 'none'}`)
+      if (item.customOptions) {
+        console.log(`Custom options:`, JSON.stringify(item.customOptions, null, 2))
+      }
 
       return {
         // For custom candles or invalid IDs, don't set product relationship
@@ -150,6 +168,10 @@ export async function POST(request: NextRequest) {
         unitPrice: item.price || 0,
         totalPrice: (item.quantity || 1) * (item.price || 0),
         isCustomCandle: isCustomCandle,
+        // Include fragrance for regular candles
+        ...(item.fragrance ? { fragrance: item.fragrance } : {}),
+        // Include custom candle options if present
+        ...(item.customOptions ? { customOptions: item.customOptions } : {}),
       }
     })
 
