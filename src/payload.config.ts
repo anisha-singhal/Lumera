@@ -22,6 +22,28 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  onInit: async (payload) => {
+    // Seed LUMERA10 coupon if it doesn't exist
+    const existingCoupon = await payload.find({
+      collection: 'coupons',
+      where: { code: { equals: 'LUMERA10' } },
+    })
+
+    if (existingCoupon.docs.length === 0) {
+      await payload.create({
+        collection: 'coupons',
+        data: {
+          code: 'LUMERA10',
+          type: 'percentage',
+          value: 10,
+          active: true,
+          minOrderAmount: 0,
+          usageCount: 0,
+        },
+      })
+      console.log('✓ LUMERA10 coupon created')
+    }
+  },
   admin: {
     user: Users.slug,
     meta: {
