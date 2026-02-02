@@ -17,7 +17,7 @@ import {
   Loader2,
   Tag,
 } from 'lucide-react'
-import { useCart, useAuth, useOrders } from '@/context'
+import { useCart, useAuth, useOrders, useSettings } from '@/context'
 import CustomSelect from '@/components/ui/CustomSelect'
 
 // Razorpay types
@@ -153,28 +153,8 @@ export default function CheckoutPage() {
     }
   }, [isAuthenticated, router, orderPlaced])
 
-  const [storeSettings, setStoreSettings] = useState({
-    shippingCost: 49,
-    freeShippingThreshold: 999,
-  })
-
-  useEffect(() => {
-    async function fetchStoreSettings() {
-      try {
-        const response = await fetch('/api/settings')
-        if (response.ok) {
-          const data = await response.json()
-          setStoreSettings({
-            shippingCost: data.shippingCost || 49,
-            freeShippingThreshold: data.freeShippingThreshold || 999,
-          })
-        }
-      } catch (error) {
-        console.error('Failed to fetch store settings:', error)
-      }
-    }
-    fetchStoreSettings()
-  }, [])
+  // Use cached settings from context
+  const { settings: storeSettings } = useSettings()
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {

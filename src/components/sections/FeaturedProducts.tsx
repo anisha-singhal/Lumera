@@ -3,56 +3,11 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
-
-interface Product {
-  id: string
-  name: string
-  slug: string
-  tagline?: string
-  pricing: {
-    price: number
-    compareAtPrice?: number
-  }
-  images: Array<{
-    image: {
-      id: string
-      url: string
-      alt?: string
-    }
-    isPrimary?: boolean
-  }>
-  productCollection?: {
-    name: string
-  }
-  bestSeller?: boolean
-  newArrival?: boolean
-  inventory?: {
-    quantity: number
-  }
-  promoTag?: string
-}
+import { useState } from 'react'
+import { useProducts, Product } from '@/context'
 
 export default function FeaturedProducts() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const response = await fetch('/api/products?featured=true&limit=4')
-        if (response.ok) {
-          const data = await response.json()
-          setProducts(data.docs || [])
-        }
-      } catch (error) {
-        console.error('Failed to fetch products:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchProducts()
-  }, [])
+  const { featuredProducts: products, loading } = useProducts()
 
   // Don't render the section if no products
   if (!loading && products.length === 0) {

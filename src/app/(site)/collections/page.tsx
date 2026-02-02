@@ -8,38 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react'
 import CustomSelect from '@/components/ui/CustomSelect'
-
-interface Product {
-  id: string
-  name: string
-  slug: string
-  tagline?: string
-  pricing: {
-    price: number
-    compareAtPrice?: number
-  }
-  images: Array<{
-    image: {
-      id: string
-      url: string
-      alt?: string
-    }
-    isPrimary?: boolean
-  }>
-  collection?: {
-    name: string
-    slug: string
-  }
-  bestSeller?: boolean
-  newArrival?: boolean
-  fragrance?: {
-    fragranceFamily?: string
-  }
-  inventory?: {
-    quantity: number
-  }
-  promoTag?: string
-}
+import { useProducts, Product } from '@/context'
 
 const collections = [
   { name: 'All', slug: 'all' },
@@ -219,8 +188,8 @@ function CollectionsContent() {
   const searchParams = useSearchParams()
   const collectionParam = searchParams.get('collection')
 
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
+  // Use cached products from context
+  const { products, loading } = useProducts()
   const [activeCollection, setActiveCollection] = useState('all')
   const [sortBy, setSortBy] = useState('featured')
   const [showFilters, setShowFilters] = useState(false)
@@ -229,25 +198,6 @@ function CollectionsContent() {
     fragranceFamily: [] as string[],
     price: [] as string[],
   })
-
-  // Fetch products from API
-  useEffect(() => {
-    async function fetchProducts() {
-      setLoading(true)
-      try {
-        const response = await fetch('/api/products?limit=100')
-        if (response.ok) {
-          const data = await response.json()
-          setProducts(data.docs || [])
-        }
-      } catch (error) {
-        console.error('Failed to fetch products:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchProducts()
-  }, [])
 
   // Set active collection from URL parameter
   useEffect(() => {

@@ -756,9 +756,12 @@ function HeroSection({ onStart }: { onStart: () => void }) {
                 <br />
                 <span className="text-[#C9A24D]">Poured by Lumera.</span>
               </h1>
-              <p className="text-sm sm:text-base md:text-lg text-[#1C1C1C]/70 leading-relaxed mb-5 sm:mb-8 max-w-md mx-auto lg:mx-0">
+              <p className="text-sm sm:text-base md:text-lg text-[#1C1C1C]/70 leading-relaxed mb-3 sm:mb-4 max-w-md mx-auto lg:mx-0">
                 Design a candle that speaks your story. Choose every detail — from the jar that holds it
                 to the fragrance that fills your space.
+              </p>
+              <p className="text-xs sm:text-sm text-[#C9A24D] font-medium mb-5 sm:mb-8">
+                Starting at just ₹{BASE_PRICE}
               </p>
               <motion.button
                 type="button"

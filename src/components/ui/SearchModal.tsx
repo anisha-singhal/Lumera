@@ -5,57 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Search, X, ArrowRight, Loader2 } from 'lucide-react'
-import { useSearch } from '@/context'
-
-interface Product {
-  id: string
-  name: string
-  slug: string
-  tagline?: string
-  pricing: {
-    price: number
-  }
-  images?: Array<{
-    image: {
-      id: string
-      url?: string
-    }
-  }>
-  productCollection?: {
-    name: string
-  }
-}
+import { useSearch, useProducts } from '@/context'
 
 const popularSearches = ['Candle', 'Rose', 'Lavender', 'Vanilla', 'Gift']
 
 export default function SearchModal() {
   const { isSearchOpen, setIsSearchOpen, searchQuery, setSearchQuery } = useSearch()
-  const [results, setResults] = useState<Product[]>([])
-  const [allProducts, setAllProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(false)
+  const { products: allProducts, loading } = useProducts()
+  const [results, setResults] = useState<typeof allProducts>([])
   const inputRef = useRef<HTMLInputElement>(null)
-
-  // Fetch products when modal opens
-  useEffect(() => {
-    if (isSearchOpen && allProducts.length === 0) {
-      fetchProducts()
-    }
-  }, [isSearchOpen])
-
-  const fetchProducts = async () => {
-    setLoading(true)
-    try {
-      const res = await fetch('/api/products?limit=100')
-      if (res.ok) {
-        const data = await res.json()
-        setAllProducts(data.docs || [])
-      }
-    } catch (err) {
-      console.error('Failed to fetch products for search:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   // Focus input when modal opens
   useEffect(() => {
@@ -113,7 +71,7 @@ export default function SearchModal() {
     }).format(amount)
   }
 
-  const getProductImage = (product: Product) => {
+  const getProductImage = (product: typeof allProducts[0]) => {
     if (product.images && product.images.length > 0 && product.images[0].image) {
       return `/api/media/${product.images[0].image.id}/view`
     }
