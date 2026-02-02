@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyPaymentSignature, fetchPaymentDetails, capturePayment } from '@/lib/razorpay'
+import { verifyPaymentSignature, fetchPaymentDetails, capturePayment, initiateRefund } from '@/lib/razorpay'
 import { sendMail } from '@/lib/sendMail'
 
 // State code mapping for Payload CMS
@@ -93,7 +93,18 @@ export async function POST(request: NextRequest) {
       const paymentDetails = await fetchPaymentDetails(razorpay_payment_id)
       paymentStatus = paymentDetails.status
       paymentAmount = paymentDetails.amount // Amount in paise
-      console.log('Payment details fetched:', { status: paymentStatus, amount: paymentAmount })
+      console.log('Payment details fetched:', {
+        status: paymentStatus,
+        amount: paymentAmount,
+        method: paymentDetails.method,
+        captured: paymentDetails.captured
+      })
+
+      // IMPORTANT: If payment is already captured (Razorpay auto-capture enabled),
+      // we need to handle failures differently - may need to refund
+      if (paymentStatus === 'captured') {
+        console.warn('⚠️ Payment already captured (Razorpay auto-capture may be enabled)')
+      }
     } catch (fetchError) {
       console.warn('Could not fetch payment details, proceeding with verified signature')
       // Use orderData total as fallback (convert to paise)
@@ -116,33 +127,47 @@ export async function POST(request: NextRequest) {
     const stateValue = orderData?.shippingAddress?.state || 'DL'
     const stateCode = stateCodeMap[stateValue] || stateValue
 
+    // Map items - handle both custom candles and regular products
+    // MongoDB ObjectId is a 24-character hex string
+    const isValidObjectId = (id: string) => /^[a-f\d]{24}$/i.test(id)
+
+    const mappedItems = (orderData?.items || []).map((item: {
+      id: string
+      name: string
+      quantity: number
+      price: number
+    }) => {
+      // Check if it's a custom candle (ID starts with 'custom-') or invalid ObjectId
+      const isCustomCandle = !item.id || item.id.startsWith('custom-') || !isValidObjectId(item.id)
+
+      console.log(`Item mapping: ${item.name}, ID: ${item.id}, isCustom: ${isCustomCandle}, isValidId: ${item.id ? isValidObjectId(item.id) : 'no id'}`)
+
+      return {
+        // For custom candles or invalid IDs, don't set product relationship
+        ...(isCustomCandle ? {} : { product: item.id }),
+        productName: item.name || 'Unknown Product',
+        quantity: item.quantity || 1,
+        unitPrice: item.price || 0,
+        totalPrice: (item.quantity || 1) * (item.price || 0),
+        isCustomCandle: isCustomCandle,
+      }
+    })
+
+    // Log full order data for debugging
+    console.log('Creating order with data:', JSON.stringify({
+      orderNumber,
+      customer: {
+        email: orderData?.email,
+        phone: orderData?.phone,
+        firstName: orderData?.firstName,
+        lastName: orderData?.lastName,
+      },
+      itemsCount: mappedItems.length,
+      mappedItems,
+      paymentStatus,
+    }, null, 2))
+
     try {
-      // Map items - handle both custom candles and regular products
-      // MongoDB ObjectId is a 24-character hex string
-      const isValidObjectId = (id: string) => /^[a-f\d]{24}$/i.test(id)
-
-      const mappedItems = (orderData?.items || []).map((item: {
-        id: string
-        name: string
-        quantity: number
-        price: number
-      }) => {
-        // Check if it's a custom candle (ID starts with 'custom-') or invalid ObjectId
-        const isCustomCandle = item.id && (item.id.startsWith('custom-') || !isValidObjectId(item.id))
-
-        console.log(`Item mapping: ${item.name}, ID: ${item.id}, isCustom: ${isCustomCandle}`)
-
-        return {
-          // For custom candles or invalid IDs, don't set product relationship
-          ...(isCustomCandle ? {} : { product: item.id }),
-          productName: item.name,
-          quantity: item.quantity,
-          unitPrice: item.price,
-          totalPrice: item.quantity * item.price,
-          isCustomCandle: isCustomCandle,
-        }
-      })
-
       await payload.create({
         collection: 'orders',
         overrideAccess: true,
@@ -151,8 +176,8 @@ export async function POST(request: NextRequest) {
           customer: {
             email: orderData?.email || '',
             phone: orderData?.phone || '',
-            firstName: orderData?.firstName || '',
-            lastName: orderData?.lastName || '',
+            firstName: orderData?.firstName || 'Customer',
+            lastName: orderData?.lastName || '', // Optional field
           },
           shippingAddress: {
             addressLine1: orderData?.shippingAddress?.addressLine1 || '',
@@ -206,23 +231,48 @@ export async function POST(request: NextRequest) {
       }
 
     } catch (dbError: any) {
-      // Database save failed - DO NOT capture the payment
-      // The authorization will expire and money returns to customer automatically
-      console.error('CRITICAL: Database save error - PAYMENT NOT CAPTURED:', dbError.message, dbError)
+      // Database save failed
+      console.error('CRITICAL: Database save error')
+      console.error('Error message:', dbError.message)
+      console.error('Error data:', JSON.stringify(dbError.data, null, 2))
+      console.error('Full error:', dbError)
+      console.error('Mapped items:', JSON.stringify(mappedItems, null, 2))
+      console.error('Payment status at time of failure:', paymentStatus)
 
-      // Extract more specific error message
+      // Extract more specific error message with field paths
       let errorMessage = 'Order could not be saved.'
       if (dbError.data?.errors) {
-        const fieldErrors = dbError.data.errors.map((e: any) => e.message).join(', ')
+        const fieldErrors = dbError.data.errors.map((e: any) => {
+          // Include field path if available
+          const fieldPath = e.path ? `[${e.path}] ` : ''
+          return `${fieldPath}${e.message}`
+        }).join(', ')
         errorMessage = `Order save failed: ${fieldErrors}`
+        console.error('Field errors:', fieldErrors)
+      }
+
+      // If payment was already captured (Razorpay auto-capture), attempt refund
+      let refundInitiated = false
+      if (paymentStatus === 'captured') {
+        console.error('⚠️ Payment was already captured - attempting automatic refund')
+        try {
+          await initiateRefund(razorpay_payment_id)
+          refundInitiated = true
+          console.log('Refund initiated successfully for payment:', razorpay_payment_id)
+        } catch (refundError: any) {
+          console.error('Failed to initiate automatic refund:', refundError.message)
+        }
       }
 
       return NextResponse.json(
         {
           success: false,
-          error: errorMessage + ' Your payment was NOT charged. Please try again.',
+          error: refundInitiated
+            ? errorMessage + ' A refund has been initiated automatically.'
+            : errorMessage + ' Your payment was NOT charged. Please try again.',
           paymentId: razorpay_payment_id,
-          paymentNotCaptured: true, // Flag to indicate payment was not captured
+          paymentNotCaptured: !refundInitiated && paymentStatus !== 'captured',
+          refundInitiated,
         },
         { status: 500 }
       )

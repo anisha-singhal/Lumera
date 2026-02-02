@@ -90,7 +90,7 @@ export const Orders: CollectionConfig = {
         {
           name: 'lastName',
           type: 'text',
-          required: true,
+          required: false, // Optional - user may only provide first name
           label: 'Last Name',
         },
         {
