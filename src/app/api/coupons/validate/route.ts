@@ -9,8 +9,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Coupon code is required' }, { status: 400 })
     }
 
+    // Only allow LUMERA10 coupon code
+    if (code.toUpperCase() !== 'LUMERA10') {
+      return NextResponse.json({ error: 'Invalid coupon code' }, { status: 404 })
+    }
+
     const payload = await getPayload({ config })
-    
+
     // Find the coupon
     const coupons = await payload.find({
       collection: 'coupons',

@@ -972,7 +972,7 @@ export default function CheckoutPage() {
                   </div>
                 )}
                 <p className="text-xs font-sans text-burgundy-700/40 mt-2.5 tracking-wide">
-                  Try: LUMERA10 or FIRST20
+                  Try: LUMERA10
                 </p>
               </div>
 
