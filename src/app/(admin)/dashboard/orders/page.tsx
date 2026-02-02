@@ -25,6 +25,22 @@ interface Order {
     quantity: number
     unitPrice: number
     totalPrice: number
+    fragrance?: string
+    isCustomCandle?: boolean
+    customOptions?: {
+      vessel?: string
+      fragranceFamily?: string
+      fragranceMode?: string
+      primaryScent?: string
+      secondaryScent?: string
+      waxType?: string
+      waxColor?: string
+      wickType?: string
+      labelText?: string
+      foilFinish?: string
+      packaging?: string
+      finishingTouches?: string[]
+    }
   }>
   pricing: {
     total: number
@@ -292,15 +308,71 @@ export default function OrdersPage() {
                   <h3 className="text-sm font-medium text-gray-900 mb-3">Order Items</h3>
                   <div className="bg-gray-50 rounded-lg divide-y divide-gray-200">
                     {selectedOrder.items.map((item, index) => (
-                      <div key={index} className="p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Package className="w-5 h-5 text-gray-400" />
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">{item.productName}</p>
-                            <p className="text-xs text-gray-500">Qty: {item.quantity} × ₹{item.unitPrice}</p>
+                      <div key={index} className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-3">
+                            <Package className="w-5 h-5 text-gray-400 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">
+                                {item.productName}
+                                {item.isCustomCandle && (
+                                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                                    Custom
+                                  </span>
+                                )}
+                              </p>
+                              <p className="text-xs text-gray-500">Qty: {item.quantity} × ₹{item.unitPrice}</p>
+
+                              {/* Fragrance for regular candles */}
+                              {item.fragrance && !item.isCustomCandle && (
+                                <p className="text-xs text-amber-700 mt-1">
+                                  🕯️ Fragrance: {item.fragrance}
+                                </p>
+                              )}
+
+                              {/* Custom Candle Details */}
+                              {item.isCustomCandle && item.customOptions && (
+                                <div className="mt-2 text-xs text-gray-600 space-y-1 bg-purple-50 rounded p-2">
+                                  {item.customOptions.vessel && (
+                                    <p><span className="font-medium">Vessel:</span> {item.customOptions.vessel}</p>
+                                  )}
+                                  {(item.customOptions.primaryScent || item.customOptions.secondaryScent) && (
+                                    <p>
+                                      <span className="font-medium">Scent:</span>{' '}
+                                      {item.customOptions.primaryScent}
+                                      {item.customOptions.secondaryScent && ` + ${item.customOptions.secondaryScent}`}
+                                    </p>
+                                  )}
+                                  {item.customOptions.fragranceFamily && (
+                                    <p><span className="font-medium">Family:</span> {item.customOptions.fragranceFamily}</p>
+                                  )}
+                                  {item.customOptions.waxType && (
+                                    <p><span className="font-medium">Wax:</span> {item.customOptions.waxType}</p>
+                                  )}
+                                  {item.customOptions.waxColor && (
+                                    <p><span className="font-medium">Wax Color:</span> {item.customOptions.waxColor}</p>
+                                  )}
+                                  {item.customOptions.wickType && (
+                                    <p><span className="font-medium">Wick:</span> {item.customOptions.wickType}</p>
+                                  )}
+                                  {item.customOptions.labelText && (
+                                    <p><span className="font-medium">Label:</span> "{item.customOptions.labelText}"</p>
+                                  )}
+                                  {item.customOptions.foilFinish && (
+                                    <p><span className="font-medium">Foil:</span> {item.customOptions.foilFinish}</p>
+                                  )}
+                                  {item.customOptions.packaging && (
+                                    <p><span className="font-medium">Packaging:</span> {item.customOptions.packaging}</p>
+                                  )}
+                                  {item.customOptions.finishingTouches && item.customOptions.finishingTouches.length > 0 && (
+                                    <p><span className="font-medium">Finishing:</span> {item.customOptions.finishingTouches.join(', ')}</p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
+                          <p className="text-sm font-medium text-gray-900">₹{item.totalPrice}</p>
                         </div>
-                        <p className="text-sm font-medium text-gray-900">₹{item.totalPrice}</p>
                       </div>
                     ))}
                   </div>
