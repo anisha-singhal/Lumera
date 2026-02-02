@@ -118,21 +118,28 @@ export async function POST(request: NextRequest) {
 
     try {
       // Map items - handle both custom candles and regular products
+      // MongoDB ObjectId is a 24-character hex string
+      const isValidObjectId = (id: string) => /^[a-f\d]{24}$/i.test(id)
+
       const mappedItems = (orderData?.items || []).map((item: {
         id: string
         name: string
         quantity: number
         price: number
       }) => {
-        // Check if it's a custom candle (ID starts with 'custom-')
-        const isCustomCandle = item.id && item.id.startsWith('custom-')
+        // Check if it's a custom candle (ID starts with 'custom-') or invalid ObjectId
+        const isCustomCandle = item.id && (item.id.startsWith('custom-') || !isValidObjectId(item.id))
+
+        console.log(`Item mapping: ${item.name}, ID: ${item.id}, isCustom: ${isCustomCandle}`)
+
         return {
-          // For custom candles, don't set product relationship (it will fail validation)
+          // For custom candles or invalid IDs, don't set product relationship
           ...(isCustomCandle ? {} : { product: item.id }),
           productName: item.name,
           quantity: item.quantity,
           unitPrice: item.price,
           totalPrice: item.quantity * item.price,
+          isCustomCandle: isCustomCandle,
         }
       })
 

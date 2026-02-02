@@ -80,7 +80,7 @@ const indianStates = [
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, subtotal, clearCart, orderNote, orderNoteFee } = useCart()
-  const { user, isAuthenticated } = useAuth()
+  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth()
   const { addOrder } = useOrders()
 
   const [step, setStep] = useState<'shipping' | 'payment' | 'confirmation'>('shipping')
@@ -113,32 +113,41 @@ export default function CheckoutPage() {
     }
   }, [])
 
-  // Pre-fill user data if authenticated
+  // Pre-fill user data if authenticated - track when data is ready
+  const [addressPrefilled, setAddressPrefilled] = useState(false)
+
   useEffect(() => {
-    if (isAuthenticated && user) {
+    // Wait until auth loading is complete and user is available
+    if (isAuthLoading || !isAuthenticated || !user) return
+
+    // Only auto-prefill once to avoid overwriting user's manual input
+    if (addressPrefilled) return
+
+    // Use default address if available
+    const defaultAddress = user.addresses?.find((addr) => addr.isDefault)
+    if (defaultAddress) {
+      setShippingAddress({
+        fullName: defaultAddress.name || user.name || '',
+        phone: defaultAddress.phone || user.phone || '',
+        email: user.email || '',
+        addressLine1: defaultAddress.addressLine1 || '',
+        addressLine2: defaultAddress.addressLine2 || '',
+        city: defaultAddress.city || '',
+        state: defaultAddress.state || '',
+        pincode: defaultAddress.pincode || '',
+      })
+      setAddressPrefilled(true)
+    } else {
+      // No default address, just fill basic user info
       setShippingAddress((prev) => ({
         ...prev,
         fullName: user.name || prev.fullName,
         email: user.email || prev.email,
         phone: user.phone || prev.phone,
       }))
-
-      // Use default address if available
-      const defaultAddress = user.addresses?.find((addr) => addr.isDefault)
-      if (defaultAddress) {
-        setShippingAddress({
-          fullName: defaultAddress.name || user.name || '',
-          phone: defaultAddress.phone || user.phone || '',
-          email: user.email || '',
-          addressLine1: defaultAddress.addressLine1 || '',
-          addressLine2: defaultAddress.addressLine2 || '',
-          city: defaultAddress.city || '',
-          state: defaultAddress.state || '',
-          pincode: defaultAddress.pincode || '',
-        })
-      }
+      setAddressPrefilled(true)
     }
-  }, [isAuthenticated, user])
+  }, [isAuthLoading, isAuthenticated, user, addressPrefilled])
 
   // Redirect if cart is empty
   useEffect(() => {
@@ -413,7 +422,19 @@ export default function CheckoutPage() {
     }
   }
 
-  // Show loading while checking auth or if not authenticated (will redirect)
+  // Show loading while checking auth or loading user data
+  if (isAuthLoading) {
+    return (
+      <div className="min-h-screen bg-cream-100 pt-24 pb-16 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-burgundy-700 mx-auto mb-4" />
+          <p className="text-burgundy-700/70">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show loading if not authenticated (will redirect)
   if (!isAuthenticated && !orderPlaced) {
     return (
       <div className="min-h-screen bg-cream-100 pt-24 pb-16 flex items-center justify-center">

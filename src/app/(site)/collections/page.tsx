@@ -199,37 +199,28 @@ function CollectionsContent() {
     price: [] as string[],
   })
 
-  // Fetch collections from API
+  // Fixed collection buttons - these are the official Lumera collections
+  const collectionButtons: Collection[] = [
+    { id: 'prestige', name: 'Prestige', slug: 'prestige' },
+    { id: 'state-of-being', name: 'State of Being', slug: 'state-of-being' },
+    { id: 'mineral-texture', name: 'Mineral & Texture', slug: 'mineral-texture' },
+  ]
+
+  // Set collections to the fixed buttons on mount
   useEffect(() => {
-    async function fetchCollections() {
-      try {
-        const response = await fetch('/api/collections')
-        if (response.ok) {
-          const data = await response.json()
-          const fetchedCollections = (data.docs || []).map((c: any) => ({
-            id: c.id,
-            name: c.name,
-            slug: c.slug,
-          }))
-          setCollections(fetchedCollections)
-        }
-      } catch (err) {
-        console.error('Failed to fetch collections:', err)
-      }
-    }
-    fetchCollections()
+    setCollections(collectionButtons)
   }, [])
 
   // Set active collection from URL parameter
   useEffect(() => {
     if (collectionParam) {
-      // Check if this slug exists in our collections
-      const validSlugs = collections.map(c => c.slug)
+      // Check if this slug exists in our collection buttons
+      const validSlugs = collectionButtons.map(c => c.slug)
       if (validSlugs.includes(collectionParam)) {
         setActiveCollection(collectionParam)
       }
     }
-  }, [collectionParam, collections])
+  }, [collectionParam])
 
   const handleFilterChange = (category: string, value: string) => {
     setSelectedFilters((prev) => {

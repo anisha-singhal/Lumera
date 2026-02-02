@@ -3,7 +3,6 @@ import {
   Hero,
   LumeraRitual,
   Collections,
-  FeaturedProducts,
   OurStory,
   FAQ,
 } from '@/components/sections'
@@ -16,13 +15,10 @@ export default function HomePage() {
         {/* Hero Section - Light Meets Soul */}
         <Hero />
 
-        {/* Featured Products Section */}
-        <FeaturedProducts />
-
         {/* The Lumera Ritual - 5-Step Process */}
         <LumeraRitual />
 
-        {/* Product Collections - Serene, Essence, Signature */}
+        {/* Product Collections - Prestige, State of Being, Mineral & Texture */}
         <Collections />
 
         {/* Our Story - Heartfelt Brand Story */}

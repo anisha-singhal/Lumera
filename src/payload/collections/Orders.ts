@@ -263,8 +263,17 @@ export const Orders: CollectionConfig = {
           name: 'product',
           type: 'relationship',
           relationTo: 'products',
-          required: true,
+          required: false, // Optional for custom candles
           label: 'Product',
+        },
+        {
+          name: 'isCustomCandle',
+          type: 'checkbox',
+          label: 'Custom Candle',
+          defaultValue: false,
+          admin: {
+            description: 'Whether this is a custom-built candle',
+          },
         },
         {
           name: 'productName',
