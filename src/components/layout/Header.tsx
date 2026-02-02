@@ -16,7 +16,7 @@ const InstagramIcon = () => (
 
 const announcements = [
   'FREE SHIPPING ON ORDERS ABOVE ₹999',
-  'CURATED GIFTING FOR CELEBRATIONS & CORPORATE ORDERS',
+  'Luxury in Every Flame',
   'HAND-POURED | CLEAN BURN | PREMIUM WAX',
 ]
 

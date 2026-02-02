@@ -90,6 +90,7 @@ export default function CheckoutPage() {
   const [couponDiscount, setCouponDiscount] = useState(0)
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [orderId, setOrderId] = useState('')
+  const [razorpayLoaded, setRazorpayLoaded] = useState(false)
 
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
     fullName: '',
@@ -103,6 +104,13 @@ export default function CheckoutPage() {
   })
 
   const [errors, setErrors] = useState<Partial<ShippingAddress>>({})
+
+  // Check if Razorpay script is already loaded
+  useEffect(() => {
+    if (window.Razorpay) {
+      setRazorpayLoaded(true)
+    }
+  }, [])
 
   // Pre-fill user data if authenticated
   useEffect(() => {
@@ -369,9 +377,20 @@ export default function CheckoutPage() {
         },
       }
 
-      // Check if Razorpay script is loaded
-      if (!window.Razorpay) {
-        alert('Payment system is loading. Please try again in a moment.')
+      // Wait for Razorpay script to load with retries
+      const waitForRazorpay = async (maxAttempts = 20): Promise<boolean> => {
+        for (let i = 0; i < maxAttempts; i++) {
+          if (window.Razorpay) {
+            return true
+          }
+          await new Promise(resolve => setTimeout(resolve, 250))
+        }
+        return false
+      }
+
+      const razorpayReady = await waitForRazorpay()
+      if (!razorpayReady) {
+        alert('Payment system failed to load. Please refresh the page and try again.')
         setIsProcessing(false)
         return
       }
@@ -462,10 +481,11 @@ export default function CheckoutPage() {
 
   return (
     <>
-      {/* Load Razorpay Checkout Script - beforeInteractive ensures it loads before page is interactive */}
+      {/* Load Razorpay Checkout Script */}
       <Script
         src="https://checkout.razorpay.com/v1/checkout.js"
-        strategy="beforeInteractive"
+        strategy="afterInteractive"
+        onLoad={() => setRazorpayLoaded(true)}
       />
 
     <div className="min-h-screen bg-cream-100 pt-24 pb-16">
