@@ -91,6 +91,7 @@ export default function CheckoutPage() {
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [orderId, setOrderId] = useState('')
   const [razorpayLoaded, setRazorpayLoaded] = useState(false)
+  const [paymentError, setPaymentError] = useState<{ message: string; paymentId?: string } | null>(null)
 
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
     fullName: '',
@@ -248,6 +249,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     setIsProcessing(true)
+    setPaymentError(null) // Clear any previous errors
 
     try {
       // Common Order Data Construction
@@ -337,13 +339,23 @@ export default function CheckoutPage() {
               clearCart()
               setOrderPlaced(true)
               setStep('confirmation')
+              setPaymentError(null)
               window.scrollTo({ top: 0, behavior: 'smooth' })
             } else {
-              alert('Payment verification failed. Please contact support.')
+              // Payment was captured but order save failed - show payment ID
+              setIsProcessing(false)
+              setPaymentError({
+                message: verifyData.error || 'Payment verification failed. Please contact support.',
+                paymentId: verifyData.paymentId || response.razorpay_payment_id,
+              })
             }
-          } catch (error) {
+          } catch (error: any) {
             console.error('Verification error:', error)
-            alert('Payment verification failed. Please contact support.')
+            setIsProcessing(false)
+            setPaymentError({
+              message: 'Payment verification failed. Please contact support.',
+              paymentId: response.razorpay_payment_id,
+            })
           }
         },
         prefill: {
@@ -364,20 +376,28 @@ export default function CheckoutPage() {
         },
       }
 
-      // Wait for Razorpay script to load with retries
-      const waitForRazorpay = async (maxAttempts = 20): Promise<boolean> => {
+      // Wait for Razorpay script to load with retries and dynamic fallback
+      const waitForRazorpay = async (maxAttempts = 30): Promise<boolean> => {
         for (let i = 0; i < maxAttempts; i++) {
           if (window.Razorpay) {
             return true
           }
-          await new Promise(resolve => setTimeout(resolve, 250))
+          // Try to dynamically load script if not loaded after 10 attempts
+          if (i === 10 && !document.querySelector('script[src*="razorpay"]')) {
+            const script = document.createElement('script')
+            script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+            document.body.appendChild(script)
+          }
+          await new Promise(resolve => setTimeout(resolve, 200))
         }
         return false
       }
 
       const razorpayReady = await waitForRazorpay()
       if (!razorpayReady) {
-        alert('Payment system failed to load. Please refresh the page and try again.')
+        setPaymentError({
+          message: 'Payment system failed to load. Please refresh the page and try again.',
+        })
         setIsProcessing(false)
         return
       }
@@ -386,7 +406,9 @@ export default function CheckoutPage() {
       razorpay.open()
     } catch (error: any) {
       console.error('Order creation error:', error)
-      alert(error.message || 'Failed to initiate payment. Please try again.')
+      setPaymentError({
+        message: error.message || 'Failed to initiate payment. Please try again.',
+      })
       setIsProcessing(false)
     }
   }
@@ -483,6 +505,14 @@ export default function CheckoutPage() {
         src="https://checkout.razorpay.com/v1/checkout.js"
         strategy="afterInteractive"
         onLoad={() => setRazorpayLoaded(true)}
+        onError={() => {
+          console.error('Failed to load Razorpay script')
+          // Try to load dynamically as fallback
+          const script = document.createElement('script')
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+          script.onload = () => setRazorpayLoaded(true)
+          document.body.appendChild(script)
+        }}
       />
 
     <div className="min-h-screen bg-cream-100 pt-24 pb-16">
@@ -852,6 +882,28 @@ export default function CheckoutPage() {
                     Secure
                   </span>
                 </div>
+
+                {/* Payment Error Display */}
+                {paymentError && (
+                  <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-700 font-medium mb-2">
+                      {paymentError.message}
+                    </p>
+                    {paymentError.paymentId && (
+                      <p className="text-xs text-red-600">
+                        Payment ID: <span className="font-mono font-bold">{paymentError.paymentId}</span>
+                        <br />
+                        <span className="text-red-500">Please save this ID and contact support for assistance.</span>
+                      </p>
+                    )}
+                    <button
+                      onClick={() => setPaymentError(null)}
+                      className="mt-2 text-xs text-red-700 underline hover:no-underline"
+                    >
+                      Close
+                    </button>
+                  </div>
+                )}
 
                 <div className="flex gap-4 mt-8">
                   <button

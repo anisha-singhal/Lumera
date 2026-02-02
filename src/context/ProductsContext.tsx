@@ -20,10 +20,12 @@ export interface Product {
     isPrimary?: boolean
   }>
   productCollection?: {
+    id: string
     name: string
-    slug?: string
+    slug: string
   }
   collection?: {
+    id: string
     name: string
     slug: string
   }

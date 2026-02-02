@@ -35,7 +35,9 @@ export interface PaymentVerificationRequest {
 }
 
 /**
- * Create a Razorpay order
+ * Create a Razorpay order with MANUAL CAPTURE
+ * Payment is only authorized, not captured. We capture after order is saved to DB.
+ * This prevents money being deducted if our database save fails.
  * @param request - Order details including amount in rupees
  * @returns Razorpay order object
  */
@@ -47,6 +49,7 @@ export async function createRazorpayOrder(
     currency: request.currency || 'INR',
     receipt: request.receipt,
     notes: request.notes || {},
+    payment_capture: 0, // MANUAL CAPTURE - payment is authorized but not captured
   }
 
   // MOCK: If using dummy keys, return a mock order
@@ -69,6 +72,35 @@ export async function createRazorpayOrder(
 
   const order = await razorpayInstance.orders.create(options)
   return order as RazorpayOrder
+}
+
+/**
+ * Capture an authorized payment
+ * Call this ONLY after order is successfully saved to database
+ * @param paymentId - Razorpay payment ID
+ * @param amount - Amount in paise to capture
+ * @param currency - Currency (default INR)
+ * @returns Captured payment details
+ */
+export async function capturePayment(
+  paymentId: string,
+  amount: number,
+  currency: string = 'INR'
+) {
+  // MOCK: If using dummy keys, return mock capture
+  if (process.env.RAZORPAY_KEY_ID === 'rzp_test_dummy') {
+    console.log('⚠️ Using Mock Payment Capture (Dummy Keys Detected)')
+    return {
+      id: paymentId,
+      entity: 'payment',
+      status: 'captured',
+      amount: amount,
+      currency: currency,
+    } as any
+  }
+
+  const capture = await razorpayInstance.payments.capture(paymentId, amount, currency)
+  return capture
 }
 
 /**

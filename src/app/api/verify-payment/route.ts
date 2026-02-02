@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyPaymentSignature, fetchPaymentDetails } from '@/lib/razorpay'
+import { verifyPaymentSignature, fetchPaymentDetails, capturePayment } from '@/lib/razorpay'
 import { sendMail } from '@/lib/sendMail'
 
 // State code mapping for Payload CMS
@@ -43,6 +43,7 @@ const stateCodeMap: Record<string, string> = {
 }
 
 export async function POST(request: NextRequest) {
+  let razorpay_payment_id_for_error = ''
   try {
     const body = await request.json()
     const {
@@ -51,6 +52,7 @@ export async function POST(request: NextRequest) {
       razorpay_signature,
       orderData,
     } = body
+    razorpay_payment_id_for_error = razorpay_payment_id || ''
 
     console.log('Verify payment request received:', {
       razorpay_order_id,
@@ -84,14 +86,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Fetch payment details from Razorpay to confirm payment status
-    let paymentStatus = 'captured'
+    // Fetch payment details from Razorpay to confirm payment status and get amount
+    let paymentStatus = 'authorized'
+    let paymentAmount = 0
     try {
       const paymentDetails = await fetchPaymentDetails(razorpay_payment_id)
       paymentStatus = paymentDetails.status
-      console.log('Payment details fetched:', { status: paymentStatus })
+      paymentAmount = paymentDetails.amount // Amount in paise
+      console.log('Payment details fetched:', { status: paymentStatus, amount: paymentAmount })
     } catch (fetchError) {
       console.warn('Could not fetch payment details, proceeding with verified signature')
+      // Use orderData total as fallback (convert to paise)
+      paymentAmount = Math.round((orderData?.total || 0) * 100)
     }
 
     // Generate order number
@@ -111,6 +117,25 @@ export async function POST(request: NextRequest) {
     const stateCode = stateCodeMap[stateValue] || stateValue
 
     try {
+      // Map items - handle both custom candles and regular products
+      const mappedItems = (orderData?.items || []).map((item: {
+        id: string
+        name: string
+        quantity: number
+        price: number
+      }) => {
+        // Check if it's a custom candle (ID starts with 'custom-')
+        const isCustomCandle = item.id && item.id.startsWith('custom-')
+        return {
+          // For custom candles, don't set product relationship (it will fail validation)
+          ...(isCustomCandle ? {} : { product: item.id }),
+          productName: item.name,
+          quantity: item.quantity,
+          unitPrice: item.price,
+          totalPrice: item.quantity * item.price,
+        }
+      })
+
       await payload.create({
         collection: 'orders',
         overrideAccess: true,
@@ -131,18 +156,7 @@ export async function POST(request: NextRequest) {
             country: 'India',
           },
           sameAsShipping: true,
-          items: (orderData?.items || []).map((item: {
-            id: string
-            name: string
-            quantity: number
-            price: number
-          }) => ({
-            product: item.id,
-            productName: item.name,
-            quantity: item.quantity,
-            unitPrice: item.price,
-            totalPrice: item.quantity * item.price,
-          })),
+          items: mappedItems,
           pricing: {
             subtotal: orderData?.subtotal || 0,
             discount: {
@@ -167,14 +181,41 @@ export async function POST(request: NextRequest) {
         },
       })
       console.log('Order saved to database:', orderNumber)
+
+      // IMPORTANT: Capture the payment ONLY after order is saved successfully
+      // This ensures money is only deducted when we have the order in our system
+      if (paymentStatus === 'authorized') {
+        try {
+          console.log('Capturing payment:', razorpay_payment_id, 'amount:', paymentAmount)
+          await capturePayment(razorpay_payment_id, paymentAmount, 'INR')
+          paymentStatus = 'captured'
+          console.log('Payment captured successfully')
+        } catch (captureError: any) {
+          // Payment capture failed but order is saved - this needs manual resolution
+          // The order exists, so admin can manually capture or refund
+          console.error('Payment capture failed (order saved, needs manual capture):', captureError.message)
+          // Don't fail the request - the order is saved, payment can be captured manually
+        }
+      }
+
     } catch (dbError: any) {
-      // Database save failed - this is critical, return error
-      console.error('CRITICAL: Database save error:', dbError.message)
+      // Database save failed - DO NOT capture the payment
+      // The authorization will expire and money returns to customer automatically
+      console.error('CRITICAL: Database save error - PAYMENT NOT CAPTURED:', dbError.message, dbError)
+
+      // Extract more specific error message
+      let errorMessage = 'Order could not be saved.'
+      if (dbError.data?.errors) {
+        const fieldErrors = dbError.data.errors.map((e: any) => e.message).join(', ')
+        errorMessage = `Order save failed: ${fieldErrors}`
+      }
+
       return NextResponse.json(
         {
           success: false,
-          error: 'Order could not be saved. Please contact support with your payment ID: ' + razorpay_payment_id,
+          error: errorMessage + ' Your payment was NOT charged. Please try again.',
           paymentId: razorpay_payment_id,
+          paymentNotCaptured: true, // Flag to indicate payment was not captured
         },
         { status: 500 }
       )
@@ -240,6 +281,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: error.message || 'Payment verification failed',
+        paymentId: razorpay_payment_id_for_error,
       },
       { status: 500 }
     )

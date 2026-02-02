@@ -864,13 +864,10 @@ function StepVessel({ config, updateConfig, onNext, onBack }: StepProps) {
                 </div>
 
                 {/* Vessel Info */}
-                <h3 className="font-serif text-[10px] sm:text-[11px] text-[#800020] mb-1 sm:mb-2 px-1">
+                <h3 className="font-serif text-xs sm:text-sm text-[#800020] mb-1 sm:mb-2 leading-tight line-clamp-2">
                   {vessel.name}
                 </h3>
-                <p className="text-[9px] sm:text-[10px] text-[#1C1C1C]/50 mb-2 sm:mb-3 leading-relaxed px-1">
-                  {vessel.material}
-                </p>
-                <p className="text-[10px] sm:text-xs text-[#800020]">
+                <p className="text-[10px] sm:text-xs text-[#1C1C1C]/50">
                   {vessel.priceDelta === 0 ? 'Included' : `+ ₹${vessel.priceDelta}`}
                 </p>
               </button>

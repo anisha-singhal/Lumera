@@ -10,12 +10,11 @@ import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react'
 import CustomSelect from '@/components/ui/CustomSelect'
 import { useProducts, Product } from '@/context'
 
-const collections = [
-  { name: 'All', slug: 'all' },
-  { name: 'Prestige', slug: 'prestige' },
-  { name: 'State of Being', slug: 'state-of-being' },
-  { name: 'Mineral & Texture', slug: 'mineral-texture' },
-]
+interface Collection {
+  id: string
+  name: string
+  slug: string
+}
 
 const sortOptions = [
   { label: 'Featured', value: 'featured' },
@@ -155,9 +154,9 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* Product Info */}
         <div className="text-center">
-          {product.collection && (
+          {(product.productCollection || product.collection) && (
             <p className="text-[10px] tracking-widest uppercase text-[#C9A24D] mb-1">
-              {product.collection.name}
+              {product.productCollection?.name || product.collection?.name}
             </p>
           )}
           <h3 className="font-serif text-lg text-[#800020] mb-1 group-hover:text-[#C9A24D] transition-colors">
@@ -190,6 +189,7 @@ function CollectionsContent() {
 
   // Use cached products from context
   const { products, loading } = useProducts()
+  const [collections, setCollections] = useState<Collection[]>([])
   const [activeCollection, setActiveCollection] = useState('all')
   const [sortBy, setSortBy] = useState('featured')
   const [showFilters, setShowFilters] = useState(false)
@@ -199,12 +199,37 @@ function CollectionsContent() {
     price: [] as string[],
   })
 
+  // Fetch collections from API
+  useEffect(() => {
+    async function fetchCollections() {
+      try {
+        const response = await fetch('/api/collections')
+        if (response.ok) {
+          const data = await response.json()
+          const fetchedCollections = (data.docs || []).map((c: any) => ({
+            id: c.id,
+            name: c.name,
+            slug: c.slug,
+          }))
+          setCollections(fetchedCollections)
+        }
+      } catch (err) {
+        console.error('Failed to fetch collections:', err)
+      }
+    }
+    fetchCollections()
+  }, [])
+
   // Set active collection from URL parameter
   useEffect(() => {
-    if (collectionParam && ['signature', 'moments', 'ritual'].includes(collectionParam)) {
-      setActiveCollection(collectionParam)
+    if (collectionParam) {
+      // Check if this slug exists in our collections
+      const validSlugs = collections.map(c => c.slug)
+      if (validSlugs.includes(collectionParam)) {
+        setActiveCollection(collectionParam)
+      }
     }
-  }, [collectionParam])
+  }, [collectionParam, collections])
 
   const handleFilterChange = (category: string, value: string) => {
     setSelectedFilters((prev) => {
@@ -243,8 +268,9 @@ function CollectionsContent() {
 
   // Filter products
   const filteredProducts = products.filter((product) => {
-    // Collection filter
-    if (activeCollection !== 'all' && product.collection?.slug?.toLowerCase() !== activeCollection) {
+    // Collection filter - use productCollection (the actual field name)
+    const collectionSlug = product.productCollection?.slug || product.collection?.slug
+    if (activeCollection !== 'all' && collectionSlug?.toLowerCase() !== activeCollection) {
       return false
     }
 
@@ -313,6 +339,19 @@ function CollectionsContent() {
               {/* Collection Tabs - Scrollable on mobile */}
               <div className="-mx-6 px-6 overflow-x-auto scrollbar-hide md:mx-0 md:px-0">
                 <div className="flex gap-2 min-w-max md:flex-wrap">
+                  {/* All button */}
+                  <button
+                    onClick={() => setActiveCollection('all')}
+                    className={`px-4 py-3 min-h-[48px] text-sm font-sans tracking-wider uppercase transition-all duration-300 whitespace-nowrap ${
+                      activeCollection === 'all'
+                        ? 'bg-burgundy-700 border border-burgundy-700'
+                        : 'bg-transparent text-burgundy-700 border border-burgundy-700/20 hover:border-burgundy-700'
+                    }`}
+                    style={activeCollection === 'all' ? { color: '#FFFFFF' } : undefined}
+                  >
+                    All
+                  </button>
+                  {/* Dynamic collections from database */}
                   {collections.map((collection) => (
                     <button
                       key={collection.slug}
