@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
       limit: parseInt(limit),
       page: parseInt(page),
       sort: '-createdAt',
+      overrideAccess: true, // Allow reading all orders for admin dashboard
     })
 
     return NextResponse.json(orders)

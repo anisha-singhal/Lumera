@@ -146,6 +146,13 @@ export default function CheckoutPage() {
     }
   }, [items, router, orderPlaced])
 
+  // Redirect to account page if not authenticated (will show login modal)
+  useEffect(() => {
+    if (!isAuthenticated && !orderPlaced) {
+      router.push('/account?redirect=/checkout')
+    }
+  }, [isAuthenticated, router, orderPlaced])
+
   const [storeSettings, setStoreSettings] = useState({
     shippingCost: 49,
     freeShippingThreshold: 999,
@@ -404,6 +411,18 @@ export default function CheckoutPage() {
     }
   }
 
+  // Show loading while checking auth or if not authenticated (will redirect)
+  if (!isAuthenticated && !orderPlaced) {
+    return (
+      <div className="min-h-screen bg-cream-100 pt-24 pb-16 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-burgundy-700 mx-auto mb-4" />
+          <p className="text-burgundy-700/70">Please sign in to checkout...</p>
+        </div>
+      </div>
+    )
+  }
+
   // Order confirmation view
   if (step === 'confirmation' && orderPlaced) {
     return (
@@ -464,14 +483,12 @@ export default function CheckoutPage() {
               <Link href="/collections" className="btn-primary">
                 Continue Shopping
               </Link>
-              {isAuthenticated && (
-                <Link
-                  href="/account"
-                  className="btn-secondary"
-                >
-                  View Orders
-                </Link>
-              )}
+              <Link
+                href="/account"
+                className="btn-secondary"
+              >
+                View Orders
+              </Link>
             </div>
           </motion.div>
         </div>

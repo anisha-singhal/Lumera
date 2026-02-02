@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Header, Footer } from '@/components/layout'
 import { useAuth, useOrders } from '@/context'
 import {
@@ -23,6 +23,8 @@ type TabType = 'profile' | 'orders' | 'addresses' | 'settings'
 
 export default function AccountPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectUrl = searchParams.get('redirect')
   const {
     user,
     isAuthenticated,
@@ -37,6 +39,13 @@ export default function AccountPage() {
     deleteAccount,
   } = useAuth()
   const { orders, clearOrders } = useOrders()
+
+  // Handle redirect after successful login
+  useEffect(() => {
+    if (isAuthenticated && redirectUrl) {
+      router.push(redirectUrl)
+    }
+  }, [isAuthenticated, redirectUrl, router])
 
   const [activeTab, setActiveTab] = useState<TabType>('profile')
   const [isEditing, setIsEditing] = useState(false)

@@ -4,35 +4,42 @@ import { sendMail } from '@/lib/sendMail'
 
 // State code mapping for Payload CMS
 const stateCodeMap: Record<string, string> = {
+  'Andaman and Nicobar Islands': 'AN',
+  'Andhra Pradesh': 'AP',
+  'Arunachal Pradesh': 'AR',
+  'Assam': 'AS',
+  'Bihar': 'BR',
+  'Chandigarh': 'CH',
+  'Chhattisgarh': 'CT',
+  'Dadra and Nagar Haveli and Daman and Diu': 'DD',
   'Delhi': 'DL',
-  'Maharashtra': 'MH',
+  'Goa': 'GA',
+  'Gujarat': 'GJ',
+  'Haryana': 'HR',
+  'Himachal Pradesh': 'HP',
+  'Jammu and Kashmir': 'JK',
+  'Jharkhand': 'JH',
   'Karnataka': 'KA',
+  'Kerala': 'KL',
+  'Ladakh': 'LA',
+  'Lakshadweep': 'LD',
+  'Madhya Pradesh': 'MP',
+  'Maharashtra': 'MH',
+  'Manipur': 'MN',
+  'Meghalaya': 'ML',
+  'Mizoram': 'MZ',
+  'Nagaland': 'NL',
+  'Odisha': 'OR',
+  'Puducherry': 'PY',
+  'Punjab': 'PB',
+  'Rajasthan': 'RJ',
+  'Sikkim': 'SK',
   'Tamil Nadu': 'TN',
   'Telangana': 'TG',
-  'Gujarat': 'GJ',
-  'Rajasthan': 'RJ',
-  'Uttar Pradesh': 'UP',
-  'West Bengal': 'WB',
-  'Madhya Pradesh': 'MP',
-  'Bihar': 'BR',
-  'Punjab': 'PB',
-  'Haryana': 'HR',
-  'Kerala': 'KL',
-  'Andhra Pradesh': 'AP',
-  'Odisha': 'OR',
-  'Assam': 'AS',
-  'Jharkhand': 'JH',
-  'Chhattisgarh': 'CT',
-  'Uttarakhand': 'UK',
-  'Goa': 'GA',
   'Tripura': 'TR',
-  'Meghalaya': 'ML',
-  'Manipur': 'MN',
-  'Nagaland': 'NL',
-  'Himachal Pradesh': 'HP',
-  'Arunachal Pradesh': 'AR',
-  'Mizoram': 'MZ',
-  'Sikkim': 'SK',
+  'Uttar Pradesh': 'UP',
+  'Uttarakhand': 'UK',
+  'West Bengal': 'WB',
 }
 
 export async function POST(request: NextRequest) {
@@ -94,16 +101,16 @@ export async function POST(request: NextRequest) {
     const random = Math.random().toString(36).substring(2, 8).toUpperCase()
     const orderNumber = `LUM${year}${month}${random}`
 
-    // Try to save to database, but don't fail if it doesn't work
+    // Save order to database - this MUST succeed for order to be valid
+    const { getPayload } = await import('payload')
+    const config = await import('@/payload.config')
+    const payload = await getPayload({ config: config.default })
+
+    // Convert state name to code if needed
+    const stateValue = orderData?.shippingAddress?.state || 'DL'
+    const stateCode = stateCodeMap[stateValue] || stateValue
+
     try {
-      const { getPayload } = await import('payload')
-      const config = await import('@/payload.config')
-      const payload = await getPayload({ config: config.default })
-
-      // Convert state name to code if needed
-      const stateValue = orderData?.shippingAddress?.state || 'DL'
-      const stateCode = stateCodeMap[stateValue] || stateValue
-
       await payload.create({
         collection: 'orders',
         overrideAccess: true,
@@ -160,58 +167,66 @@ export async function POST(request: NextRequest) {
         },
       })
       console.log('Order saved to database:', orderNumber)
-      
-      // Increment coupon usage count atomically using MongoDB's $inc operator
-      // This prevents race conditions when multiple orders use the same coupon
-      if (orderData?.couponCode) {
-        try {
-          const mongoose = await import('mongoose')
-          const db = mongoose.connection.db
-          if (db) {
-            await db.collection('coupons').updateOne(
-              { code: orderData.couponCode.toUpperCase() },
-              { $inc: { usageCount: 1 } }
-            )
-            console.log('Coupon usage count incremented atomically:', orderData.couponCode)
-          }
-        } catch (couponError) {
-          console.error('Failed to increment coupon usage (non-fatal):', couponError)
-        }
-      }
-
-      // Send order confirmation email
-      try {
-        const itemsList = (orderData?.items || []).map((item: any) => 
-          `- ${item.name} (x${item.quantity}): ₹${item.price * item.quantity}`
-        ).join('\n')
-
-        const emailMessage = `Dear ${orderData?.firstName || 'Customer'},\n\n` +
-          `Thank you for your order with Lumera Candles! Your order has been successfully placed.\n\n` +
-          `Order Number: ${orderNumber}\n` +
-          `Order Total: ₹${orderData?.total || 0}\n\n` +
-          `Items Ordered:\n${itemsList}\n\n` +
-          `Shipping Address:\n` +
-          `${orderData?.shippingAddress?.addressLine1}\n` +
-          `${orderData?.shippingAddress?.addressLine2 ? orderData.shippingAddress.addressLine2 + '\n' : ''}` +
-          `${orderData?.shippingAddress?.city}, ${stateValue} - ${orderData?.shippingAddress?.pincode}\n\n` +
-          `We will notify you once your order is shipped.\n\n` +
-          `Best regards,\nThe Lumera Team`
-
-        await sendMail({
-          to: orderData?.email || '',
-          subject: `Order Confirmed - ${orderNumber}`,
-          message: emailMessage,
-        })
-        console.log('Order confirmation email sent to:', orderData?.email)
-      } catch (mailError) {
-        console.error('Failed to send order confirmation email (non-fatal):', mailError)
-      }
     } catch (dbError: any) {
-      // Log the error but don't fail the payment verification
-      console.error('Database save error (non-fatal):', dbError.message)
+      // Database save failed - this is critical, return error
+      console.error('CRITICAL: Database save error:', dbError.message)
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Order could not be saved. Please contact support with your payment ID: ' + razorpay_payment_id,
+          paymentId: razorpay_payment_id,
+        },
+        { status: 500 }
+      )
     }
 
-    // Return success - payment was verified
+    // Increment coupon usage count atomically using MongoDB's $inc operator
+    // This prevents race conditions when multiple orders use the same coupon
+    if (orderData?.couponCode) {
+      try {
+        const mongoose = await import('mongoose')
+        const db = mongoose.connection.db
+        if (db) {
+          await db.collection('coupons').updateOne(
+            { code: orderData.couponCode.toUpperCase() },
+            { $inc: { usageCount: 1 } }
+          )
+          console.log('Coupon usage count incremented atomically:', orderData.couponCode)
+        }
+      } catch (couponError) {
+        console.error('Failed to increment coupon usage (non-fatal):', couponError)
+      }
+    }
+
+    // Send order confirmation email (non-critical)
+    try {
+      const itemsList = (orderData?.items || []).map((item: any) =>
+        `- ${item.name} (x${item.quantity}): ₹${item.price * item.quantity}`
+      ).join('\n')
+
+      const emailMessage = `Dear ${orderData?.firstName || 'Customer'},\n\n` +
+        `Thank you for your order with Lumera Candles! Your order has been successfully placed.\n\n` +
+        `Order Number: ${orderNumber}\n` +
+        `Order Total: ₹${orderData?.total || 0}\n\n` +
+        `Items Ordered:\n${itemsList}\n\n` +
+        `Shipping Address:\n` +
+        `${orderData?.shippingAddress?.addressLine1}\n` +
+        `${orderData?.shippingAddress?.addressLine2 ? orderData.shippingAddress.addressLine2 + '\n' : ''}` +
+        `${orderData?.shippingAddress?.city}, ${stateValue} - ${orderData?.shippingAddress?.pincode}\n\n` +
+        `We will notify you once your order is shipped.\n\n` +
+        `Best regards,\nThe Lumera Team`
+
+      await sendMail({
+        to: orderData?.email || '',
+        subject: `Order Confirmed - ${orderNumber}`,
+        message: emailMessage,
+      })
+      console.log('Order confirmation email sent to:', orderData?.email)
+    } catch (mailError) {
+      console.error('Failed to send order confirmation email (non-fatal):', mailError)
+    }
+
+    // Return success - payment was verified and order was saved
     return NextResponse.json({
       success: true,
       message: 'Payment verified successfully',
