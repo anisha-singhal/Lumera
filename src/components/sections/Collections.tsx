@@ -55,12 +55,25 @@ const collections: Collection[] = [
     priceRange: '₹899 - ₹1,999',
     mood: 'Grounded & Natural',
   },
+  {
+    id: 4,
+    name: 'Valentine\'s Collection',
+    slug: 'valentines',
+    tagline: 'Love in Every Scent',
+    description:
+      'Romantic fragrances crafted for moments of connection. Express your love with scents that speak from the heart.',
+    image: '/images/collections/valentines.png',
+    productCount: 3,
+    priceRange: '₹999 - ₹2,999',
+    mood: 'Romantic & Intimate',
+  },
 ]
 
 export default function CollectionsSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({})
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -99,17 +112,17 @@ export default function CollectionsSection() {
           </h2>
           <div className="line-accent mx-auto mb-6" />
           <p className="max-w-2xl mx-auto text-burgundy-700/70 font-sans leading-relaxed">
-            Three distinctive collections, each crafted to evoke a unique atmosphere.
+            Four distinctive collections, each crafted to evoke a unique atmosphere.
             Find the perfect fragrance to complement your lifestyle.
           </p>
         </motion.div>
 
         {/* Collections - Horizontal scroll on mobile, grid on desktop */}
         <div className="relative">
-          {/* Left Arrow - mobile only */}
+          {/* Left Arrow */}
           <button
             onClick={() => scroll('left')}
-            className={`lg:hidden absolute left-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 ${
+            className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 ${
               canScrollLeft
                 ? 'opacity-100 scale-100'
                 : 'opacity-0 scale-75 pointer-events-none'
@@ -123,10 +136,10 @@ export default function CollectionsSection() {
             <ChevronLeft className="w-6 h-6 text-[#C9A24D]" />
           </button>
 
-          {/* Right Arrow - mobile only */}
+          {/* Right Arrow */}
           <button
             onClick={() => scroll('right')}
-            className={`lg:hidden absolute right-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 ${
+            className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 ${
               canScrollRight
                 ? 'opacity-100 scale-100'
                 : 'opacity-0 scale-75 pointer-events-none'
@@ -143,7 +156,7 @@ export default function CollectionsSection() {
           <div
             ref={scrollContainerRef}
             onScroll={checkScroll}
-            className="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0 snap-x snap-mandatory scrollbar-hide"
+            className="flex gap-6 lg:gap-8 overflow-x-auto pb-4 -mx-4 px-4 lg:px-0 snap-x snap-mandatory scrollbar-hide"
           >
           {collections.map((collection, index) => (
             <motion.div
@@ -152,18 +165,22 @@ export default function CollectionsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: index * 0.2 }}
-              className="group flex-shrink-0 w-[85vw] sm:w-[70vw] lg:w-auto snap-center"
+              className="group flex-shrink-0 w-[85vw] sm:w-[70vw] lg:w-[calc(33.333%-1.5rem)] snap-center"
             >
               <Link href={`/collections?collection=${collection.slug}`} className="block h-full">
                 <div className="relative overflow-hidden bg-white border border-burgundy-700/10 hover:border-[#C9A24D]/40 transition-all duration-500 shadow-lg hover:shadow-2xl h-full flex flex-col">
                   {/* Image Container */}
-                  <div className="relative h-64 sm:h-80 overflow-hidden flex-shrink-0">
+                  <div className="relative h-64 sm:h-80 overflow-hidden flex-shrink-0 bg-cream-200">
                     <Image
-                      src={collection.image}
+                      src={imageErrors[collection.id] ? '/images/collections/prestige.png' : collection.image}
                       alt={collection.name}
                       fill
                       className="object-cover transition-transform duration-700 ease-luxury group-hover:scale-105"
                       sizes="(max-width: 1024px) 85vw, 33vw"
+                      onError={() => {
+                        // Set error state to use fallback image
+                        setImageErrors(prev => ({ ...prev, [collection.id]: true }))
+                      }}
                     />
 
                   </div>

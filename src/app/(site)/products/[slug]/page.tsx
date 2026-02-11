@@ -98,6 +98,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const [activeTab, setActiveTab] = useState<'description' | 'details' | 'care'>('description')
   const [isAdded, setIsAdded] = useState(false)
   const [selectedFragrance, setSelectedFragrance] = useState<string>('')
+  const [shareFeedback, setShareFeedback] = useState<string>('')
   
   const { addToCart, setIsCartOpen } = useCart()
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
@@ -170,6 +171,47 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
       currency: 'INR',
       minimumFractionDigits: 0,
     }).format(amount)
+  }
+  
+  const handleShare = async () => {
+    const productUrl = typeof window !== 'undefined' ? window.location.href : ''
+    const shareText = `Check out ${product.name} from Lumera! ${productUrl}`
+    
+    try {
+      // Check if Web Share API is available (mobile devices)
+      if (navigator.share) {
+        await navigator.share({
+          title: product.name,
+          text: shareText,
+          url: productUrl,
+        })
+      } else {
+        // Fallback: Copy to clipboard
+        await navigator.clipboard.writeText(productUrl)
+        setShareFeedback('Link copied!')
+        setTimeout(() => setShareFeedback(''), 2000)
+      }
+    } catch (error) {
+      // User cancelled or error occurred
+      if (error instanceof Error && error.name !== 'AbortError') {
+        // If clipboard API fails, try fallback method
+        try {
+          const textArea = document.createElement('textarea')
+          textArea.value = productUrl
+          textArea.style.position = 'fixed'
+          textArea.style.opacity = '0'
+          document.body.appendChild(textArea)
+          textArea.select()
+          document.execCommand('copy')
+          document.body.removeChild(textArea)
+          setShareFeedback('Link copied!')
+          setTimeout(() => setShareFeedback(''), 2000)
+        } catch (fallbackError) {
+          setShareFeedback('Failed to share')
+          setTimeout(() => setShareFeedback(''), 2000)
+        }
+      }
+    }
   }
   
   const collectionName = product.productCollection?.name || 'Collection'
@@ -465,9 +507,12 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 </div>
 
                 {/* Share */}
-                <button className="flex items-center gap-2 text-sm font-sans text-burgundy-700/60 hover:text-burgundy-700 transition-colors">
+                <button 
+                  onClick={handleShare}
+                  className="flex items-center gap-2 text-sm font-sans text-burgundy-700/60 hover:text-burgundy-700 transition-colors"
+                >
                   <Share2 className="w-4 h-4" />
-                  Share this product
+                  {shareFeedback || 'Share this product'}
                 </button>
               </motion.div>
             </div>

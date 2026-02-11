@@ -20,9 +20,14 @@ interface ProductForm {
   newArrival: boolean
   quantity: string
   waxType: string
+  wickType: string
   burnTimeMin: string
   burnTimeMax: string
   weight: string
+  height: string
+  diameter: string
+  containerMaterial: string
+  careInstructions: string[]
   promoTag: string
 }
 
@@ -46,9 +51,14 @@ const initialForm: ProductForm = {
   newArrival: false,
   quantity: '0',
   waxType: 'soy-coconut',
+  wickType: 'cotton',
   burnTimeMin: '',
   burnTimeMax: '',
   weight: '',
+  height: '',
+  diameter: '',
+  containerMaterial: 'glass',
+  careInstructions: [],
   promoTag: '',
 }
 
@@ -66,14 +76,87 @@ export default function NewProductPage() {
   const [newFragranceName, setNewFragranceName] = useState('')
   const [addingFragrance, setAddingFragrance] = useState(false)
 
+  // Map collection names to ensure they match homepage (case-insensitive)
+  const getCollectionDisplayName = (collectionName: string): string => {
+    const name = collectionName?.trim() || ''
+    const nameLower = name.toLowerCase()
+    
+    // Map old names to new names
+    if (nameLower === 'ritual') return 'The State of Being Series'
+    if (nameLower === 'signature') return 'The Mineral & Texture Edit'
+    if (nameLower === 'moments') return 'The Prestige Collection'
+    
+    // Handle Valentine's Collection variations
+    if (nameLower.includes('valentine')) {
+      return 'Valentine\'s Collection'
+    }
+    
+    // If already correct, return as is
+    if (name === 'The Prestige Collection' || 
+        name === 'The State of Being Series' || 
+        name === 'The Mineral & Texture Edit' ||
+        name === 'Valentine\'s Collection' ||
+        name === 'Valentines Collection') {
+      return name === 'Valentines Collection' ? 'Valentine\'s Collection' : name
+    }
+    
+    // Default: return original name
+    return name
+  }
+
   // Fetch collections and fragrances on mount
   useEffect(() => {
     async function fetchCollections() {
       try {
-        const response = await fetch('/api/collections')
+        const response = await fetch('/api/collections?all=true')
         if (response.ok) {
           const data = await response.json()
-          setCollections(data.docs || [])
+          console.log('Collections API response:', data)
+          
+          // Handle both response formats: { docs: [...] } or direct array
+          const collectionsArray = data.docs || data || []
+          
+          // Map collection names to match homepage
+          const mappedCollections = collectionsArray.map((col: any) => ({
+            ...col,
+            name: getCollectionDisplayName(col.name)
+          }))
+          
+          // Ensure all 4 required collections are present (add fallback if missing)
+          const requiredCollections = [
+            { name: 'The Prestige Collection', slug: 'prestige' },
+            { name: 'The State of Being Series', slug: 'state-of-being' },
+            { name: 'The Mineral & Texture Edit', slug: 'mineral-texture' },
+            { name: 'Valentine\'s Collection', slug: 'valentines' },
+          ]
+          
+          // Check which required collections are missing
+          const existingSlugs = mappedCollections.map((c: any) => c.slug?.toLowerCase())
+          const missingCollections = requiredCollections.filter(req => {
+            const reqSlug = req.slug.toLowerCase()
+            return !existingSlugs.includes(reqSlug) && 
+                   !mappedCollections.some((c: any) => 
+                     c.name?.toLowerCase().includes(req.name.toLowerCase().split(' ')[0].toLowerCase())
+                   )
+          })
+          
+          // Add missing collections as fallback (they won't have IDs but will show in dropdown)
+          if (missingCollections.length > 0) {
+            console.log('Adding missing collections as fallback:', missingCollections)
+            missingCollections.forEach(missing => {
+              mappedCollections.push({
+                id: `fallback-${missing.slug}`,
+                name: missing.name,
+                slug: missing.slug,
+              })
+            })
+          }
+          
+          console.log('Final collections for dashboard:', mappedCollections)
+          setCollections(mappedCollections)
+        } else {
+          const errorData = await response.json().catch(() => ({}))
+          console.error('Failed to fetch collections:', response.status, errorData)
         }
       } catch (err) {
         console.error('Failed to fetch collections:', err)
@@ -269,6 +352,7 @@ export default function NewProductPage() {
         },
         specifications: {
           waxType: form.waxType,
+          wickType: form.wickType,
           burnTime: {
             minimum: parseInt(form.burnTimeMin) || 1,
             maximum: parseInt(form.burnTimeMax) || 1,
@@ -277,7 +361,13 @@ export default function NewProductPage() {
             value: parseInt(form.weight) || 0,
             unit: 'g',
           },
+          dimensions: {
+            height: form.height ? parseFloat(form.height) : undefined,
+            diameter: form.diameter ? parseFloat(form.diameter) : undefined,
+          },
+          containerMaterial: form.containerMaterial,
         },
+        careInstructions: form.careInstructions.map(instruction => ({ instruction })),
         availableFragrances: selectedFragrances,
         images: uploadedImageIds.map((id, index) => ({
           image: id,
@@ -622,6 +712,22 @@ export default function NewProductPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
+                Wick Type
+              </label>
+              <select
+                name="wickType"
+                value={form.wickType}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+              >
+                <option value="cotton">Cotton Wick</option>
+                <option value="wooden">Wooden Wick</option>
+                <option value="hemp">Hemp Wick</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Weight (grams) *
               </label>
               <input
@@ -632,6 +738,56 @@ export default function NewProductPage() {
                 required
                 min="1"
                 placeholder="200"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Container Material
+              </label>
+              <select
+                name="containerMaterial"
+                value={form.containerMaterial}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+              >
+                <option value="glass">Glass Jar</option>
+                <option value="ceramic">Ceramic</option>
+                <option value="tin">Metal Tin</option>
+                <option value="concrete">Concrete</option>
+                <option value="terracotta">Terracotta</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Height (cm)
+              </label>
+              <input
+                type="number"
+                name="height"
+                value={form.height}
+                onChange={handleChange}
+                min="0"
+                step="0.1"
+                placeholder="10"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Diameter (cm)
+              </label>
+              <input
+                type="number"
+                name="diameter"
+                value={form.diameter}
+                onChange={handleChange}
+                min="0"
+                step="0.1"
+                placeholder="8"
                 className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
               />
             </div>
@@ -667,6 +823,54 @@ export default function NewProductPage() {
                 className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
               />
             </div>
+          </div>
+        </div>
+
+        {/* Care Instructions */}
+        <div className="bg-white rounded-xl border border-gray-100 p-6">
+          <h2 className="text-lg font-medium text-gray-900 mb-4">Care Instructions</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Add step-by-step care instructions for customers (e.g., "Trim wick to 1/4 inch before each use")
+          </p>
+          <div className="space-y-3">
+            {form.careInstructions.map((instruction, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-[#1e3a5f]/10 text-[#1e3a5f] text-xs font-bold mt-1">
+                  {index + 1}
+                </span>
+                <div className="flex-1 flex gap-2">
+                  <input
+                    type="text"
+                    value={instruction}
+                    onChange={(e) => {
+                      const updated = [...form.careInstructions]
+                      updated[index] = e.target.value
+                      setForm({ ...form, careInstructions: updated })
+                    }}
+                    placeholder={`Care instruction ${index + 1}`}
+                    className="flex-1 px-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = form.careInstructions.filter((_, i) => i !== index)
+                      setForm({ ...form, careInstructions: updated })
+                    }}
+                    className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, careInstructions: [...form.careInstructions, ''] })}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#1e3a5f] hover:bg-[#1e3a5f]/5 rounded-lg transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Add Care Instruction
+            </button>
           </div>
         </div>
 

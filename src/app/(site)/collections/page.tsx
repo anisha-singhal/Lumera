@@ -187,9 +187,18 @@ function CollectionsContent() {
   const searchParams = useSearchParams()
   const collectionParam = searchParams.get('collection')
 
+  // Fallback collections if API fails - MUST match homepage collection names exactly
+  const fallbackCollections: Collection[] = [
+    { id: 'prestige', name: 'The Prestige Collection', slug: 'prestige' },
+    { id: 'state-of-being', name: 'The State of Being Series', slug: 'state-of-being' },
+    { id: 'mineral-texture', name: 'The Mineral & Texture Edit', slug: 'mineral-texture' },
+    { id: 'valentines', name: 'Valentine\'s Collection', slug: 'valentines' },
+  ]
+
   // Use cached products from context
   const { products, loading } = useProducts()
-  const [collections, setCollections] = useState<Collection[]>([])
+  const [collections, setCollections] = useState<Collection[]>(fallbackCollections)
+  const [collectionsLoading, setCollectionsLoading] = useState(true)
   const [activeCollection, setActiveCollection] = useState('all')
   const [sortBy, setSortBy] = useState('featured')
   const [showFilters, setShowFilters] = useState(false)
@@ -199,28 +208,116 @@ function CollectionsContent() {
     price: [] as string[],
   })
 
-  // Fixed collection buttons - these are the official Lumera collections
-  const collectionButtons: Collection[] = [
-    { id: 'prestige', name: 'Prestige', slug: 'prestige' },
-    { id: 'state-of-being', name: 'State of Being', slug: 'state-of-being' },
-    { id: 'mineral-texture', name: 'Mineral & Texture', slug: 'mineral-texture' },
-  ]
+  // Map slugs to correct names (to ensure names match homepage even if API returns different names)
+  // Also map old collection names to new ones
+  const collectionNameMap: Record<string, string> = {
+    'prestige': 'The Prestige Collection',
+    'state-of-being': 'The State of Being Series',
+    'state-of-being-series': 'The State of Being Series',
+    'mineral-texture': 'The Mineral & Texture Edit',
+    'mineral-and-texture': 'The Mineral & Texture Edit',
+    'valentines': 'Valentine\'s Collection',
+    'valentines-collection': 'Valentine\'s Collection',
+    // Map old collection names
+    'ritual': 'The State of Being Series',
+    'signature': 'The Mineral & Texture Edit',
+    'moments': 'The Prestige Collection',
+  }
 
-  // Set collections to the fixed buttons on mount
+  // Map collection names to slugs (for reverse lookup)
+  const collectionSlugMap: Record<string, string> = {
+    'The Prestige Collection': 'prestige',
+    'Prestige': 'prestige',
+    'Moments': 'prestige',
+    'The State of Being Series': 'state-of-being',
+    'State of Being': 'state-of-being',
+    'Ritual': 'state-of-being',
+    'The Mineral & Texture Edit': 'mineral-texture',
+    'Mineral & Texture': 'mineral-texture',
+    'Signature': 'mineral-texture',
+    'Valentine\'s Collection': 'valentines',
+    'Valentines': 'valentines',
+  }
+
+  // Fetch collections from API
   useEffect(() => {
-    setCollections(collectionButtons)
+    async function fetchCollections() {
+      try {
+        const response = await fetch('/api/collections')
+        if (response.ok) {
+          const data = await response.json()
+          const apiCollections = data.docs || []
+          
+          // Always use fallback collections to ensure names match homepage exactly
+          // But merge with API data to get correct IDs for filtering
+          const mergedCollections = fallbackCollections.map(fallback => {
+            // Try to find matching collection by slug
+            let apiCollection = apiCollections.find((c: any) => {
+              const apiSlug = c.slug?.toLowerCase().trim() || ''
+              return apiSlug === fallback.slug
+            })
+            
+            // If not found by slug, try to find by old name mappings
+            if (!apiCollection) {
+              const oldNameMappings: Record<string, string> = {
+                'ritual': 'state-of-being',
+                'signature': 'mineral-texture',
+                'moments': 'prestige',
+              }
+              
+              apiCollection = apiCollections.find((c: any) => {
+                const apiName = c.name?.toLowerCase() || ''
+                const mappedSlug = oldNameMappings[apiName]
+                return mappedSlug === fallback.slug
+              })
+            }
+            
+            // Use API collection ID if found, otherwise use fallback
+            return apiCollection 
+              ? { ...fallback, id: apiCollection.id }
+              : fallback
+          })
+          
+          console.log('Using homepage collection names:', mergedCollections)
+          setCollections(mergedCollections)
+        } else {
+          console.error('Failed to fetch collections:', response.status)
+          // Use fallback if API fails
+          setCollections(fallbackCollections)
+        }
+      } catch (err) {
+        console.error('Failed to fetch collections:', err)
+        // Use fallback if API fails
+        setCollections(fallbackCollections)
+      } finally {
+        setCollectionsLoading(false)
+      }
+    }
+    fetchCollections()
   }, [])
 
   // Set active collection from URL parameter
   useEffect(() => {
     if (collectionParam) {
-      // Check if this slug exists in our collection buttons
-      const validSlugs = collectionButtons.map(c => c.slug)
-      if (validSlugs.includes(collectionParam)) {
-        setActiveCollection(collectionParam)
+      // Normalize the slug for comparison
+      const normalizedParam = collectionParam.toLowerCase().trim()
+      // Check if this slug exists in our collections (or fallback)
+      const allCollections = collections.length > 0 ? collections : fallbackCollections
+      const matchingCollection = allCollections.find(
+        c => c.slug.toLowerCase().trim() === normalizedParam
+      )
+      if (matchingCollection) {
+        setActiveCollection(matchingCollection.slug)
+      } else {
+        // If no match found, set it anyway (might be a valid slug from URL)
+        setActiveCollection(normalizedParam)
       }
+    } else if (!collectionParam && activeCollection !== 'all') {
+      // Reset to 'all' if no collection param and not already 'all'
+      setActiveCollection('all')
     }
-  }, [collectionParam])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collectionParam, collections])
 
   const handleFilterChange = (category: string, value: string) => {
     setSelectedFilters((prev) => {
@@ -257,12 +354,110 @@ function CollectionsContent() {
   const hasActiveFilters = Object.values(selectedFilters).some((arr) => arr.length > 0)
   const activeFilterCount = Object.values(selectedFilters).flat().length
 
+  // Debug: Log all products and their collections
+  useEffect(() => {
+    if (products.length > 0) {
+      console.log('All products and their collections:')
+      products.forEach((product) => {
+        const productCollection = product.productCollection || product.collection
+        console.log({
+          productName: product.name,
+          productCollection: productCollection,
+          collectionId: typeof productCollection === 'object' ? productCollection?.id : productCollection,
+          collectionName: typeof productCollection === 'object' ? productCollection?.name : 'N/A',
+          collectionSlug: typeof productCollection === 'object' ? productCollection?.slug : 'N/A',
+        })
+      })
+      console.log('Available collections:', collections)
+    }
+  }, [products, collections])
+
   // Filter products
   const filteredProducts = products.filter((product) => {
     // Collection filter - use productCollection (the actual field name)
-    const collectionSlug = product.productCollection?.slug || product.collection?.slug
-    if (activeCollection !== 'all' && collectionSlug?.toLowerCase() !== activeCollection) {
-      return false
+    // Handle both populated objects and ID strings
+    const productCollection = product.productCollection || product.collection
+    const collectionSlug = typeof productCollection === 'object' 
+      ? (productCollection?.slug || '')
+      : ''
+    const collectionId = typeof productCollection === 'object'
+      ? (productCollection?.id || '')
+      : (typeof productCollection === 'string' ? productCollection : '')
+    const collectionName = typeof productCollection === 'object'
+      ? (productCollection?.name || '')
+      : ''
+    
+    if (activeCollection !== 'all') {
+      // Get the active collection from our collections list
+      const activeCollectionData = collections.find(c => c.slug === activeCollection) || 
+                                    fallbackCollections.find(c => c.slug === activeCollection)
+      
+      if (!activeCollectionData) {
+        console.warn('Active collection not found:', activeCollection)
+        return false
+      }
+      
+      // Normalize slugs for comparison
+      const normalizedProductSlug = collectionSlug?.toLowerCase().trim() || ''
+      const normalizedActiveSlug = activeCollection.toLowerCase().trim()
+      
+      // Map old collection names to new slugs
+      const oldNameMappings: Record<string, string> = {
+        'ritual': 'state-of-being',
+        'signature': 'mineral-texture',
+        'moments': 'prestige',
+      }
+      
+      // Map old collection slugs to new slugs
+      const oldSlugMappings: Record<string, string> = {
+        'ritual': 'state-of-being',
+        'signature': 'mineral-texture',
+        'moments': 'prestige',
+      }
+      
+      // Check if product collection name matches old name and map it
+      const normalizedCollectionName = collectionName?.toLowerCase() || ''
+      const mappedSlugFromName = oldNameMappings[normalizedCollectionName]
+      const mappedSlugFromSlug = oldSlugMappings[normalizedProductSlug]
+      
+      // Match by:
+      // 1. Collection ID (most reliable) - handle both string and object IDs
+      const activeId = typeof activeCollectionData.id === 'string' 
+        ? activeCollectionData.id 
+        : String(activeCollectionData.id)
+      const productId = typeof collectionId === 'string'
+        ? collectionId
+        : String(collectionId)
+      const matchesById = productId && activeId && productId === activeId
+      
+      // 2. Collection slug (normalized)
+      const matchesBySlug = normalizedProductSlug === normalizedActiveSlug
+      
+      // 3. Old name mapping
+      const matchesByOldName = mappedSlugFromName === normalizedActiveSlug
+      
+      // 4. Old slug mapping
+      const matchesByOldSlug = mappedSlugFromSlug === normalizedActiveSlug
+      
+      // Debug logging - always log in development
+      console.log('Filtering product:', {
+        productName: product.name,
+        productCollection: productCollection,
+        collectionSlug: normalizedProductSlug,
+        collectionId: productId,
+        collectionName: collectionName,
+        activeCollection: normalizedActiveSlug,
+        activeCollectionId: activeId,
+        matchesById,
+        matchesBySlug,
+        matchesByOldName,
+        matchesByOldSlug,
+        matches: matchesById || matchesBySlug || matchesByOldName || matchesByOldSlug
+      })
+      
+      if (!matchesById && !matchesBySlug && !matchesByOldName && !matchesByOldSlug) {
+        return false
+      }
     }
 
     // Fragrance Family filter
@@ -332,31 +527,45 @@ function CollectionsContent() {
                 <div className="flex gap-2 min-w-max md:flex-wrap">
                   {/* All button */}
                   <button
-                    onClick={() => setActiveCollection('all')}
+                    onClick={() => {
+                      setActiveCollection('all')
+                      // Update URL without page reload
+                      const url = new URL(window.location.href)
+                      url.searchParams.delete('collection')
+                      window.history.pushState({}, '', url.toString())
+                    }}
                     className={`px-4 py-3 min-h-[48px] text-sm font-sans tracking-wider uppercase transition-all duration-300 whitespace-nowrap ${
                       activeCollection === 'all'
-                        ? 'bg-burgundy-700 border border-burgundy-700'
+                        ? 'bg-burgundy-700 border border-burgundy-700 text-white'
                         : 'bg-transparent text-burgundy-700 border border-burgundy-700/20 hover:border-burgundy-700'
                     }`}
-                    style={activeCollection === 'all' ? { color: '#FFFFFF' } : undefined}
                   >
                     All
                   </button>
-                  {/* Dynamic collections from database */}
-                  {collections.map((collection) => (
-                    <button
-                      key={collection.slug}
-                      onClick={() => setActiveCollection(collection.slug)}
-                      className={`px-4 py-3 min-h-[48px] text-sm font-sans tracking-wider uppercase transition-all duration-300 whitespace-nowrap ${
-                        activeCollection === collection.slug
-                          ? 'bg-burgundy-700 border border-burgundy-700'
-                          : 'bg-transparent text-burgundy-700 border border-burgundy-700/20 hover:border-burgundy-700'
-                      }`}
-                      style={activeCollection === collection.slug ? { color: '#FFFFFF' } : undefined}
-                    >
-                      {collection.name}
-                    </button>
-                  ))}
+                  {/* Dynamic collections from database - use fallback if API collections are empty */}
+                  {collectionsLoading ? (
+                    <div className="px-4 py-3 text-sm text-burgundy-700/60">Loading collections...</div>
+                  ) : (
+                    (collections.length > 0 ? collections : fallbackCollections).map((collection) => (
+                      <button
+                        key={collection.id || collection.slug}
+                        onClick={() => {
+                          setActiveCollection(collection.slug)
+                          // Update URL without page reload
+                          const url = new URL(window.location.href)
+                          url.searchParams.set('collection', collection.slug)
+                          window.history.pushState({}, '', url.toString())
+                        }}
+                        className={`px-4 py-3 min-h-[48px] text-sm font-sans tracking-wider uppercase transition-all duration-300 whitespace-nowrap ${
+                          activeCollection === collection.slug
+                            ? 'bg-burgundy-700 border border-burgundy-700 text-white'
+                            : 'bg-transparent text-burgundy-700 border border-burgundy-700/20 hover:border-burgundy-700'
+                        }`}
+                      >
+                        {collection.name || 'Unnamed Collection'}
+                      </button>
+                    ))
+                  )}
                 </div>
               </div>
 
