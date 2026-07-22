@@ -117,7 +117,7 @@ export default function OrdersPage() {
               placeholder="Search orders by ID, customer, or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] transition-colors"
             />
           </form>
 
@@ -127,7 +127,7 @@ export default function OrdersPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="appearance-none pl-10 pr-10 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white cursor-pointer transition-colors"
+              className="appearance-none pl-10 pr-10 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] bg-white cursor-pointer transition-colors"
             >
               <option value="all">All Status</option>
               <option value="paid">Paid</option>
@@ -147,7 +147,7 @@ export default function OrdersPage() {
         <div className="overflow-x-auto">
           {loading ? (
             <div className="p-12 text-center">
-              <Loader2 className="w-8 h-8 animate-spin text-[#1e3a5f] mx-auto mb-4" />
+              <Loader2 className="w-8 h-8 animate-spin text-[#800020] mx-auto mb-4" />
               <p className="text-sm text-gray-500">Fetching orders...</p>
             </div>
           ) : (
@@ -166,7 +166,7 @@ export default function OrdersPage() {
                 {orders.length > 0 ? (
                   orders.map((order) => (
                     <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 text-sm font-medium text-[#1e3a5f]">
+                      <td className="px-6 py-4 text-sm font-medium text-[#800020]">
                         {order.orderNumber}
                       </td>
                       <td className="px-6 py-4">
@@ -201,7 +201,7 @@ export default function OrdersPage() {
                       <td className="px-6 py-4">
                         <button
                           onClick={() => setSelectedOrder(order)}
-                          className="text-sm text-[#1e3a5f] hover:text-[#2a4d7a] font-medium transition-colors"
+                          className="text-sm text-[#800020] hover:text-[#5c0017] font-medium transition-colors"
                         >
                           View
                         </button>
@@ -454,7 +454,7 @@ export default function OrdersPage() {
             <div className="p-6 border-t border-gray-100">
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="w-full py-2.5 bg-[#1e3a5f] text-white text-sm font-medium rounded-lg hover:bg-[#2a4d7a] transition-colors"
+                className="w-full py-2.5 bg-[#800020] text-white text-sm font-medium rounded-lg hover:bg-[#5c0017] transition-colors"
               >
                 Close
               </button>

@@ -39,7 +39,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F6F1EB] to-[#E8E0D5]">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-gradient-to-br from-[#F6F1EB] to-[#E8E0D5]">
       <div className="w-full max-w-md p-8">
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           {/* Logo */}

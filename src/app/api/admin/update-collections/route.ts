@@ -2,57 +2,62 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
-// This endpoint updates the collection names in the database
+// Canonical collection definitions. Old names/slugs are matched loosely so this
+// is safe to re-run at any time (idempotent) and tolerant of trailing spaces.
+const CANONICAL = [
+  { match: ['moments', 'the prestige collection', 'prestige'], name: 'The Prestige Collection', slug: 'prestige', collectionType: 'prestige' },
+  { match: ['ritual', 'the state of being series', 'state of being', 'state-of-being'], name: 'The State of Being Series', slug: 'state-of-being', collectionType: 'state-of-being' },
+  { match: ['signature', 'the mineral & texture edit', 'mineral & texture', 'mineral-texture'], name: 'The Mineral & Texture Edit', slug: 'mineral-texture', collectionType: 'mineral-texture' },
+  { match: ["valentine's collection", 'valentines collection', 'valentine', 'valentines'], name: "Valentine's Collection", slug: 'valentines', collectionType: 'limited' },
+]
+
+const norm = (s: string) => (s || '').trim().toLowerCase()
+
 export async function POST() {
   try {
     const payload = await getPayload({ config })
 
-    // Get all collections
     const { docs: collections } = await payload.find({
       collection: 'collections',
       limit: 100,
     })
 
-    const updates = [
-      { oldName: 'Moments', newName: 'The Prestige Collection', newSlug: 'prestige' },
-      { oldName: 'Ritual', newName: 'The State of Being Series', newSlug: 'state-of-being' },
-      { oldName: 'Signature', newName: 'The Mineral & Texture Edit', newSlug: 'mineral-texture' },
-    ]
+    const results: any[] = []
 
-    const results = []
-
-    for (const update of updates) {
-      // Find collection by old name (case insensitive)
-      const collection = collections.find(
-        (c) => c.name.toLowerCase() === update.oldName.toLowerCase()
+    for (const target of CANONICAL) {
+      const existing = collections.find(
+        (c: any) => target.match.includes(norm(c.name)) || target.match.includes(norm(c.slug)),
       )
 
-      if (collection) {
-        // Update the collection
+      if (existing) {
         await payload.update({
           collection: 'collections',
-          id: collection.id,
+          id: existing.id,
+          overrideAccess: true,
+          data: { name: target.name, slug: target.slug, status: 'active', collectionType: target.collectionType as any },
+        })
+        results.push({ updated: existing.name, to: target.name })
+      } else {
+        await payload.create({
+          collection: 'collections',
+          overrideAccess: true,
           data: {
-            name: update.newName,
-            slug: update.newSlug,
+            name: target.name,
+            slug: target.slug,
+            collectionType: target.collectionType as any,
+            status: 'active',
           },
         })
-        results.push({ updated: update.oldName, to: update.newName })
-      } else {
-        results.push({ notFound: update.oldName })
+        results.push({ created: target.name })
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Collections updated',
-      results,
-    })
+    return NextResponse.json({ success: true, message: 'Collections synced', results })
   } catch (error) {
     console.error('Error updating collections:', error)
     return NextResponse.json(
       { error: 'Failed to update collections', details: String(error) },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

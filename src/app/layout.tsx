@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import WhatsAppButton from './components/WhatsAppButton'
 
 export const metadata: Metadata = {
   title: 'Lumera | Melt Into Luxury - Premium Handcrafted Candles',
@@ -78,9 +77,8 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className="lumera-site">
+      <body>
         {children}
-        <WhatsAppButton />
       </body>
     </html>
   )

@@ -76,34 +76,6 @@ export default function NewProductPage() {
   const [newFragranceName, setNewFragranceName] = useState('')
   const [addingFragrance, setAddingFragrance] = useState(false)
 
-  // Map collection names to ensure they match homepage (case-insensitive)
-  const getCollectionDisplayName = (collectionName: string): string => {
-    const name = collectionName?.trim() || ''
-    const nameLower = name.toLowerCase()
-    
-    // Map old names to new names
-    if (nameLower === 'ritual') return 'The State of Being Series'
-    if (nameLower === 'signature') return 'The Mineral & Texture Edit'
-    if (nameLower === 'moments') return 'The Prestige Collection'
-    
-    // Handle Valentine's Collection variations
-    if (nameLower.includes('valentine')) {
-      return 'Valentine\'s Collection'
-    }
-    
-    // If already correct, return as is
-    if (name === 'The Prestige Collection' || 
-        name === 'The State of Being Series' || 
-        name === 'The Mineral & Texture Edit' ||
-        name === 'Valentine\'s Collection' ||
-        name === 'Valentines Collection') {
-      return name === 'Valentines Collection' ? 'Valentine\'s Collection' : name
-    }
-    
-    // Default: return original name
-    return name
-  }
-
   // Fetch collections and fragrances on mount
   useEffect(() => {
     async function fetchCollections() {
@@ -111,49 +83,17 @@ export default function NewProductPage() {
         const response = await fetch('/api/collections?all=true')
         if (response.ok) {
           const data = await response.json()
-          console.log('Collections API response:', data)
-          
           // Handle both response formats: { docs: [...] } or direct array
-          const collectionsArray = data.docs || data || []
-          
-          // Map collection names to match homepage
-          const mappedCollections = collectionsArray.map((col: any) => ({
-            ...col,
-            name: getCollectionDisplayName(col.name)
-          }))
-          
-          // Ensure all 4 required collections are present (add fallback if missing)
-          const requiredCollections = [
-            { name: 'The Prestige Collection', slug: 'prestige' },
-            { name: 'The State of Being Series', slug: 'state-of-being' },
-            { name: 'The Mineral & Texture Edit', slug: 'mineral-texture' },
-            { name: 'Valentine\'s Collection', slug: 'valentines' },
-          ]
-          
-          // Check which required collections are missing
-          const existingSlugs = mappedCollections.map((c: any) => c.slug?.toLowerCase())
-          const missingCollections = requiredCollections.filter(req => {
-            const reqSlug = req.slug.toLowerCase()
-            return !existingSlugs.includes(reqSlug) && 
-                   !mappedCollections.some((c: any) => 
-                     c.name?.toLowerCase().includes(req.name.toLowerCase().split(' ')[0].toLowerCase())
-                   )
-          })
-          
-          // Add missing collections as fallback (they won't have IDs but will show in dropdown)
-          if (missingCollections.length > 0) {
-            console.log('Adding missing collections as fallback:', missingCollections)
-            missingCollections.forEach(missing => {
-              mappedCollections.push({
-                id: `fallback-${missing.slug}`,
-                name: missing.name,
-                slug: missing.slug,
-              })
-            })
-          }
-          
-          console.log('Final collections for dashboard:', mappedCollections)
-          setCollections(mappedCollections)
+          const collectionsArray: Array<{ id: string; name: string }> = data.docs || data || []
+
+          // Only use real collections from the DB (each has a valid id). Never inject
+          // placeholder ids — a non-existent id would make product creation fail.
+          const realCollections = collectionsArray
+            .filter((col) => col && col.id)
+            .map((col) => ({ ...col, name: (col.name || '').trim() }))
+            .sort((a, b) => a.name.localeCompare(b.name))
+
+          setCollections(realCollections)
         } else {
           const errorData = await response.json().catch(() => ({}))
           console.error('Failed to fetch collections:', response.status, errorData)
@@ -304,31 +244,25 @@ export default function NewProductPage() {
     }
 
     try {
-      // First upload images
-      const uploadedImageIds: string[] = []
+      // Upload all images in parallel (much faster than one-by-one)
+      const uploadedImageIds: string[] = await Promise.all(
+        images.map(async (image) => {
+          const formData = new FormData()
+          formData.append('file', image)
 
-      for (const image of images) {
-        const formData = new FormData()
-        formData.append('file', image)
+          const uploadResponse = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          })
 
-        console.log('Uploading image:', image.name, 'type:', image.type)
+          const uploadData = await uploadResponse.json()
 
-        const uploadResponse = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
+          if (uploadResponse.ok && uploadData.id) {
+            return uploadData.id as string
+          }
+          throw new Error(uploadData.error || `Failed to upload ${image.name}`)
         })
-
-        const uploadData = await uploadResponse.json()
-        console.log('Upload response:', uploadData)
-
-        if (uploadResponse.ok && uploadData.id) {
-          uploadedImageIds.push(uploadData.id)
-        } else {
-          throw new Error(uploadData.error || 'Failed to upload image')
-        }
-      }
-
-      console.log('All uploaded image IDs:', uploadedImageIds)
+      )
 
       // Then create the product
       const productData = {
@@ -437,7 +371,7 @@ export default function NewProductPage() {
                 onChange={handleNameChange}
                 required
                 placeholder="e.g., Lavender Dreams"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
             </div>
 
@@ -451,7 +385,7 @@ export default function NewProductPage() {
                 value={form.slug}
                 onChange={handleChange}
                 placeholder="lavender-dreams"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-gray-50"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] bg-gray-50"
               />
             </div>
 
@@ -465,7 +399,7 @@ export default function NewProductPage() {
                 value={form.tagline}
                 onChange={handleChange}
                 placeholder="e.g., A calming embrace"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
             </div>
 
@@ -479,7 +413,7 @@ export default function NewProductPage() {
                 value={form.promoTag}
                 onChange={handleChange}
                 placeholder="e.g., Buy 1 Get 1 Free"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
               <p className="mt-1 text-[10px] text-gray-400">
                 Optional: This will be highlighted on collection pages.
@@ -497,7 +431,7 @@ export default function NewProductPage() {
                 required
                 rows={4}
                 placeholder="Describe your candle..."
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] resize-none"
               />
             </div>
           </div>
@@ -524,7 +458,7 @@ export default function NewProductPage() {
                     <X className="w-3 h-3" />
                   </button>
                   {index === 0 && (
-                    <span className="absolute bottom-1 left-1 text-[10px] bg-[#1e3a5f] text-white px-1.5 py-0.5 rounded">
+                    <span className="absolute bottom-1 left-1 text-[10px] bg-[#800020] text-white px-1.5 py-0.5 rounded">
                       Primary
                     </span>
                   )}
@@ -535,7 +469,7 @@ export default function NewProductPage() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-24 h-24 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center text-gray-400 hover:border-[#1e3a5f] hover:text-[#1e3a5f] transition-colors"
+                  className="w-24 h-24 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center text-gray-400 hover:border-[#800020] hover:text-[#800020] transition-colors"
                 >
                   <Upload className="w-5 h-5 mb-1" />
                   <span className="text-xs">Upload</span>
@@ -572,7 +506,7 @@ export default function NewProductPage() {
                 required
                 min="0"
                 placeholder="999"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
             </div>
 
@@ -587,7 +521,7 @@ export default function NewProductPage() {
                 onChange={handleChange}
                 min="0"
                 placeholder="1299"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
             </div>
 
@@ -602,7 +536,7 @@ export default function NewProductPage() {
                 onChange={handleChange}
                 min="0"
                 placeholder="10"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
             </div>
           </div>
@@ -621,7 +555,7 @@ export default function NewProductPage() {
                 value={form.productCollection}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] bg-white"
               >
                 <option value="">Select a collection</option>
                 {collections.map(col => (
@@ -643,7 +577,7 @@ export default function NewProductPage() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] bg-white"
               >
                 <option value="draft">Draft</option>
                 <option value="active">Active</option>
@@ -658,7 +592,7 @@ export default function NewProductPage() {
                   name="featured"
                   checked={form.featured}
                   onChange={handleChange}
-                  className="w-4 h-4 rounded border-gray-300 text-[#1e3a5f] focus:ring-[#1e3a5f]"
+                  className="w-4 h-4 rounded border-gray-300 text-[#800020] focus:ring-[#800020]"
                 />
                 <span className="text-sm text-gray-700">Featured Product</span>
               </label>
@@ -669,7 +603,7 @@ export default function NewProductPage() {
                   name="bestSeller"
                   checked={form.bestSeller}
                   onChange={handleChange}
-                  className="w-4 h-4 rounded border-gray-300 text-[#1e3a5f] focus:ring-[#1e3a5f]"
+                  className="w-4 h-4 rounded border-gray-300 text-[#800020] focus:ring-[#800020]"
                 />
                 <span className="text-sm text-gray-700">Best Seller</span>
               </label>
@@ -680,7 +614,7 @@ export default function NewProductPage() {
                   name="newArrival"
                   checked={form.newArrival}
                   onChange={handleChange}
-                  className="w-4 h-4 rounded border-gray-300 text-[#1e3a5f] focus:ring-[#1e3a5f]"
+                  className="w-4 h-4 rounded border-gray-300 text-[#800020] focus:ring-[#800020]"
                 />
                 <span className="text-sm text-gray-700">New Arrival</span>
               </label>
@@ -700,7 +634,7 @@ export default function NewProductPage() {
                 name="waxType"
                 value={form.waxType}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] bg-white"
               >
                 <option value="soy">Soy Wax</option>
                 <option value="coconut">Coconut Wax</option>
@@ -718,7 +652,7 @@ export default function NewProductPage() {
                 name="wickType"
                 value={form.wickType}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] bg-white"
               >
                 <option value="cotton">Cotton Wick</option>
                 <option value="wooden">Wooden Wick</option>
@@ -738,7 +672,7 @@ export default function NewProductPage() {
                 required
                 min="1"
                 placeholder="200"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
             </div>
 
@@ -750,7 +684,7 @@ export default function NewProductPage() {
                 name="containerMaterial"
                 value={form.containerMaterial}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] bg-white"
               >
                 <option value="glass">Glass Jar</option>
                 <option value="ceramic">Ceramic</option>
@@ -772,7 +706,7 @@ export default function NewProductPage() {
                 min="0"
                 step="0.1"
                 placeholder="10"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
             </div>
 
@@ -788,7 +722,7 @@ export default function NewProductPage() {
                 min="0"
                 step="0.1"
                 placeholder="8"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
             </div>
 
@@ -804,7 +738,7 @@ export default function NewProductPage() {
                 required
                 min="1"
                 placeholder="40"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
             </div>
 
@@ -820,7 +754,7 @@ export default function NewProductPage() {
                 required
                 min="1"
                 placeholder="50"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               />
             </div>
           </div>
@@ -835,7 +769,7 @@ export default function NewProductPage() {
           <div className="space-y-3">
             {form.careInstructions.map((instruction, index) => (
               <div key={index} className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-[#1e3a5f]/10 text-[#1e3a5f] text-xs font-bold mt-1">
+                <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-[#800020]/10 text-[#800020] text-xs font-bold mt-1">
                   {index + 1}
                 </span>
                 <div className="flex-1 flex gap-2">
@@ -848,7 +782,7 @@ export default function NewProductPage() {
                       setForm({ ...form, careInstructions: updated })
                     }}
                     placeholder={`Care instruction ${index + 1}`}
-                    className="flex-1 px-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                    className="flex-1 px-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
                   />
                   <button
                     type="button"
@@ -866,7 +800,7 @@ export default function NewProductPage() {
             <button
               type="button"
               onClick={() => setForm({ ...form, careInstructions: [...form.careInstructions, ''] })}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#1e3a5f] hover:bg-[#1e3a5f]/5 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#800020] hover:bg-[#800020]/5 rounded-lg transition-colors"
             >
               <Plus className="w-4 h-4" />
               Add Care Instruction
@@ -889,7 +823,7 @@ export default function NewProductPage() {
                   key={fragrance.id}
                   className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all ${
                     selectedFragrances.includes(fragrance.id)
-                      ? 'border-[#1e3a5f] bg-[#1e3a5f]/5'
+                      ? 'border-[#800020] bg-[#800020]/5'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
@@ -897,7 +831,7 @@ export default function NewProductPage() {
                     type="checkbox"
                     checked={selectedFragrances.includes(fragrance.id)}
                     onChange={() => toggleFragrance(fragrance.id)}
-                    className="w-4 h-4 rounded border-gray-300 text-[#1e3a5f] focus:ring-[#1e3a5f]"
+                    className="w-4 h-4 rounded border-gray-300 text-[#800020] focus:ring-[#800020]"
                   />
                   <span className="text-sm text-gray-700">{fragrance.name}</span>
                 </label>
@@ -912,7 +846,7 @@ export default function NewProductPage() {
               value={newFragranceName}
               onChange={(e) => setNewFragranceName(e.target.value)}
               placeholder="Enter fragrance name (e.g., Lavender Dreams)"
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+              className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault()
@@ -924,7 +858,7 @@ export default function NewProductPage() {
               type="button"
               onClick={addNewFragrance}
               disabled={addingFragrance || !newFragranceName.trim()}
-              className="px-4 py-2 text-sm font-medium text-white bg-[#1e3a5f] rounded-lg hover:bg-[#2a4d7a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 text-sm font-medium text-white bg-[#800020] rounded-lg hover:bg-[#5c0017] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {addingFragrance ? 'Adding...' : '+ Add'}
             </button>
@@ -948,7 +882,7 @@ export default function NewProductPage() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1e3a5f] text-white text-sm font-medium rounded-lg hover:bg-[#2a4d7a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#800020] text-white text-sm font-medium rounded-lg hover:bg-[#5c0017] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? (
               <>

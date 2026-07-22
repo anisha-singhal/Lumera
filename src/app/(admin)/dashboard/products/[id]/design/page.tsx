@@ -21,7 +21,7 @@ const LUMERA_COLORS = [
   { name: 'Burgundy', value: '#800020' },
   { name: 'Gold', value: '#C9A24D' },
   { name: 'Cream', value: '#FDFCF8' },
-  { name: 'Deep Blue', value: '#1e3a5f' },
+  { name: 'Deep Blue', value: '#800020' },
   { name: 'White', value: '#FFFFFF' },
   { name: 'Black', value: '#000000' },
 ]
@@ -268,9 +268,9 @@ export default function CreativeStudioPage() {
       <div className="h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
         <div className="text-center max-w-sm">
           <div className="relative mb-6">
-            <Loader2 className="w-12 h-12 animate-spin text-[#1e3a5f] mx-auto" />
+            <Loader2 className="w-12 h-12 animate-spin text-[#800020] mx-auto" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-1 h-1 bg-[#1e3a5f] rounded-full" />
+              <div className="w-1 h-1 bg-[#800020] rounded-full" />
             </div>
           </div>
           
@@ -297,7 +297,7 @@ export default function CreativeStudioPage() {
             </button>
             <Link
               href={`/dashboard/products/${productId}/edit`}
-              className="text-xs text-gray-400 hover:text-[#1e3a5f] underline transition-colors"
+              className="text-xs text-gray-400 hover:text-[#800020] underline transition-colors"
             >
               Cancel and go back
             </Link>
@@ -341,7 +341,7 @@ export default function CreativeStudioPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 px-6 py-2 bg-[#1e3a5f] text-white text-sm font-medium rounded-lg hover:bg-[#2a4d7a] transition-all shadow-md disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-6 py-2 bg-[#800020] text-white text-sm font-medium rounded-lg hover:bg-[#5c0017] transition-all shadow-md disabled:opacity-50"
           >
             {saving ? (
               <>
@@ -451,7 +451,7 @@ export default function CreativeStudioPage() {
 
       <style jsx>{`
         .tool-btn {
-          @apply p-3 text-gray-400 hover:text-[#1e3a5f] hover:bg-[#1e3a5f]/5 rounded-xl transition-all relative;
+          @apply p-3 text-gray-400 hover:text-[#800020] hover:bg-[#800020]/5 rounded-xl transition-all relative;
         }
         .tool-tip {
           @apply absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50;

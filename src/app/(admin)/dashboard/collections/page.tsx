@@ -120,7 +120,7 @@ export default function CollectionsPage() {
   if (loading) {
     return (
       <div className="p-8 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#1e3a5f]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#800020]" />
       </div>
     )
   }
@@ -138,7 +138,7 @@ export default function CollectionsPage() {
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1e3a5f] text-white text-sm font-medium rounded-lg hover:bg-[#2a4d7a] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#800020] text-white text-sm font-medium rounded-lg hover:bg-[#5c0017] transition-colors"
           >
             <Plus className="w-4 h-4" />
             Add Collection
@@ -171,7 +171,7 @@ export default function CollectionsPage() {
                   onChange={handleNameChange}
                   required
                   placeholder="e.g., Floral"
-                  className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020]"
                 />
               </div>
               <div>
@@ -183,7 +183,7 @@ export default function CollectionsPage() {
                   value={form.slug}
                   onChange={(e) => setForm(prev => ({ ...prev, slug: e.target.value }))}
                   placeholder="floral"
-                  className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-gray-50"
+                  className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] bg-gray-50"
                 />
               </div>
             </div>
@@ -196,14 +196,14 @@ export default function CollectionsPage() {
                 onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
                 rows={2}
                 placeholder="Describe this collection..."
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] resize-none"
               />
             </div>
             <div className="flex items-center gap-3">
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-[#1e3a5f] text-white text-sm font-medium rounded-lg hover:bg-[#2a4d7a] disabled:opacity-50 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#800020] text-white text-sm font-medium rounded-lg hover:bg-[#5c0017] disabled:opacity-50 transition-colors"
               >
                 {saving ? (
                   <>
@@ -239,7 +239,7 @@ export default function CollectionsPage() {
           {!showForm && (
             <button
               onClick={() => setShowForm(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1e3a5f] text-white text-sm font-medium rounded-lg hover:bg-[#2a4d7a] transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#800020] text-white text-sm font-medium rounded-lg hover:bg-[#5c0017] transition-colors"
             >
               <Plus className="w-4 h-4" />
               Create Your First Collection
@@ -283,7 +283,7 @@ export default function CollectionsPage() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleEdit(collection)}
-                        className="p-2 text-gray-400 hover:text-[#1e3a5f] hover:bg-gray-100 rounded-lg transition-colors"
+                        className="p-2 text-gray-400 hover:text-[#800020] hover:bg-gray-100 rounded-lg transition-colors"
                         title="Edit"
                       >
                         <Edit2 className="w-4 h-4" />

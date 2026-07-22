@@ -44,7 +44,7 @@ export default function DashboardPage() {
     return (
       <div className="p-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-[#1e3a5f] mx-auto mb-4" />
+          <Loader2 className="w-8 h-8 animate-spin text-[#800020] mx-auto mb-4" />
           <p className="text-sm text-gray-500">Loading dashboard overview...</p>
         </div>
       </div>
@@ -105,7 +105,7 @@ export default function DashboardPage() {
               {recentOrders.length > 0 ? (
                 recentOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-[#1e3a5f]">
+                    <td className="px-6 py-4 text-sm font-medium text-[#800020]">
                       {order.id}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">
@@ -140,7 +140,7 @@ export default function DashboardPage() {
         <div className="px-6 py-4 border-t border-gray-100">
           <a
             href="/dashboard/orders"
-            className="text-sm font-medium text-[#1e3a5f] hover:text-[#2a4d7a] transition-colors"
+            className="text-sm font-medium text-[#800020] hover:text-[#5c0017] transition-colors"
           >
             View all orders →
           </a>

@@ -64,7 +64,7 @@ export default function CustomersPage() {
               placeholder="Search by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] transition-colors"
             />
           </form>
         </div>
@@ -74,7 +74,7 @@ export default function CustomersPage() {
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-12 text-center">
-            <Loader2 className="w-8 h-8 animate-spin text-[#1e3a5f] mx-auto mb-4" />
+            <Loader2 className="w-8 h-8 animate-spin text-[#800020] mx-auto mb-4" />
             <p className="text-sm text-gray-500">Loading customers...</p>
           </div>
         ) : (
@@ -94,7 +94,7 @@ export default function CustomersPage() {
                     <tr key={customer.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-[#1e3a5f] flex items-center justify-center text-white text-xs font-medium">
+                          <div className="w-8 h-8 rounded-full bg-[#800020] flex items-center justify-center text-white text-xs font-medium">
                             {customer.name?.charAt(0) || customer.email.charAt(0).toUpperCase()}
                           </div>
                           <span className="text-sm font-medium text-gray-900">

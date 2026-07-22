@@ -12,15 +12,11 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="antialiased" suppressHydrationWarning>
-        <div className="min-h-screen bg-gray-50">
-          <Sidebar />
-          <main className="ml-64 min-h-screen">
-            {children}
-          </main>
-        </div>
-      </body>
-    </html>
+    <div className="admin-root antialiased min-h-screen bg-[#F6F1EB] text-[#1C1C1C]">
+      <Sidebar />
+      <main className="lg:pl-64 min-h-screen">
+        {children}
+      </main>
+    </div>
   )
 }

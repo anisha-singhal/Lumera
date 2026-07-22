@@ -13,22 +13,23 @@ interface StatCardProps {
 
 export default function StatCard({ title, value, subtitle, icon: Icon, trend }: StatCardProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">{value}</p>
+    <div className="group relative bg-white rounded-2xl border border-[#E7DED4] p-6 shadow-[0_2px_16px_rgba(128,0,32,0.04)] hover:shadow-[0_8px_30px_rgba(128,0,32,0.10)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
+      <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-[#800020] to-[#C9A24D] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#9d8d7f]">{title}</p>
+          <p className="mt-3 text-3xl font-semibold text-[#1C1C1C] tabular-nums">{value}</p>
           {subtitle && (
-            <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
+            <p className="mt-1.5 text-sm text-[#6E6E6E]">{subtitle}</p>
           )}
           {trend && (
-            <p className={`mt-2 text-sm font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+            <p className={`mt-2 inline-flex items-center gap-1 text-xs font-medium ${trend.isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
               {trend.isPositive ? '↑' : '↓'} {trend.value}
             </p>
           )}
         </div>
-        <div className="w-12 h-12 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center">
-          <Icon className="w-6 h-6 text-[#1e3a5f]" />
+        <div className="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-[#800020] to-[#5c0017] flex items-center justify-center shadow-inner">
+          <Icon className="w-6 h-6 text-[#C9A24D]" />
         </div>
       </div>
     </div>

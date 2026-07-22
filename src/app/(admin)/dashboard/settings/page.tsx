@@ -93,7 +93,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="p-8 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#1e3a5f]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#800020]" />
       </div>
     )
   }
@@ -111,7 +111,7 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Sidebar Nav */}
         <div className="md:col-span-1 space-y-1">
-          <button className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium bg-[#1e3a5f]/5 text-[#1e3a5f] rounded-lg">
+          <button className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium bg-[#800020]/5 text-[#800020] rounded-lg">
             <Sliders className="w-4 h-4" />
             General
           </button>
@@ -137,7 +137,7 @@ export default function SettingsPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Shipping */}
             <div className="bg-white rounded-xl border border-gray-100 p-6">
-              <div className="flex items-center gap-2 mb-4 text-[#1e3a5f]">
+              <div className="flex items-center gap-2 mb-4 text-[#800020]">
                 <Truck className="w-5 h-5" />
                 <h2 className="font-medium">Shipping Configuration</h2>
               </div>
@@ -150,7 +150,7 @@ export default function SettingsPage() {
                     type="number"
                     value={settings.shippingCost}
                     onChange={(e) => setSettings({ ...settings, shippingCost: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                    className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20"
                   />
                 </div>
                 <div>
@@ -161,7 +161,7 @@ export default function SettingsPage() {
                     type="number"
                     value={settings.freeShippingThreshold}
                     onChange={(e) => setSettings({ ...settings, freeShippingThreshold: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                    className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20"
                   />
                 </div>
               </div>
@@ -169,7 +169,7 @@ export default function SettingsPage() {
 
             {/* Taxes */}
             <div className="bg-white rounded-xl border border-gray-100 p-6">
-              <div className="flex items-center gap-2 mb-4 text-[#1e3a5f]">
+              <div className="flex items-center gap-2 mb-4 text-[#800020]">
                 <Percent className="w-5 h-5" />
                 <h2 className="font-medium">Taxation</h2>
               </div>
@@ -181,14 +181,14 @@ export default function SettingsPage() {
                   type="number"
                   value={settings.gstRate}
                   onChange={(e) => setSettings({ ...settings, gstRate: parseInt(e.target.value) })}
-                  className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                  className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20"
                 />
               </div>
             </div>
 
             {/* Support */}
             <div className="bg-white rounded-xl border border-gray-100 p-6">
-              <div className="flex items-center gap-2 mb-4 text-[#1e3a5f]">
+              <div className="flex items-center gap-2 mb-4 text-[#800020]">
                 <Phone className="w-5 h-5" />
                 <h2 className="font-medium">Support Contact</h2>
               </div>
@@ -202,7 +202,7 @@ export default function SettingsPage() {
                     value={settings.email}
                     onChange={(e) => setSettings({ ...settings, email: e.target.value })}
                     placeholder="Info@lumeracandles.in"
-                    className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                    className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20"
                   />
                 </div>
                 <div>
@@ -214,7 +214,7 @@ export default function SettingsPage() {
                     value={settings.phone}
                     onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
                     placeholder="+91 XXXXX XXXXX"
-                    className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                    className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20"
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -225,7 +225,7 @@ export default function SettingsPage() {
                     value={settings.address}
                     onChange={(e) => setSettings({ ...settings, address: e.target.value })}
                     rows={3}
-                    className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 resize-none"
+                    className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 resize-none"
                   />
                 </div>
               </div>
@@ -235,7 +235,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center gap-2 px-8 py-3 bg-[#1e3a5f] text-white font-medium rounded-lg hover:bg-[#2a4d7a] disabled:opacity-50 transition-all shadow-lg shadow-[#1e3a5f]/20"
+                className="inline-flex items-center gap-2 px-8 py-3 bg-[#800020] text-white font-medium rounded-lg hover:bg-[#5c0017] disabled:opacity-50 transition-all shadow-lg shadow-[#800020]/20"
               >
                 {saving ? (
                   <>
@@ -254,7 +254,7 @@ export default function SettingsPage() {
 
           {/* Database Maintenance */}
           <div className="bg-white rounded-xl border border-gray-100 p-6 mt-6">
-            <div className="flex items-center gap-2 mb-4 text-[#1e3a5f]">
+            <div className="flex items-center gap-2 mb-4 text-[#800020]">
               <Database className="w-5 h-5" />
               <h2 className="font-medium">Database Maintenance</h2>
             </div>

@@ -27,7 +27,7 @@ interface Product {
     }
     isPrimary?: boolean
   }>
-  collection?: {
+  productCollection?: {
     name: string
   }
   createdAt: string
@@ -92,7 +92,7 @@ export default function ProductsPage() {
         </div>
         <Link
           href="/dashboard/products/new"
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1e3a5f] text-white text-sm font-medium rounded-lg hover:bg-[#2a4d7a] transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#800020] text-white text-sm font-medium rounded-lg hover:bg-[#5c0017] transition-colors"
         >
           <Plus className="w-4 h-4" />
           Add Product
@@ -110,7 +110,7 @@ export default function ProductsPage() {
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] transition-colors"
             />
           </div>
 
@@ -118,7 +118,7 @@ export default function ProductsPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white cursor-pointer transition-colors"
+            className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#800020]/20 focus:border-[#800020] bg-white cursor-pointer transition-colors"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -131,7 +131,7 @@ export default function ProductsPage() {
       {/* Loading State */}
       {loading && (
         <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-[#1e3a5f] border-t-transparent rounded-full mx-auto mb-4" />
+          <div className="animate-spin w-8 h-8 border-2 border-[#800020] border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-sm text-gray-500">Loading products...</p>
         </div>
       )}
@@ -139,8 +139,8 @@ export default function ProductsPage() {
       {/* Empty State */}
       {!loading && products.length === 0 && (
         <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
-          <div className="w-16 h-16 bg-[#1e3a5f]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Package className="w-8 h-8 text-[#1e3a5f]" />
+          <div className="w-16 h-16 bg-[#800020]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Package className="w-8 h-8 text-[#800020]" />
           </div>
           <h2 className="text-lg font-medium text-gray-900 mb-2">No Products Yet</h2>
           <p className="text-sm text-gray-500 max-w-md mx-auto mb-6">
@@ -148,7 +148,7 @@ export default function ProductsPage() {
           </p>
           <Link
             href="/dashboard/products/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1e3a5f] text-white text-sm font-medium rounded-lg hover:bg-[#2a4d7a] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#800020] text-white text-sm font-medium rounded-lg hover:bg-[#5c0017] transition-colors"
           >
             <Plus className="w-4 h-4" />
             Add Your First Product
@@ -207,7 +207,7 @@ export default function ProductsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        {product.collection?.name || '-'}
+                        {product.productCollection?.name || '-'}
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-sm font-medium text-gray-900">
@@ -239,7 +239,7 @@ export default function ProductsPage() {
                           </Link>
                           <Link
                             href={`/dashboard/products/${product.id}/edit`}
-                            className="p-2 text-gray-400 hover:text-[#1e3a5f] hover:bg-gray-100 rounded-lg transition-colors"
+                            className="p-2 text-gray-400 hover:text-[#800020] hover:bg-gray-100 rounded-lg transition-colors"
                             title="Edit"
                           >
                             <Edit2 className="w-4 h-4" />
@@ -269,7 +269,7 @@ export default function ProductsPage() {
       )}
 
       {/* Quick Actions Card */}
-      <div className="mt-6 bg-gradient-to-r from-[#1e3a5f] to-[#2a4d7a] rounded-xl p-6 text-white">
+      <div className="mt-6 bg-gradient-to-r from-[#800020] to-[#5c0017] rounded-xl p-6 text-white">
         <h3 className="font-medium mb-2">Quick Actions</h3>
         <p className="text-sm text-white/70 mb-4">
           Manage your products efficiently using Payload CMS for advanced features.

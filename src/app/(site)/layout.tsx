@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import Providers from '@/components/Providers'
+import WhatsAppButton from '../components/WhatsAppButton'
 import '../globals.css'
 
 export default function SiteLayout({
@@ -11,6 +12,7 @@ export default function SiteLayout({
     <div className="lumera-site">
       <Providers>
         {children}
+        <WhatsAppButton />
       </Providers>
     </div>
   )

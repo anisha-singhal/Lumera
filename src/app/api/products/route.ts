@@ -76,6 +76,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(product, { status: 201 })
   } catch (error: any) {
     console.error('Error creating product:', error)
+    const raw = `${error?.message || ''} ${JSON.stringify(error?.data || '')}`
+    // Friendly messages for the most common causes
+    if (/duplicate|e11000|following field is invalid: slug|unique/i.test(raw) && /slug/i.test(raw)) {
+      return NextResponse.json(
+        { error: 'A product with this URL slug already exists. Please change the name or slug.' },
+        { status: 409 }
+      )
+    }
+    if (/24 character hex string|cast to objectid/i.test(raw)) {
+      return NextResponse.json(
+        { error: 'Please pick a valid Collection from the list before saving.' },
+        { status: 400 }
+      )
+    }
     // Include validation errors if available
     const errorMessage = error.data?.errors
       ? error.data.errors.map((e: any) => `${e.path || e.field || 'Field'}: ${e.message}`).join(', ')
