@@ -14,6 +14,7 @@ import {
   Flame,
   Menu,
   X,
+  Star,
 } from 'lucide-react'
 
 const navigation = [
@@ -21,6 +22,7 @@ const navigation = [
   { name: 'Orders', href: '/dashboard/orders', icon: ShoppingBag },
   { name: 'Products', href: '/dashboard/products', icon: Package },
   { name: 'Collections', href: '/dashboard/collections', icon: FolderOpen },
+  { name: 'Reviews', href: '/dashboard/reviews', icon: Star },
   { name: 'Customers', href: '/dashboard/customers', icon: Users },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]

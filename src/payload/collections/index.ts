@@ -6,5 +6,8 @@ export { Media } from './Media'
 export { Users } from './Users'
 export { Subscribers } from './Subscribers'
 export { Coupons } from './Coupons'
+export { Reviews } from './Reviews'
+export { ReviewGallery } from './ReviewGallery'
+export { VideoReviews } from './VideoReviews'
 export { OTPs } from './OTPs'
 

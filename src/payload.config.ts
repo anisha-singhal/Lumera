@@ -13,6 +13,9 @@ import {
   Users,
   Subscribers,
   Coupons,
+  Reviews,
+  ReviewGallery,
+  VideoReviews,
   OTPs,
 } from './payload/collections'
 import { Settings } from './payload/globals/Settings'
@@ -77,6 +80,9 @@ export default buildConfig({
     Fragrances,
     Orders,
     Coupons,
+    Reviews,
+    ReviewGallery,
+    VideoReviews,
     // Content
     Media,
     // Admin

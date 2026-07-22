@@ -26,6 +26,7 @@ const navLinks = [
   { label: 'Custom Candle', href: '/custom-candle' },
   { label: 'Our Story', href: '/about' },
   { label: 'Rituals', href: '/rituals' },
+  { label: 'Reviews', href: '/reviews' },
   { label: 'Contact', href: '/contact' },
 ]
 
